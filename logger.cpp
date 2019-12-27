@@ -7,7 +7,7 @@ void Logger::setTextEdit(QTextEdit* pte) {
 
 void Logger::log(const char* msg) {
 	if (m_pte)
-		m_pte->append(msg);;
+        m_pte->append(msg);
 }
 
 void Logger::log(std::string msg) {

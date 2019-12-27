@@ -1,7 +1,7 @@
 #ifndef LIBWINDOW_H
 #define LIBWINDOW_H
 
-#include "libedcore.h"
+#include "libcore.h"
 
 #include <QMainWindow>
 
@@ -16,12 +16,14 @@ class LibWindow : public QMainWindow
 public:
     LibWindow(QWidget *parent = nullptr);
     ~LibWindow();
-    void setCore(LibEdCore* pc);
+    void setCore(LibCore* pc);
+    void newLib(bool);
+    void openLib(bool);
     void newLibShape(bool);
     void newLibSymbol(bool);
 
 private:
-    LibEdCore* m_pCore;
+    LibCore* m_pCore;
     Ui::LibWindow *ui;
 
 

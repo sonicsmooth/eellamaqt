@@ -1,5 +1,5 @@
-#ifndef LIBEDCORE_H
-#define LIBEDCORE_H
+#ifndef LibCore_H
+#define LibCore_H
 
 #include <string>
 #include <vector>
@@ -54,36 +54,36 @@ public:
     Text(double x, double y, std::string txt) : x(x), y(y), txt(txt) {}
 };
 
-class LibEdCore
+class LibCore
 {
 private:
     ILogger* m_pLogger;
 public:
-    LibEdCore();
-    ~LibEdCore();
+    LibCore();
+    ~LibCore();
     void setLogger(ILogger*);
-    void New(std::string);
-    void Open(std::string);
-    void Save(std::string);
-    void Close(std::string);
-    void Quit();
+    void newLib(std::string);
+    void openLib(std::string);
+    void saveLib(std::string);
+    void closeLib(std::string);
+    void quit();
     // Symbols are created/deleted
     // Shapes are created/deleted then inserted/removed with position/rotation, and can be reused
     // Primitives are created/deleted with parent, and cannot be reused
-    void Create(Symbol);
-    void Create(Shape);
-    void Delete(Symbol);
-    void Delete(Shape);
-    void Rename(Symbol, std::string);
-    void Rename(Shape, std::string);
-    void InsertShape(Symbol, Shape, double x, double y);
-    void RemoveShape(Symbol, Shape);
-    void TranslateShape(Symbol, Shape, double x, double y);
-    void RotateShape(Symbol, Shape, double a);
-    void InsertPrimitive(Symbol, Primitive);
-    void InsertPrimitive(Shape, Primitive);
-    void RemovePrimitive(Symbol, Primitive);
-    void RemovePrimitive(Shape, Primitive);
+    void create(Symbol);
+    void create(Shape);
+    void deleteItem(Symbol);
+    void deleteItem(Shape);
+    void rename(Symbol, std::string);
+    void rename(Shape, std::string);
+    void insertShape(Symbol, Shape, double x, double y);
+    void removeShape(Symbol, Shape);
+    void translateShape(Symbol, Shape, double x, double y);
+    void rotateShape(Symbol, Shape, double a);
+    void insertPrimitive(Symbol, Primitive);
+    void insertPrimitive(Shape, Primitive);
+    void removePrimitive(Symbol, Primitive);
+    void removePrimitive(Shape, Primitive);
 };
 
-#endif // LIBEDCORE_H
+#endif // LibCore_H

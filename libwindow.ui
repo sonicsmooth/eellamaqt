@@ -28,29 +28,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>GroupBox</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QPushButton" name="pushButton_8">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="pushButton">
         <property name="text">
          <string>PushButton</string>
@@ -67,29 +44,32 @@
      <x>0</x>
      <y>0</y>
      <width>978</width>
-     <height>37</height>
+     <height>38</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
-    <addaction name="actionClose"/>
-    <addaction name="actionClose_3"/>
+    <addaction name="actionNewLib"/>
+    <addaction name="actionOpenLib"/>
+    <addaction name="actionCloseLib"/>
     <addaction name="separator"/>
-    <addaction name="actionDelete"/>
-    <addaction name="separator"/>
-    <addaction name="actionQuit"/>
+    <addaction name="actionDeleteLib"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Primitive</string>
+     <string>Draw</string>
     </property>
-    <addaction name="actionRectangle_2"/>
-    <addaction name="actionCircle_2"/>
-    <addaction name="actionLine_2"/>
-    <addaction name="actionText_2"/>
+    <addaction name="actionRectangle"/>
+    <addaction name="actionLine"/>
+    <addaction name="actionText"/>
+    <addaction name="actionCircle"/>
+    <addaction name="actionPolygon"/>
+    <addaction name="actionPolyline"/>
+    <addaction name="actionArrow"/>
+    <addaction name="separator"/>
+    <addaction name="actionuPin"/>
    </widget>
    <widget class="QMenu" name="menuSymbols">
     <property name="title">
@@ -97,27 +77,26 @@
     </property>
     <addaction name="actionMove"/>
     <addaction name="actionRotate"/>
-    <addaction name="actionRename"/>
-    <addaction name="actionAdd_style"/>
+    <addaction name="actionStyle"/>
     <addaction name="separator"/>
-    <addaction name="actionDelete_selected"/>
+    <addaction name="actionDelete"/>
    </widget>
    <widget class="QMenu" name="menuHelp_2">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuLibrary">
     <property name="title">
      <string>Library</string>
     </property>
-    <addaction name="actionInsert_Symbol"/>
-    <addaction name="actionInsert_Shape"/>
+    <addaction name="actionSymbol"/>
+    <addaction name="actionShape"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuLibrarian"/>
-   <addaction name="menuSymbols"/>
    <addaction name="menuLibrary"/>
+   <addaction name="menuSymbols"/>
    <addaction name="menuEdit"/>
    <addaction name="menuHelp_2"/>
   </widget>
@@ -177,9 +156,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionAdd_Symbol"/>
    <addaction name="separator"/>
-   <addaction name="actionAdd_Shape"/>
+   <addaction name="actionNewLib"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_3">
@@ -286,59 +264,53 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionOpen">
+  <action name="actionNewLib">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/png/32x32/add_to_folder.png</normaloff>icons/png/32x32/add_to_folder.png</iconset>
+   </property>
    <property name="text">
-    <string>New/Open</string>
+    <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new library</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="actionCloseLib">
    <property name="text">
-    <string>Save</string>
+    <string>Close lib</string>
+   </property>
+   <property name="toolTip">
+    <string>Close library</string>
    </property>
   </action>
-  <action name="actionDelete">
+  <action name="actionDeleteLib">
    <property name="text">
-    <string>Delete</string>
+    <string>Delete Lib</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete library</string>
    </property>
   </action>
-  <action name="actionQuit">
+  <action name="actionSymbol">
    <property name="text">
-    <string>Quit</string>
+    <string>New Symbol</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new symbol in library</string>
    </property>
   </action>
-  <action name="actionNew_Symbol">
+  <action name="actionShape">
    <property name="text">
-    <string>Symbol</string>
+    <string>New Shape</string>
    </property>
-  </action>
-  <action name="actionDelete_Currentc">
-   <property name="text">
-    <string>Delete</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
-  <action name="actionClose_2">
-   <property name="text">
-    <string>Close</string>
-   </property>
-  </action>
-  <action name="actionClose_3">
-   <property name="text">
-    <string>Close</string>
+   <property name="toolTip">
+    <string>Create new shape in library</string>
    </property>
   </action>
   <action name="actionRectangle">
    <property name="text">
     <string>Rectangle</string>
-   </property>
-  </action>
-  <action name="actionCircle">
-   <property name="text">
-    <string>Circle</string>
    </property>
   </action>
   <action name="actionLine">
@@ -351,69 +323,14 @@
     <string>Text</string>
    </property>
   </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>New</string>
-   </property>
-  </action>
-  <action name="actionShape">
-   <property name="text">
-    <string>Shape</string>
-   </property>
-  </action>
-  <action name="actionRectangle_2">
-   <property name="text">
-    <string>Rectangle</string>
-   </property>
-  </action>
-  <action name="actionCircle_2">
+  <action name="actionCircle">
    <property name="text">
     <string>Circle</string>
    </property>
   </action>
-  <action name="actionLine_2">
+  <action name="actionuPin">
    <property name="text">
-    <string>Line</string>
-   </property>
-  </action>
-  <action name="actionInsert_Symbol">
-   <property name="text">
-    <string>Insert Symbol</string>
-   </property>
-  </action>
-  <action name="actionInsert_Shape">
-   <property name="text">
-    <string>Insert Shape</string>
-   </property>
-  </action>
-  <action name="actionText_2">
-   <property name="text">
-    <string>Text</string>
-   </property>
-  </action>
-  <action name="actionRename">
-   <property name="text">
-    <string>Rename</string>
-   </property>
-  </action>
-  <action name="actionDelete_item">
-   <property name="text">
-    <string>Delete Entry</string>
-   </property>
-  </action>
-  <action name="actionDelete_Primitive">
-   <property name="text">
-    <string>Delete Primitive</string>
-   </property>
-  </action>
-  <action name="actionDelete_selected">
-   <property name="text">
-    <string>Delete selected</string>
-   </property>
-  </action>
-  <action name="actionAdd_style">
-   <property name="text">
-    <string>Add style</string>
+    <string>Pin</string>
    </property>
   </action>
   <action name="actionMove">
@@ -426,14 +343,37 @@
     <string>Rotate</string>
    </property>
   </action>
-  <action name="actionAdd_Symbol">
+  <action name="actionArrow">
    <property name="text">
-    <string>Add Symbol</string>
+    <string>Arrow</string>
    </property>
   </action>
-  <action name="actionAdd_Shape">
+  <action name="actionPolygon">
    <property name="text">
-    <string>Add Shape</string>
+    <string>Polygon</string>
+   </property>
+  </action>
+  <action name="actionPolyline">
+   <property name="text">
+    <string>Polyline</string>
+   </property>
+  </action>
+  <action name="actionStyle">
+   <property name="text">
+    <string>Style</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionOpenLib">
+   <property name="text">
+    <string>Open </string>
+   </property>
+   <property name="toolTip">
+    <string>Open library</string>
    </property>
   </action>
  </widget>
