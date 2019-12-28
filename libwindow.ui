@@ -129,7 +129,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pbDeleteItem">
+        <widget class="QPushButton" name="pbDelete">
          <property name="text">
           <string>Delete</string>
          </property>
@@ -276,9 +276,17 @@
     <string>Create new library</string>
    </property>
   </action>
+  <action name="actionOpenLib">
+   <property name="text">
+    <string>Open </string>
+   </property>
+   <property name="toolTip">
+    <string>Open library</string>
+   </property>
+  </action>
   <action name="actionCloseLib">
    <property name="text">
-    <string>Close lib</string>
+    <string>Close</string>
    </property>
    <property name="toolTip">
     <string>Close library</string>
@@ -286,7 +294,7 @@
   </action>
   <action name="actionDeleteLib">
    <property name="text">
-    <string>Delete Lib</string>
+    <string>Delete</string>
    </property>
    <property name="toolTip">
     <string>Delete library</string>
@@ -366,14 +374,6 @@
   <action name="actionDelete">
    <property name="text">
     <string>Delete</string>
-   </property>
-  </action>
-  <action name="actionOpenLib">
-   <property name="text">
-    <string>Open </string>
-   </property>
-   <property name="toolTip">
-    <string>Open library</string>
    </property>
   </action>
  </widget>

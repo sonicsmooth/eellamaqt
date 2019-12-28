@@ -19,8 +19,11 @@ public:
     void setCore(LibCore* pc);
     void newLib(bool);
     void openLib(bool);
+    void closeLib(bool);
+    void deleteLib(bool);
     void newLibShape(bool);
     void newLibSymbol(bool);
+    void deleteSelected(bool);
 
 private:
     LibCore* m_pCore;

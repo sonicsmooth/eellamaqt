@@ -66,6 +66,7 @@ public:
     void openLib(std::string);
     void saveLib(std::string);
     void closeLib(std::string);
+    void deleteLib(std::string);
     void quit();
     // Symbols are created/deleted
     // Shapes are created/deleted then inserted/removed with position/rotation, and can be reused
