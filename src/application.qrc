@@ -1,66 +1,6 @@
 <RCC>
-    <qresource prefix="">
-        <file>icons/must-have-icon-set-flat/32x32/Add_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Archive_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Audio Disk_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Burn Disk_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Calendar_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Cancel_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Check_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Compact Disk_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Copy v2_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Copy_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Cut_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Delete_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Download_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/DVD Disk_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Edit_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Favorites_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Find_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Flash Disk_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Folder_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Forward_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Globe_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Hard Disk_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Help_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Information_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Key_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Log Out_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Mail_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Negative_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/New_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Next_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Open_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Paste_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Pause_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Picture_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Play_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Positive_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Presentation_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Preview_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Previous_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Print_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Properties_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Redo_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Refresh_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Remove_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Rename_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Save_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Search_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Send_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Settings_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Stock Index Down_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Stock Index Up_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Stop_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Synchronize_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Text Document_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Undo_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Upload_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/User_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Zoom In_32x32.png</file>
-        <file>icons/must-have-icon-set-flat/32x32/Zoom Out_32x32.png</file>
-    </qresource>
-    <qresource prefix="">
+    <qresource prefix="/animations"/>
+    <qresource prefix="/actions">
         <file>icons/oxygen-icons/32x32/actions/address-book-new.png</file>
         <file>icons/oxygen-icons/32x32/actions/align-horizontal-bottom-out.png</file>
         <file>icons/oxygen-icons/32x32/actions/align-horizontal-center.png</file>
@@ -672,4 +612,15 @@
         <file>icons/oxygen-icons/32x32/actions/zoom-previous.png</file>
         <file>icons/oxygen-icons/32x32/actions/zoom-select.png</file>
     </qresource>
+    <qresource prefix="/apps"/>
+    <qresource prefix="/categories"/>
+    <qresource prefix="/devices">
+        <file>icons/oxygen-icons/32x32/devices/cpu.png</file>
+        <file>icons/oxygen-icons/32x32/devices/printer.png</file>
+    </qresource>
+    <qresource prefix="/emblems"/>
+    <qresource prefix="/emotes"/>
+    <qresource prefix="/mimetypes"/>
+    <qresource prefix="/places"/>
+    <qresource prefix="/status"/>
 </RCC>

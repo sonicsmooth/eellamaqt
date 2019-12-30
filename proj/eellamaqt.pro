@@ -16,24 +16,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    dbif.cpp \
-    libcore.cpp \
-    logger.cpp \
-    main.cpp \
-    libwindow.cpp
+    ../src/dbif.cpp \
+    ../src/libcore.cpp \
+    ../src/libwindow.cpp \
+    ../src/logger.cpp \
+    ../src/main.cpp \
 
 HEADERS += \
-    dbif.h \
-    idbif.h \
-    libcore.h \
-    libwindow.h \
-    logger.h
+    ../src/dbif.h \
+    ../src/idbif.h \
+    ../src/ilogger.h \
+    ../src/libcore.h \
+    ../src/libwindow.h \
+    ../src/logger.h \
 
 FORMS += \
-    libwindow.ui
+    ../src/ui/libwindow.ui \
 
 RESOURCES += \
-    application.qrc
+    ../src/application.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
