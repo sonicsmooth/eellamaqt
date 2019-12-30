@@ -53,6 +53,7 @@
     </property>
     <addaction name="actionNewLib"/>
     <addaction name="actionOpenLib"/>
+    <addaction name="actionSaveLib"/>
     <addaction name="actionCloseLib"/>
     <addaction name="separator"/>
     <addaction name="actionDeleteLib"/>
@@ -69,7 +70,7 @@
     <addaction name="actionPolyline"/>
     <addaction name="actionArrow"/>
     <addaction name="separator"/>
-    <addaction name="actionuPin"/>
+    <addaction name="actionPin"/>
    </widget>
    <widget class="QMenu" name="menuSymbols">
     <property name="title">
@@ -80,11 +81,15 @@
     <addaction name="actionStyle"/>
     <addaction name="separator"/>
     <addaction name="actionDelete"/>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
    </widget>
    <widget class="QMenu" name="menuHelp_2">
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuLibrary">
     <property name="title">
@@ -158,6 +163,14 @@
    </attribute>
    <addaction name="separator"/>
    <addaction name="actionNewLib"/>
+   <addaction name="actionOpenLib"/>
+   <addaction name="actionCloseLib"/>
+   <addaction name="actionSaveLib"/>
+   <addaction name="separator"/>
+   <addaction name="actionCopy"/>
+   <addaction name="actionCut"/>
+   <addaction name="actionPaste"/>
+   <addaction name="actionDelete"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_3">
@@ -267,7 +280,8 @@
   <action name="actionNewLib">
    <property name="icon">
     <iconset>
-     <normaloff>icons/png/32x32/add_to_folder.png</normaloff>icons/png/32x32/add_to_folder.png</iconset>
+     <normalon>:/icons/oxygen-icons/32x32/actions/document-new.png</normalon>
+    </iconset>
    </property>
    <property name="text">
     <string>New</string>
@@ -277,6 +291,10 @@
    </property>
   </action>
   <action name="actionOpenLib">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/must-have-icon-set-flat/32x32/Open_32x32.png</normaloff>:/icons/must-have-icon-set-flat/32x32/Open_32x32.png</iconset>
+   </property>
    <property name="text">
     <string>Open </string>
    </property>
@@ -285,6 +303,10 @@
    </property>
   </action>
   <action name="actionCloseLib">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/document-close.png</normaloff>:/icons/oxygen-icons/32x32/actions/document-close.png</iconset>
+   </property>
    <property name="text">
     <string>Close</string>
    </property>
@@ -293,6 +315,10 @@
    </property>
   </action>
   <action name="actionDeleteLib">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/edit-delete.png</normaloff>:/icons/oxygen-icons/32x32/actions/edit-delete.png</iconset>
+   </property>
    <property name="text">
     <string>Delete</string>
    </property>
@@ -300,7 +326,23 @@
     <string>Delete library</string>
    </property>
   </action>
+  <action name="actionSaveLib">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/document-save.png</normaloff>:/icons/oxygen-icons/32x32/actions/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save library</string>
+   </property>
+  </action>
   <action name="actionSymbol">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/get-hot-new-stuff.png</normaloff>:/icons/oxygen-icons/32x32/actions/get-hot-new-stuff.png</iconset>
+   </property>
    <property name="text">
     <string>New Symbol</string>
    </property>
@@ -309,6 +351,10 @@
    </property>
   </action>
   <action name="actionShape">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/shapes.png</normaloff>:/icons/oxygen-icons/32x32/actions/shapes.png</iconset>
+   </property>
    <property name="text">
     <string>New Shape</string>
    </property>
@@ -317,51 +363,91 @@
    </property>
   </action>
   <action name="actionRectangle">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-rectangle.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-rectangle.png</iconset>
+   </property>
    <property name="text">
     <string>Rectangle</string>
    </property>
   </action>
   <action name="actionLine">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-brush.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-brush.png</iconset>
+   </property>
    <property name="text">
     <string>Line</string>
    </property>
   </action>
   <action name="actionText">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-text.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-text.png</iconset>
+   </property>
    <property name="text">
     <string>Text</string>
    </property>
   </action>
   <action name="actionCircle">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-circle.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-circle.png</iconset>
+   </property>
    <property name="text">
     <string>Circle</string>
    </property>
   </action>
-  <action name="actionuPin">
+  <action name="actionPin">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/fork.png</normaloff>:/icons/oxygen-icons/32x32/actions/fork.png</iconset>
+   </property>
    <property name="text">
     <string>Pin</string>
    </property>
   </action>
   <action name="actionMove">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/transform-move.png</normaloff>:/icons/oxygen-icons/32x32/actions/transform-move.png</iconset>
+   </property>
    <property name="text">
     <string>Move</string>
    </property>
   </action>
   <action name="actionRotate">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/transform-rotate.png</normaloff>:/icons/oxygen-icons/32x32/actions/transform-rotate.png</iconset>
+   </property>
    <property name="text">
     <string>Rotate</string>
    </property>
   </action>
   <action name="actionArrow">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-arrow-forward.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-arrow-forward.png</iconset>
+   </property>
    <property name="text">
     <string>Arrow</string>
    </property>
   </action>
   <action name="actionPolygon">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-polygon.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-polygon.png</iconset>
+   </property>
    <property name="text">
     <string>Polygon</string>
    </property>
   </action>
   <action name="actionPolyline">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/draw-polyline.png</normaloff>:/icons/oxygen-icons/32x32/actions/draw-polyline.png</iconset>
+   </property>
    <property name="text">
     <string>Polyline</string>
    </property>
@@ -372,11 +458,62 @@
    </property>
   </action>
   <action name="actionDelete">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/edit-delete.png</normaloff>:/icons/oxygen-icons/32x32/actions/edit-delete.png</iconset>
+   </property>
    <property name="text">
     <string>Delete</string>
    </property>
   </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/edit-copy.png</normaloff>:/icons/oxygen-icons/32x32/actions/edit-copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy selection</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/edit-paste.png</normaloff>:/icons/oxygen-icons/32x32/actions/edit-paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste clipboard contents</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/edit-cut.png</normaloff>:/icons/oxygen-icons/32x32/actions/edit-cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut selection</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="application.qrc">
+     <normaloff>:/icons/oxygen-icons/32x32/actions/help-about.png</normaloff>:/icons/oxygen-icons/32x32/actions/help-about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="application.qrc"/>
+ </resources>
  <connections/>
 </ui>

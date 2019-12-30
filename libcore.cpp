@@ -1,7 +1,19 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
+#include <filesystem>
+#include <fstream>
 #include "libcore.h"
+
+
+const char kPathSeparator =
+#ifdef _WIN32
+                            '\\';
+#else
+                            '/';
+#endif
+
+namespace fs = std::filesystem;
 
 LibCore::LibCore() : m_pLogger(nullptr) {}
 LibCore::~LibCore() {}
@@ -9,11 +21,36 @@ LibCore::~LibCore() {}
 void LibCore::setLogger(ILogger* pLogger) {
     m_pLogger = pLogger;
 }
+void LibCore::setDbIf(IDbIf* pDbIf) {
+    m_pDbIf = pDbIf;
+}
+void LibCore::newLib(std::string path, std::string name) {
+    // LibCore assumes the caller has already verified the path and name
+    // So we log whether it exsts, then override
 
-void LibCore::newLib(std::string name) {
-    std::stringstream ss;
-    ss << "Creating new library " << name;
+
+    std::string fullname = path + kPathSeparator + name;
+
     assert(m_pLogger);
+    std::stringstream ss;
+    ss << "Looking for files in " << path;
+    m_pLogger->log(ss.str());
+    ss.str(std::string());
+
+    for (const auto& entry : fs::directory_iterator(path))
+        ss << entry.path() << std::endl;
+
+    m_pLogger->log(ss.str());
+
+    assert(m_pDbIf);
+    m_pDbIf->createDatabase(name);
+
+    std::ofstream f;
+    f.open(fullname, std::fstream::out);
+    f << "hi there";
+    f.close();
+    ss << "Created new library: " << name;
+
     m_pLogger->log(ss.str());
 }
 void LibCore::openLib(std::string name) {

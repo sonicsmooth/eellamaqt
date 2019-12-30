@@ -6,6 +6,7 @@
 #include <initializer_list>
 
 #include "ilogger.h"
+#include "idbif.h"
 
 class Shape {
 private:
@@ -58,11 +59,13 @@ class LibCore
 {
 private:
     ILogger* m_pLogger;
+    IDbIf* m_pDbIf;
 public:
     LibCore();
     ~LibCore();
     void setLogger(ILogger*);
-    void newLib(std::string);
+    void setDbIf(IDbIf*);
+    void newLib(std::string path, std::string name);
     void openLib(std::string);
     void saveLib(std::string);
     void closeLib(std::string);

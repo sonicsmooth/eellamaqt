@@ -2,11 +2,15 @@
 #include "ui_libwindow.h"
 
 #include <iostream>
+//#include <iomanip>
+#include <cstdio>
+#include <sstream>
 #include <cassert>
 #include <QStatusBar>
 #include <QPushButton>
 #include <QAction>
 #include <QFileDialog>
+#include <QDir>
 
 LibWindow::LibWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -48,8 +52,32 @@ void LibWindow::setCore(LibCore* pc) {
 
 void LibWindow::newLib(bool checked) {
     (void) checked;
+    
+    QDir homedir = QDir::home();
+    const char base[] = "NewLibrary";
+    const char ext[] = ".SchLib";
+    std::stringstream finalss;
+    finalss << base << ext;
+    const char dirname [] = "EELlama Libraries";
+
+    if (!homedir.exists(dirname))
+        homedir.mkdir(dirname);
+    homedir.cd(dirname);
+
+    const int dnlen = sizeof(dirname);
+    char dnp2[dnlen+2];
+
+    if (homedir.exists(QString::fromStdString(finalss.str()))) {
+        for (int suffix = 0; suffix < 100; suffix++) {
+            snprintf(dnp2, dnlen+2, "%s%02d%s", base, suffix, ext);
+            if (!homedir.exists(QString(dnp2)))
+                break;
+        }
+    }
+    std::string homepath =
+        QDir::toNativeSeparators(homedir.filePath("")).toStdString();
     assert(m_pCore);
-    m_pCore->newLib("NewLibrary");
+    m_pCore->newLib(homepath, std::string(dnp2));
 }
 void LibWindow::openLib(bool checked) {
     (void) checked;
