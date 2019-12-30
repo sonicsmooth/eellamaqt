@@ -1,0 +1,3 @@
+[submodule "src/icons/oxygen-icons"]
+	path = src/icons/oxygen-icons
+	url = https://github.com/KDE/oxygen-icons.git
