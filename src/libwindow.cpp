@@ -14,8 +14,9 @@
 
 LibWindow::LibWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::LibWindow)
     , m_pCore(nullptr)
+    , m_pLogger(nullptr)
+    , ui(new Ui::LibWindow)
 {
     ui->setupUi(this);
 
@@ -28,9 +29,9 @@ LibWindow::LibWindow(QWidget *parent)
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
 
-    connect(ui->pbNewShape, &QPushButton::clicked, ui->actionShape, &QAction::trigger);
-    connect(ui->pbNewSymbol, &QPushButton::clicked, ui->actionSymbol, &QAction::trigger);
-    connect(ui->pbDelete, &QPushButton::clicked, ui->actionDelete, &QAction::trigger);
+    connect(ui->pbNewShape, &QPushButton::clicked, ui->actionNewShape, &QAction::trigger);
+    connect(ui->pbNewSymbol, &QPushButton::clicked, ui->actionNewSymbol, &QAction::trigger);
+    connect(ui->pbDelete, &QPushButton::clicked, ui->actionEditDelete, &QAction::trigger);
     
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
@@ -68,11 +69,14 @@ LibWindow::~LibWindow()
 void LibWindow::setCore(LibCore* pc) {
     m_pCore = pc;
 }
+void LibWindow::setLogger(Logger* pl) {
+    m_pLogger = pl;
+}
 
-void LibWindow::newLib(bool checked) {
+void LibWindow::fileNewLib() {
     // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
-    (void) checked;
     assert(m_pCore);
+    assert(m_pLogger);
 
     // Ensure directory exists ~/EELlama Libraries
     QDir currdir = QDir::home();
@@ -101,37 +105,144 @@ void LibWindow::newLib(bool checked) {
                     //std::move(libname_extended.get())
                     );
 }
-void LibWindow::openLib(bool checked) {
-    (void) checked;
+void LibWindow::fileOpenLib() {
     assert(m_pCore);
+    assert(m_pLogger);
     QString qfilename = QFileDialog::getOpenFileName(this,
         ".", tr("Open Library"), tr("Any (*);;Library files (*.SchLib *.db)"));
     std::string filename(qfilename.toStdString());
     m_pCore->openLib(filename);
 }
-void LibWindow::closeLib(bool checked) {
-    (void) checked;
+void LibWindow::fileSaveLib() {
     assert(m_pCore);
-    m_pCore->closeLib("somelibname");
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: file save lib");
 }
-void LibWindow::deleteLib(bool checked) {
-    (void) checked;
+void LibWindow::fileSaveLibAs() {
     assert(m_pCore);
-    m_pCore->deleteLib("somelibname");
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: file save lib as");
 }
-void LibWindow::newLibShape(bool checked) {
-    (void) checked;
+void LibWindow::fileCloseLib() {
     assert(m_pCore);
-    m_pCore->create(Shape("Some new shape"));
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: file close lib");
 }
-void LibWindow::newLibSymbol(bool checked) {
-    (void) checked;
+void LibWindow::fileDeleteLib() {
     assert(m_pCore);
-    m_pCore->create(Symbol("Some new symbol"));
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: file delete lib");
 }
-void LibWindow::deleteSelected(bool checked) {
-    (void) checked;
+void LibWindow::newShape() {
     assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new shape");
+}
+void LibWindow::insertShape() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: insert shape");
+}
+void LibWindow::newSymbol() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new symbol");
+}
+void LibWindow::newRectangle() {    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new rectangle");
+}
+
+void LibWindow::newLine() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new line");
+
+}
+void LibWindow::newText() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new text");
+
+}
+void LibWindow::newCircle() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new circle");
+
+}
+void LibWindow::newArrow() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new arrow");
+
+}
+void LibWindow::newPolygon() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new polygon");
+
+}
+void LibWindow::newPolyline() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new polyline");
+
+}
+void LibWindow::newPin() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: new pin");
+
+}
+void LibWindow::editUndo() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit undo");
+
+}
+void LibWindow::editRedo() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit redo");
+
+}
+void LibWindow::editMove() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit move");
+
+}
+void LibWindow::editRotate() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit rotate");
+
+}
+void LibWindow::editCut() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit cut");
+
+}
+void LibWindow::editCopy() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit copy");
+
+}
+void LibWindow::editPaste() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit paste");
+
+}
+void LibWindow::editDelete() {
+    assert(m_pCore);
+    assert(m_pLogger);
+    m_pLogger->log("LibWindow: edit delete");
     m_pCore->deleteItem(Symbol("Some symbol"));
     m_pCore->deleteItem(Shape("Some shape"));
 }
+void LibWindow::helpAbout() {}
+
