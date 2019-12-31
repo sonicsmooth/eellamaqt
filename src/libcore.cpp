@@ -30,19 +30,9 @@ void LibCore::newLib(std::string path, std::string name) {
     assert(m_pDbIf);
     assert(m_pLogger);
 
-    std::string fullname = path + kPathSeparator + name;
-    std::stringstream ss;
-    m_pLogger->log("Looking for files in " + path);
-
-    m_pDbIf->createDatabase(name);
-
-    std::ofstream f;
-    f.open(fullname, std::fstream::out);
-    f << "hi there";
-    f.close();
-    ss << "Created new library: " << name;
-
-    m_pLogger->log(ss);
+    std::string fullpath = path + "/" + name;
+    m_pDbIf->createDatabase(fullpath);
+    m_pLogger->log("Created new Library " + fullpath);
 }
 void LibCore::openLib(std::string name) {
     assert(m_pLogger);
