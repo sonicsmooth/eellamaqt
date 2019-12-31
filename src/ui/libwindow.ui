@@ -278,7 +278,7 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionNewLib">
+  <action name="actionFileNewLib">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/journal-new.png</normaloff>
@@ -291,7 +291,7 @@
     <string>Create new library</string>
    </property>
   </action>
-  <action name="actionOpenLib">
+  <action name="actionFileOpenLib">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/document-open.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/document-open.png</iconset>
@@ -303,31 +303,7 @@
     <string>Open library</string>
    </property>
   </action>
-  <action name="actionCloseLib">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/project-development-close.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/project-development-close.png</iconset>
-   </property>
-   <property name="text">
-    <string>Close Library</string>
-   </property>
-   <property name="toolTip">
-    <string>Close library</string>
-   </property>
-  </action>
-  <action name="actionDeleteLib">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</iconset>
-   </property>
-   <property name="text">
-    <string>Delete Library</string>
-   </property>
-   <property name="toolTip">
-    <string>Delete library</string>
-   </property>
-  </action>
-  <action name="actionSaveLib">
+  <action name="actionFileSaveLib">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/document-save.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/document-save.png</iconset>
@@ -339,7 +315,7 @@
     <string>Save library</string>
    </property>
   </action>
-  <action name="actionSaveLibAs">
+  <action name="actionFileSaveLibAs">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/document-save-as.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/document-save-as.png</iconset>
@@ -351,19 +327,31 @@
     <string>Save library as new file name</string>
    </property>
   </action>
-  <action name="actionSymbol">
+  <action name="actionFileCloseLib">
    <property name="icon">
     <iconset resource="../application.qrc">
-     <normaloff>:/devices/icons/oxygen-icons/32x32/devices/cpu.png</normaloff>:/devices/icons/oxygen-icons/32x32/devices/cpu.png</iconset>
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/project-development-close.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/project-development-close.png</iconset>
    </property>
    <property name="text">
-    <string>New Symbol</string>
+    <string>Close Library</string>
    </property>
    <property name="toolTip">
-    <string>Create new symbol in library</string>
+    <string>Close library</string>
    </property>
   </action>
-  <action name="actionShape">
+  <action name="actionFileDeleteLib">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Library</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete library</string>
+   </property>
+  </action>
+  <action name="actionNewShape">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/shapes.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/shapes.png</iconset>
@@ -375,7 +363,19 @@
     <string>Create new shape in library</string>
    </property>
   </action>
-  <action name="actionRectangle">
+  <action name="actionNewSymbol">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/devices/icons/oxygen-icons/32x32/devices/cpu.png</normaloff>:/devices/icons/oxygen-icons/32x32/devices/cpu.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Symbol</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new symbol in library</string>
+   </property>
+  </action>
+  <action name="actionNewRectangle">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-rectangle.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-rectangle.png</iconset>
@@ -384,7 +384,7 @@
     <string>Rectangle</string>
    </property>
   </action>
-  <action name="actionLine">
+  <action name="actionNewLine">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-brush.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-brush.png</iconset>
@@ -393,7 +393,7 @@
     <string>Line</string>
    </property>
   </action>
-  <action name="actionText">
+  <action name="actionNewText">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-text.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-text.png</iconset>
@@ -402,7 +402,7 @@
     <string>Text</string>
    </property>
   </action>
-  <action name="actionCircle">
+  <action name="actionNewCircle">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-circle.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-circle.png</iconset>
@@ -411,34 +411,7 @@
     <string>Circle</string>
    </property>
   </action>
-  <action name="actionPin">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-clear-locationbar-rtl.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-clear-locationbar-rtl.png</iconset>
-   </property>
-   <property name="text">
-    <string>Pin</string>
-   </property>
-  </action>
-  <action name="actionMove">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-move.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-move.png</iconset>
-   </property>
-   <property name="text">
-    <string>Move</string>
-   </property>
-  </action>
-  <action name="actionRotate">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-rotate.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-rotate.png</iconset>
-   </property>
-   <property name="text">
-    <string>Rotate</string>
-   </property>
-  </action>
-  <action name="actionArrow">
+  <action name="actionNewArrow">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-arrow-forward.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-arrow-forward.png</iconset>
@@ -447,7 +420,7 @@
     <string>Arrow</string>
    </property>
   </action>
-  <action name="actionPolygon">
+  <action name="actionNewPolygon">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-polygon.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-polygon.png</iconset>
@@ -456,7 +429,7 @@
     <string>Polygon</string>
    </property>
   </action>
-  <action name="actionPolyline">
+  <action name="actionNewPolyline">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-polyline.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/draw-polyline.png</iconset>
@@ -465,52 +438,34 @@
     <string>Polyline</string>
    </property>
   </action>
-  <action name="actionStyle">
+  <action name="actionNewPin">
    <property name="icon">
     <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/format-text-color.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/format-text-color.png</iconset>
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-clear-locationbar-rtl.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-clear-locationbar-rtl.png</iconset>
    </property>
    <property name="text">
-    <string>Style</string>
+    <string>Pin</string>
    </property>
   </action>
-  <action name="actionDelete">
+  <action name="actionEditMove">
    <property name="icon">
     <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</iconset>
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-move.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-move.png</iconset>
    </property>
    <property name="text">
-    <string>Delete</string>
-   </property>
-   <property name="toolTip">
-    <string>Delete selection</string>
+    <string>Move</string>
    </property>
   </action>
-  <action name="actionCopy">
+  <action name="actionEditRotate">
    <property name="icon">
     <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-copy.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-copy.png</iconset>
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-rotate.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/transform-rotate.png</iconset>
    </property>
    <property name="text">
-    <string>Copy</string>
-   </property>
-   <property name="toolTip">
-    <string>Copy selection</string>
+    <string>Rotate</string>
    </property>
   </action>
-  <action name="actionPaste">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-paste.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-paste.png</iconset>
-   </property>
-   <property name="text">
-    <string>Paste</string>
-   </property>
-   <property name="toolTip">
-    <string>Paste clipboard contents</string>
-   </property>
-  </action>
-  <action name="actionCut">
+  <action name="actionEditCut">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-cut.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-cut.png</iconset>
@@ -522,7 +477,43 @@
     <string>Cut selection</string>
    </property>
   </action>
-  <action name="actionAbout">
+  <action name="actionEditCopy">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-copy.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy selection</string>
+   </property>
+  </action>
+  <action name="actionEditPaste">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-paste.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste clipboard contents</string>
+   </property>
+  </action>
+  <action name="actionEditDelete">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/edit-delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selection</string>
+   </property>
+  </action>
+  <action name="actionHelpAbout">
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/icons/oxygen-icons/32x32/actions/help-about.png</normaloff>:/actions/icons/oxygen-icons/32x32/actions/help-about.png</iconset>

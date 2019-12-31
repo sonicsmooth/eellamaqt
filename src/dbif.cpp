@@ -5,9 +5,15 @@
 
 #include <QtSql>
 
+DbIf::DbIf() : m_pLogger(nullptr) {}
+void DbIf::setLogger(Logger *pLogger) {
+    m_pLogger = pLogger;
+}
+
 
 void DbIf::createDatabase(std::string fullpath) {
-    std::cout << "Creating qt database " << fullpath;
+    if (m_pLogger)
+        m_pLogger->log("DbiF: Creating QtSQL database %s", fullpath.c_str());
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(QString::fromStdString(fullpath));
@@ -15,15 +21,4 @@ void DbIf::createDatabase(std::string fullpath) {
     QSqlQuery q;
     q.exec("CREATE TABLE firsttable (ID INTEGER PRIMARY KEY, NAME TEXT)");
     
-
-
-
-
-
-
-    //std::ofstream f;
-    //f.open(fullpath, std::fstream::out);
-    //f << "hi there";
-    //f.close();
-
 }

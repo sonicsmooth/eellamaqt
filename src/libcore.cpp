@@ -6,11 +6,10 @@
 #include "libcore.h"
 
 
-const char kPathSeparator =
 #ifdef _WIN32
-                            '\\';
+const char kPathSeparator = '\\';
 #else
-                            '/';
+const char kPathseparator =  '/';
 #endif
 
 namespace fs = std::filesystem;
@@ -32,53 +31,37 @@ void LibCore::newLib(std::string path, std::string name) {
 
     std::string fullpath = path + "/" + name;
     m_pDbIf->createDatabase(fullpath);
-    m_pLogger->log("Created new Library " + fullpath);
+    m_pLogger->log("LibCore: Created new Library " + fullpath);
 }
 void LibCore::openLib(std::string name) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Opening library " << name;
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Opening library " + name);
 }
 void LibCore::saveLib(std::string name) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Saving library... ";
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Saving library " + name);
 }
 void LibCore::closeLib(std::string name) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Closing library... ";
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Closing library " + name);
 }
 void LibCore::deleteLib(std::string name) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Deleting library... ";
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Deleting library " + name);
 }
 void LibCore::create(Shape shape) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Creating shape " << shape.name();
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Creating shape " + shape.name());
 }
 void LibCore::create(Symbol symbol) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Creating shape " << symbol.name();
-    m_pLogger->log(ss);
-}
-void LibCore::deleteItem(Symbol symbol) {
-    assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Deleting symbol " << symbol.name();
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Creating symbol " + symbol.name());
 }
 void LibCore::deleteItem(Shape shape) {
     assert(m_pLogger);
-    std::stringstream ss;
-    ss << "Deleting shape " << shape.name();
-    m_pLogger->log(ss);
+    m_pLogger->log("LibCore: Deleting shape " + shape.name());
+}
+void LibCore::deleteItem(Symbol symbol) {
+    assert(m_pLogger);
+    m_pLogger->log("LibCore: Deleting symbol " + symbol.name());
 }

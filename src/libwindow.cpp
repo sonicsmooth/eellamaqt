@@ -32,13 +32,32 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->pbNewSymbol, &QPushButton::clicked, ui->actionSymbol, &QAction::trigger);
     connect(ui->pbDelete, &QPushButton::clicked, ui->actionDelete, &QAction::trigger);
     
-    connect(ui->actionNewLib, &QAction::triggered, this, &LibWindow::newLib);
-    connect(ui->actionOpenLib, &QAction::triggered, this, &LibWindow::openLib);
-    connect(ui->actionCloseLib, &QAction::triggered, this, &LibWindow::closeLib);
-    connect(ui->actionDeleteLib, &QAction::triggered, this, &LibWindow::deleteLib);
-    connect(ui->actionShape, &QAction::triggered, this, &LibWindow::newLibShape);
-    connect(ui->actionSymbol, &QAction::triggered, this, &LibWindow::newLibSymbol);
-    connect(ui->actionDelete, &QAction::triggered, this, &LibWindow::deleteSelected);
+    connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
+    connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
+    connect(ui->actionFileSaveLib, &QAction::triggered, this, &LibWindow::fileSaveLib);
+    connect(ui->actionFileSaveLibAs, &QAction::triggered, this, &LibWindow::fileSaveLibAs);
+    connect(ui->actionFileCloseLib, &QAction::triggered, this, &LibWindow::fileCloseLib);
+    connect(ui->actionFileDeleteLib, &QAction::triggered, this, &LibWindow::fileDeleteLib);
+    connect(ui->actionNewShape, &QAction::triggered, this, &LibWindow::newShape);
+    connect(ui->actionInsertShape, &QAction::triggered, this, &LibWindow::insertShape);
+    connect(ui->actionNewSymbol, &QAction::triggered, this, &LibWindow::newSymbol);
+    connect(ui->actionNewRectangle, &QAction::triggered, this, &LibWindow::newRectangle);
+    connect(ui->actionNewLine, &QAction::triggered, this, &LibWindow::newLine);
+    connect(ui->actionNewText, &QAction::triggered, this, &LibWindow::newText);
+    connect(ui->actionNewCircle, &QAction::triggered, this, &LibWindow::newCircle);
+    connect(ui->actionNewArrow, &QAction::triggered, this, &LibWindow::newArrow);
+    connect(ui->actionNewPolygon, &QAction::triggered, this, &LibWindow::newPolygon);
+    connect(ui->actionNewPolyline, &QAction::triggered, this, &LibWindow::newPolyline);
+    connect(ui->actionNewPin, &QAction::triggered, this, &LibWindow::newPin);
+    connect(ui->actionEditUndo, &QAction::triggered, this, &LibWindow::editUndo);
+    connect(ui->actionEditRedo, &QAction::triggered, this, &LibWindow::editRedo);
+    connect(ui->actionEditMove, &QAction::triggered, this, &LibWindow::editMove);
+    connect(ui->actionEditRotate, &QAction::triggered, this, &LibWindow::editRotate);
+    connect(ui->actionEditCut, &QAction::triggered, this, &LibWindow::editCut);
+    connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
+    connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
+    connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
+    connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
 }
 
 LibWindow::~LibWindow()
