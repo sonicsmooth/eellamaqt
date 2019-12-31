@@ -27,22 +27,13 @@ void LibCore::setDbIf(IDbIf* pDbIf) {
 void LibCore::newLib(std::string path, std::string name) {
     // LibCore assumes the caller has already verified the path and name
     // So we log whether it exsts, then override
-
+    assert(m_pDbIf);
+    assert(m_pLogger);
 
     std::string fullname = path + kPathSeparator + name;
-
-    assert(m_pLogger);
     std::stringstream ss;
-    ss << "Looking for files in " << path;
-    m_pLogger->log(ss.str());
-    ss.str(std::string());
+    m_pLogger->log("Looking for files in " + path);
 
-    for (const auto& entry : fs::directory_iterator(path))
-        ss << entry.path() << std::endl;
-
-    m_pLogger->log(ss.str());
-
-    assert(m_pDbIf);
     m_pDbIf->createDatabase(name);
 
     std::ofstream f;
@@ -51,53 +42,53 @@ void LibCore::newLib(std::string path, std::string name) {
     f.close();
     ss << "Created new library: " << name;
 
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::openLib(std::string name) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Opening library " << name;
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::saveLib(std::string name) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Saving library... ";
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::closeLib(std::string name) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Closing library... ";
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::deleteLib(std::string name) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Deleting library... ";
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::create(Shape shape) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Creating shape " << shape.name();
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::create(Symbol symbol) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Creating shape " << symbol.name();
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::deleteItem(Symbol symbol) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Deleting symbol " << symbol.name();
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }
 void LibCore::deleteItem(Shape shape) {
+    assert(m_pLogger);
     std::stringstream ss;
     ss << "Deleting shape " << shape.name();
-    assert(m_pLogger);
-    m_pLogger->log(ss.str());
+    m_pLogger->log(ss);
 }

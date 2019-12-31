@@ -51,33 +51,36 @@ void LibWindow::setCore(LibCore* pc) {
 }
 
 void LibWindow::newLib(bool checked) {
+    // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
     (void) checked;
-    
-    QDir homedir = QDir::home();
+    assert(m_pCore);
+
+    // Ensure directory exists ~/EELlama Libraries
+    QDir currdir = QDir::home();
+    QString dirname = "EE LLama Libraries";
+    if (!currdir.exists(dirname))
+        currdir.mkdir(dirname);
+    currdir.cd(dirname);
+
+    // Keep trying until we find a non-existing filename
     const char base[] = "NewLibrary";
     const char ext[] = ".SchLib";
-    std::stringstream finalss;
-    finalss << base << ext;
-    const char dirname [] = "EELlama Libraries";
-
-    if (!homedir.exists(dirname))
-        homedir.mkdir(dirname);
-    homedir.cd(dirname);
-
-    const int dnlen = sizeof(dirname);
-    char dnp2[dnlen+2];
-
-    if (homedir.exists(QString::fromStdString(finalss.str()))) {
+    QString libname = QString(base) + ext;
+    const int sz = libname.size();
+    std::unique_ptr<char> libname_extended(new char [static_cast<size_t>(sz)+3]);
+    snprintf(libname_extended.get(), static_cast<size_t>(sz)+1, "%s%s", base, ext);
+    if (currdir.exists(libname_extended.get())) {
         for (int suffix = 0; suffix < 100; suffix++) {
-            snprintf(dnp2, dnlen+2, "%s%02d%s", base, suffix, ext);
-            if (!homedir.exists(QString(dnp2)))
+            snprintf(libname_extended.get(), static_cast<size_t>(sz)+3, "%s%02d%s", base, suffix, ext);
+            if (!currdir.exists(QString(libname_extended.get())))
                 break;
         }
     }
-    std::string homepath =
-        QDir::toNativeSeparators(homedir.filePath("")).toStdString();
-    assert(m_pCore);
-    m_pCore->newLib(homepath, std::string(dnp2));
+    std::cout << libname_extended;
+    m_pCore->newLib(currdir.filePath("").toStdString(),
+                    std::string(libname_extended.get())
+                    //std::move(libname_extended.get())
+                    );
 }
 void LibWindow::openLib(bool checked) {
     (void) checked;
