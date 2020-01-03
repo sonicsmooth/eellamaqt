@@ -1,27 +1,31 @@
 #include "libwindow.h"
+#include "libtreewidget.h"
 #include "ui_libwindow.h"
 
 #include <iostream>
-//#include <iomanip>
 #include <cstdio>
 #include <sstream>
 #include <cassert>
+#include <any>
+
 #include <QStatusBar>
 #include <QPushButton>
 #include <QAction>
 #include <QFileDialog>
 #include <QDir>
+#include <QDockWidget>
+#include <QtSql>
 
 LibWindow::LibWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , m_pCore(nullptr)
-    , m_pLogger(nullptr)
-    , ui(new Ui::LibWindow)
+    : QMainWindow(parent),
+    m_pCore(nullptr),
+    m_pLogger(nullptr),
+    m_DbHandle(),
+    ui(new Ui::LibWindow)
 {
     ui->setupUi(this);
 
     setWindowTitle("Library Editor");
-
 
     QPushButton *pb = new QPushButton(this);
     pb->setText("Push me");
@@ -29,9 +33,6 @@ LibWindow::LibWindow(QWidget *parent)
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
 
-    connect(ui->pbNewShape, &QPushButton::clicked, ui->actionNewShape, &QAction::trigger);
-    connect(ui->pbNewSymbol, &QPushButton::clicked, ui->actionNewSymbol, &QAction::trigger);
-    connect(ui->pbDelete, &QPushButton::clicked, ui->actionEditDelete, &QAction::trigger);
     
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
@@ -59,6 +60,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
+
 }
 
 LibWindow::~LibWindow()
@@ -71,6 +73,24 @@ void LibWindow::setCore(LibCore* pc) {
 }
 void LibWindow::setLogger(Logger* pl) {
     m_pLogger = pl;
+}
+void LibWindow::setDbHandle(std::any dbh) {
+    m_DbHandle = dbh;
+}
+std::any LibWindow::DbHandle() const {
+    return m_DbHandle;
+}
+
+void LibWindow::_openLibTreeView(QString title) {
+    LibTreeWidget* trLibItems = new LibTreeWidget();
+    connect(trLibItems->PBShape(), &QPushButton::clicked, ui->actionNewShape, &QAction::trigger);
+    connect(trLibItems->PBSymbol(), &QPushButton::clicked, ui->actionNewSymbol, &QAction::trigger);
+    connect(trLibItems->PBDelete(), &QPushButton::clicked, ui->actionEditDelete, &QAction::trigger);
+
+    QDockWidget* dwLibItems = new QDockWidget(this);
+    dwLibItems->setWidget(trLibItems);
+    dwLibItems->setWindowTitle(title);
+    this->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dwLibItems);
 }
 
 void LibWindow::fileNewLib() {
@@ -99,11 +119,28 @@ void LibWindow::fileNewLib() {
                 break;
         }
     }
-    std::cout << libname_extended;
-    m_pCore->newLib(currdir.filePath("").toStdString(),
-                    std::string(libname_extended.get())
-                    //std::move(libname_extended.get())
-                    );
+    QString fullpath = currdir.filePath(libname_extended.get());
+
+    m_pLogger->log("LibWindow: file new lib");
+    m_pLogger->log("Before creating db:");
+    QSqlDatabase db = QSqlDatabase::database(fullpath);
+    QStringList tables = db.tables();
+    for (auto s : tables) {
+        m_pLogger->log(s);
+    }
+
+    m_pCore->newLib(fullpath.toStdString());
+
+    m_pLogger->log("After creating db:");
+    db = QSqlDatabase::database(fullpath);
+    tables = db.tables();
+    for (auto s : tables) {
+        m_pLogger->log(s);
+    }
+
+
+   // _openLibTreeView(QString::fromStdString(libname_extstr));
+
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);

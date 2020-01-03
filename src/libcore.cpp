@@ -23,15 +23,14 @@ void LibCore::setLogger(ILogger* pLogger) {
 void LibCore::setDbIf(IDbIf* pDbIf) {
     m_pDbIf = pDbIf;
 }
-void LibCore::newLib(std::string path, std::string name) {
+void LibCore::newLib(std::string fullpath) {
     // LibCore assumes the caller has already verified the path and name
     // So we log whether it exsts, then override
     assert(m_pDbIf);
     assert(m_pLogger);
 
-    std::string fullpath = path + "/" + name;
+    m_pLogger->log("LibCore: Creating new Library " + fullpath);
     m_pDbIf->createDatabase(fullpath);
-    m_pLogger->log("LibCore: Created new Library " + fullpath);
 }
 void LibCore::openLib(std::string name) {
     assert(m_pLogger);

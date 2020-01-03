@@ -65,9 +65,10 @@ public:
     ~LibCore();
     void setLogger(ILogger*);
     void setDbIf(IDbIf*);
-    void newLib(std::string path, std::string name);
+    void newLib(std::string);
     void openLib(std::string);
     void saveLib(std::string);
+    void saveLibAs(std::string);
     void closeLib(std::string);
     void deleteLib(std::string);
     void quit();

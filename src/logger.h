@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <QTextEdit>
+#include <QString>
 
 #include "ilogger.h"
 
@@ -17,7 +18,8 @@ public:
 	void setTextEdit(QTextEdit*);
 	void log(const char *, ...) override; // Use like printf
 	void log(std::string) override;
-	void log(std::stringstream &) override; // clears string when done
+    void log(std::stringstream &) override; // clears string when done
+    void log(QString);
 };
 
 #endif

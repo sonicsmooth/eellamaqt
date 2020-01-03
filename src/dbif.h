@@ -4,14 +4,17 @@
 #include "idbif.h"
 #include "logger.h"
 
+#include <QtSql>
+
 // This is the interface between the core and the Qt database
 
-class DbIf : public IDbIf
+class QSQDbIf : public IDbIf
 {
 private:
     Logger *m_pLogger;
+    //QSqlDatabase* m_pQDb;
 public:
-    DbIf();
+    QSQDbIf();
     void setLogger(Logger *);
     virtual void createDatabase(std::string) override;
 };

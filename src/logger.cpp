@@ -1,6 +1,6 @@
 
 #include "logger.h"
-
+#include <QString>
 #include <memory>
 
 void Logger::setTextEdit(QTextEdit* pte) {
@@ -27,4 +27,8 @@ void Logger::log(std::stringstream & msg) {
 	if (m_pte)
 		m_pte->append(QString::fromStdString(msg.str()));
 	msg.str(std::string());
+}
+void Logger::log(QString msg) {
+    if (m_pte)
+        m_pte->append(msg);
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>961</height>
+    <width>706</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,13 +27,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
    </layout>
@@ -43,8 +36,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>978</width>
-     <height>21</height>
+     <width>706</width>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">
@@ -106,46 +99,6 @@
    <addaction name="menuEdit"/>
    <addaction name="menuHelp_2"/>
   </widget>
-  <widget class="QDockWidget" name="dwLibItems">
-   <property name="windowTitle">
-    <string>Library Items</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QTreeView" name="tvLibItems"/>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QPushButton" name="pbNewShape">
-         <property name="text">
-          <string>New Shape</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pbNewSymbol">
-         <property name="text">
-          <string>New Symbol</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pbDelete">
-         <property name="text">
-          <string>Delete</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="minimumSize">
     <size>
@@ -193,110 +146,6 @@
    <addaction name="actionHelpAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="dockWidget_3">
-   <property name="windowTitle">
-    <string>Inspector</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_4">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="nameLabel">
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="nameLineEdit"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="addressLabel">
-           <property name="text">
-            <string>Address</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="addressLineEdit"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="dateLabel">
-           <property name="text">
-            <string>Date</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QDateEdit" name="dateDateEdit"/>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockWidget_4">
-   <property name="windowTitle">
-    <string>Another</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_5">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="1">
-      <widget class="QPushButton" name="pushButton_5">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="pushButton_7">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="pushButton_4">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_6">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <action name="actionFileNewLib">
    <property name="icon">
     <iconset resource="../application.qrc">

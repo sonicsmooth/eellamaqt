@@ -4,7 +4,10 @@
 #include "libcore.h"
 #include "logger.h"
 
+#include <any>
+
 #include <QMainWindow>
+#include <QString>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class LibWindow; }
@@ -17,13 +20,17 @@ class LibWindow : public QMainWindow
 private:
     LibCore* m_pCore;
     Logger* m_pLogger;
+    std::any m_DbHandle;
     Ui::LibWindow *ui;
+    void _openLibTreeView(QString);
 
 public:
     LibWindow(QWidget *parent = nullptr);
     ~LibWindow();
     void setCore(LibCore*);
     void setLogger(Logger *);
+    void setDbHandle(std::any);
+    std::any DbHandle() const;
 
     void fileNewLib();
     void fileOpenLib();

@@ -2,6 +2,7 @@
 #include "libwindow.h"
 #include "logger.h"
 #include "dbif.h"
+#include "libtreewidget.h"
 
 
 #include <QApplication>
@@ -17,7 +18,7 @@ int main(int argc, char *argv[])
 
     LibWindow libwin;
     LibCore core;
-    DbIf dbif;
+    QSQDbIf dbif;
 
     // Set up logger and its log window
     QDockWidget* plogw = new QDockWidget;
