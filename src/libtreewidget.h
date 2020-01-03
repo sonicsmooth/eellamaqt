@@ -5,13 +5,14 @@
 #include <QTreeView>
 #include <QPushButton>
 
-#include "idbif.h"
+#include "libcore.h"
 
 
 class LibTreeWidget : public QWidget
 {
 private:
-    IDbIf* m_pIDbIf;
+    LibCore *m_pCore;
+    std::string m_dbConnName;
     QTreeView* m_pQTreeView;
     QPushButton* m_pPBNewShape;
     QPushButton* m_pPBNewSymbol;
@@ -19,11 +20,12 @@ private:
 
 public:
     LibTreeWidget(QWidget* parent = nullptr, Qt::WindowFlags flags = 0);
+    void setDbConnName(std::string);
+    std::string DbConnName() const;
+    void setCore(LibCore*);
     QPushButton* PBShape() const;
     QPushButton* PBSymbol() const;
     QPushButton* PBDelete() const;
-    void setDbIf(IDbIf*);
-    IDbIf* DbIf() const;
 
 };
 

@@ -32,7 +32,6 @@ LibWindow::LibWindow(QWidget *parent)
     connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi",1000);});
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
-
     
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
@@ -90,6 +89,7 @@ void LibWindow::_openLibTreeView(QString title) {
     QDockWidget* dwLibItems = new QDockWidget(this);
     dwLibItems->setWidget(trLibItems);
     dwLibItems->setWindowTitle(title);
+    trLibItems->setCore(m_pCore);
     this->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dwLibItems);
 }
 
@@ -109,37 +109,19 @@ void LibWindow::fileNewLib() {
     const char base[] = "NewLibrary";
     const char ext[] = ".SchLib";
     QString libname = QString(base) + ext;
-    const int sz = libname.size();
-    std::unique_ptr<char> libname_extended(new char [static_cast<size_t>(sz)+3]);
-    snprintf(libname_extended.get(), static_cast<size_t>(sz)+1, "%s%s", base, ext);
-    if (currdir.exists(libname_extended.get())) {
+    QString libname_extended = libname;
+    if (currdir.exists(libname_extended)) {
         for (int suffix = 0; suffix < 100; suffix++) {
-            snprintf(libname_extended.get(), static_cast<size_t>(sz)+3, "%s%02d%s", base, suffix, ext);
-            if (!currdir.exists(QString(libname_extended.get())))
+            libname_extended = QString("%1%2%3").arg(base).arg(suffix, 2, 10, QChar('0')).arg(ext);
+            if (!currdir.exists(libname_extended))
                 break;
         }
     }
-    QString fullpath = currdir.filePath(libname_extended.get());
+    QString fullpath = currdir.filePath(libname_extended);
 
     m_pLogger->log("LibWindow: file new lib");
-    m_pLogger->log("Before creating db:");
-    QSqlDatabase db = QSqlDatabase::database(fullpath);
-    QStringList tables = db.tables();
-    for (auto s : tables) {
-        m_pLogger->log(s);
-    }
-
     m_pCore->newLib(fullpath.toStdString());
-
-    m_pLogger->log("After creating db:");
-    db = QSqlDatabase::database(fullpath);
-    tables = db.tables();
-    for (auto s : tables) {
-        m_pLogger->log(s);
-    }
-
-
-   // _openLibTreeView(QString::fromStdString(libname_extstr));
+    _openLibTreeView(fullpath);
 
 }
 void LibWindow::fileOpenLib() {

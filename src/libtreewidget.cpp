@@ -23,8 +23,9 @@ LibTreeWidget::LibTreeWidget(QWidget * parent, Qt::WindowFlags flags) :
     vb->addItem(hb);
 }
 
+void LibTreeWidget::setCore(LibCore* pc) {m_pCore = pc;}
+void LibTreeWidget::setDbConnName(std::string name) {m_dbConnName = name;}
+std::string LibTreeWidget::DbConnName() const {return m_dbConnName;}
 QPushButton* LibTreeWidget::PBShape() const {return m_pPBNewShape;}
 QPushButton* LibTreeWidget::PBSymbol() const {return m_pPBNewSymbol;}
 QPushButton* LibTreeWidget::PBDelete() const {return m_pPBDelete;}
-void LibTreeWidget::setDbIf(IDbIf* pidbif) {m_pIDbIf = pidbif;}
-IDbIf* LibTreeWidget::DbIf() const {return m_pIDbIf;}
