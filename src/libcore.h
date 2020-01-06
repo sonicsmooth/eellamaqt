@@ -3,9 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <initializer_list>
 
-#include "ilogger.h"
+#include "loggable.h"
 #include "idbif.h"
 
 class Shape {
@@ -55,40 +56,44 @@ public:
     Text(double x, double y, std::string txt) : x(x), y(y), txt(txt) {}
 };
 
-class LibCore
+class LibCore : public Loggable
 {
 private:
-    ILogger* m_pLogger;
     IDbIf* m_pDbIf;
+    std::list<std::string> m_activeDb;
 public:
     LibCore();
     ~LibCore();
-    void setLogger(ILogger*);
     void setDbIf(IDbIf*);
+    void pushActiveDb(std::string);
+    void popActiveDb(std::string);
+    const std::string & activeDb() const;
     void newLib(std::string);
     void openLib(std::string);
     void saveLib(std::string);
     void saveLibAs(std::string);
     void closeLib(std::string);
     void deleteLib(std::string);
-    void quit();
+
     // Symbols are created/deleted
     // Shapes are created/deleted then inserted/removed with position/rotation, and can be reused
     // Primitives are created/deleted with parent, and cannot be reused
-    void create(Symbol);
-    void create(Shape);
-    void deleteItem(Symbol);
-    void deleteItem(Shape);
-    void rename(Symbol, std::string);
-    void rename(Shape, std::string);
-    void insertShape(Symbol, Shape, double x, double y);
-    void removeShape(Symbol, Shape);
-    void translateShape(Symbol, Shape, double x, double y);
-    void rotateShape(Symbol, Shape, double a);
-    void insertPrimitive(Symbol, Primitive);
-    void insertPrimitive(Shape, Primitive);
-    void removePrimitive(Symbol, Primitive);
-    void removePrimitive(Shape, Primitive);
+
+    void newShape();
+    void newSymbol();
+    void deleteShape(std::string name);
+    void deleteSymbol(std::string name);
+    void renameShape(std::string name);
+    void renameSymbol(std::string name);
+
+    // void insertShape(std::string dbConn, std::string symbolName, Shape, double x, double y);
+    // void removeShape(std::string dbConn, std::string symbolName, std::string shapeName);
+    // void translateShape(Symbol, Shape, double x, double y);
+    // void rotateShape(Symbol, Shape, double a);
+    // void insertPrimitive(Symbol, Primitive);
+    // void insertPrimitive(Shape, Primitive);
+    // void removePrimitive(Symbol, Primitive);
+    // void removePrimitive(Shape, Primitive);
 };
 
 #endif // LibCore_H

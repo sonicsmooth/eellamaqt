@@ -2,7 +2,8 @@
 #define LIBWINDOW_H
 
 #include "libcore.h"
-#include "logger.h"
+#include "coreable.h"
+#include "loggable.h"
 
 #include <any>
 
@@ -13,25 +14,16 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class LibWindow; }
 QT_END_NAMESPACE
 
-class LibWindow : public QMainWindow
+class LibWindow : public QMainWindow, public Coreable, public Loggable
 {
     Q_OBJECT
-
 private:
-    LibCore* m_pCore;
-    Logger* m_pLogger;
-    std::any m_DbHandle;
     Ui::LibWindow *ui;
-    void _openLibTreeView(QString);
+    void _openLibTreeView(QString title, QString);
 
 public:
     LibWindow(QWidget *parent = nullptr);
-    ~LibWindow();
-    void setCore(LibCore*);
-    void setLogger(Logger *);
-    void setDbHandle(std::any);
-    std::any DbHandle() const;
-
+    ~LibWindow() override;
     void fileNewLib();
     void fileOpenLib();
     void fileSaveLib();
@@ -40,6 +32,7 @@ public:
     void fileDeleteLib();
     void newShape();
     void insertShape();
+    void deleteItem();
     void newSymbol();
     void newRectangle();
     void newLine();

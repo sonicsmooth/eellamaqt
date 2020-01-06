@@ -9,7 +9,7 @@
 
 class Logger : public ILogger {
 private:
-	QTextEdit* m_pte;
+	QTextEdit* m_pte; // how to separate Q classes from core?
 public:
 	Logger() = default;
 	Logger(QTextEdit* pte) : m_pte(pte) {}

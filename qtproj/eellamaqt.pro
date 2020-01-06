@@ -20,6 +20,7 @@ SOURCES += \
     ../src/libcore.cpp \
     ../src/libtreewidget.cpp \
     ../src/libwindow.cpp \
+    ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
 

@@ -5,28 +5,22 @@
 #include <QTreeView>
 #include <QPushButton>
 
-#include "libcore.h"
+#include "coreable.h"
+#include "loggable.h"
 
+// Inherits Loggable functions setLogger(), logger(), log()
+// Inherits coreable functions setCore(), core()
 
-class LibTreeWidget : public QWidget
+class LibTreeWidget : public QWidget, public Coreable, public Loggable
 {
 private:
-    LibCore *m_pCore;
-    std::string m_dbConnName;
     QTreeView* m_pQTreeView;
-    QPushButton* m_pPBNewShape;
-    QPushButton* m_pPBNewSymbol;
-    QPushButton* m_pPBDelete;
+    std::string m_DbConn;
 
 public:
-    LibTreeWidget(QWidget* parent = nullptr, Qt::WindowFlags flags = 0);
-    void setDbConnName(std::string);
-    std::string DbConnName() const;
-    void setCore(LibCore*);
-    QPushButton* PBShape() const;
-    QPushButton* PBSymbol() const;
-    QPushButton* PBDelete() const;
-
+    LibTreeWidget(QWidget * = nullptr, Qt::WindowFlags = 0);
+    void setDbConn(std::string);
+    std::string DbConn() const;
 };
 
 #endif // LIBTREEWIDGET_H

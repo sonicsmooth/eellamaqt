@@ -3,6 +3,7 @@
 #include <cassert>
 #include <filesystem>
 #include <fstream>
+
 #include "libcore.h"
 
 
@@ -14,53 +15,85 @@ const char kPathseparator =  '/';
 
 namespace fs = std::filesystem;
 
-LibCore::LibCore() : m_pLogger(nullptr) {}
+LibCore::LibCore() {}
 LibCore::~LibCore() {}
 
-void LibCore::setLogger(ILogger* pLogger) {
-    m_pLogger = pLogger;
-}
 void LibCore::setDbIf(IDbIf* pDbIf) {
     m_pDbIf = pDbIf;
+}
+
+void LibCore::pushActiveDb(std::string adb) {
+    // Ensure exactly one adb is in the list
+    // and that it's at the front
+    m_activeDb.remove(adb);
+    m_activeDb.push_front(adb);
+    log("Active db set to " + activeDb());
+}
+void LibCore::popActiveDb(std::string adb) {
+    // Ensure exactly one adb is in the list
+    // and that it's at the front
+    m_activeDb.remove(adb);
+    if (m_activeDb.size())
+        log("Active db set to " + activeDb());
+    else
+        log("No active db");
+}
+
+const std::string & LibCore::activeDb() const {
+    return m_activeDb.front();
 }
 void LibCore::newLib(std::string fullpath) {
     // LibCore assumes the caller has already verified the path and name
     // So we log whether it exsts, then override
     assert(m_pDbIf);
-    assert(m_pLogger);
-
-    m_pLogger->log("LibCore: Creating new Library " + fullpath);
+    
+    log("LibCore: Creating new Library " + fullpath);
     m_pDbIf->createDatabase(fullpath);
+    pushActiveDb(fullpath);
 }
-void LibCore::openLib(std::string name) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Opening library " + name);
+void LibCore::openLib(std::string fullpath) {
+    log("LibCore: Opening library " + fullpath);
+    pushActiveDb(fullpath);
 }
-void LibCore::saveLib(std::string name) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Saving library " + name);
+void LibCore::saveLib(std::string fullpath) {
+    log("LibCore: Saving library " + fullpath);
+    pushActiveDb(fullpath);
 }
-void LibCore::closeLib(std::string name) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Closing library " + name);
+void LibCore::closeLib(std::string fullpath) {
+    log("LibCore: Closing library " + fullpath);
+    popActiveDb(fullpath);
+
 }
 void LibCore::deleteLib(std::string name) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Deleting library " + name);
+    log("LibCore: Deleting library " + name);
 }
-void LibCore::create(Shape shape) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Creating shape " + shape.name());
+
+void LibCore::newShape() {
+    log("LibCore: Creating a new shape in " + activeDb());
 }
-void LibCore::create(Symbol symbol) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Creating symbol " + symbol.name());
+void LibCore::newSymbol() {
+    log("LibCore: Creating a new symbol in " + activeDb());
 }
-void LibCore::deleteItem(Shape shape) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Deleting shape " + shape.name());
+void LibCore::deleteShape(std::string name) {
+    log("LibCore: Deleting shape " + name + " from " + activeDb());
 }
-void LibCore::deleteItem(Symbol symbol) {
-    assert(m_pLogger);
-    m_pLogger->log("LibCore: Deleting symbol " + symbol.name());
+void LibCore::deleteSymbol(std::string name) {
+    log("LibCore: Deleting shape " + name + " from " + activeDb());
 }
+void LibCore::renameShape(std::string name) {
+    log("LibCore: Renaming shape " + name + " from " + activeDb());
+}
+void LibCore::renameSymbol(std::string name) {
+    log("LibCore: Deleting shape " + name + " from " + activeDb());
+}
+
+// void LibCore::insertShape(std::string dbConn, std::string symbolName, Shape shape, 
+//     double x, double y) {
+//     assert(m_pLogger);
+//     m_pLogger->log("LibCore: insertShape %s into %s in %s",  
+//         shape.name().c_str(), symbolName.c_str(), dbConn.c_str());
+// }
+// void LibCore::removeShape(std::string dbConn, std::string symbolName, std::string shapeName) {
+//     assert(m_pLogger);
+//     m_pLogger->log("LibCore: removeShape" + shapeName + " from " + symbolName);
+// }
