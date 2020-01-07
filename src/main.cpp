@@ -16,9 +16,10 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
-    app.setStyleSheet("QTextEdit {background: qlineargradient(x1:0 y1:0, x2:0 y2:1, "
-                      "                                       stop:0 rgba(255, 255, 255, 255), "
-                      "                                       stop:1 rgba(235, 235, 235, 255));}");
+    // Set up style
+    QFile style(":/ui/llamastyle.css");
+    style.open(QIODevice::ReadOnly);
+    app.setStyleSheet(style.readAll());
 
     LibCore core;
     LibWindow libwin;

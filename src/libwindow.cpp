@@ -1,6 +1,7 @@
 #include "libwindow.h"
 #include "libtreewidget.h"
 #include "ui_libwindow.h"
+#include "closingdockwidget.h"
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +14,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QDir>
-#include <QDockWidget>
+//#include <QDockWidget>
 #include <QtSql>
 
 LibWindow::LibWindow(QWidget *parent)
@@ -26,7 +27,7 @@ LibWindow::LibWindow(QWidget *parent)
 
     QPushButton *pb = new QPushButton(this);
     pb->setText("Push me");
-    connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi",1000);});
+    connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi", 1000);});
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
     
@@ -59,14 +60,26 @@ LibWindow::LibWindow(QWidget *parent)
 
     // This handles focusing on the dockwidget and its content widget
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
+        // The goal is to get to the LibTreeWidget which has the dbConn.
+        // But the LibTreeWidget doesn't receive focus events; only the QTreeView
+        // and the LibDockWidget get focus events.  In the first case the
+        // LibTreeWidget is the parent of the QTreeView.  In the second case the
+        // LibTreeWidget is the content widget of the LibDockWidget.  We don't
+        // know which one we get here unless we try to cast it.
         (void) old;
-        QTreeView* tv(dynamic_cast<QTreeView*>(now));
-        QDockWidget* dw(dynamic_cast<QDockWidget*>(now));
+        QTreeView* qtv(dynamic_cast<QTreeView*>(now));
         LibTreeWidget* ltw(nullptr);
-        if (tv)
-            ltw = static_cast<LibTreeWidget*>(tv->parentWidget());
-        else if (dw)
-            ltw = static_cast<LibTreeWidget*>(dw->widget());
+        if (qtv) {
+            log("LibTreeWidget focused");
+            ltw = static_cast<LibTreeWidget*>(qtv->parentWidget());
+        }
+        else {
+            ClosingDockWidget* ldw(dynamic_cast<ClosingDockWidget*>(now));
+            if (ldw) {
+                log("LibDockWidget focused");
+                ltw = static_cast<LibTreeWidget*>(ldw->widget());
+            }
+        }
         if (ltw) {
             m_pCore->pushActiveDb(ltw->DbConn());
         }
@@ -79,20 +92,6 @@ LibWindow::~LibWindow()
 {
     delete ui;
 }
-
-//void LibWindow::_openLibTreeView(QString title, QString tooltip) {
-//    LibTreeWidget* trLibItems = new LibTreeWidget(this);
-//    trLibItems->setCore(m_pCore);
-//    trLibItems->setLogger(m_pLogger);
-//    trLibItems->setDbConn(title.toStdString());
-
-//    QDockWidget* dwLibItems = new QDockWidget(this);
-//    dwLibItems->setFocusPolicy(Qt::StrongFocus);
-//    dwLibItems->setWidget(trLibItems);
-//    dwLibItems->setWindowTitle(title);
-
-//    this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dwLibItems);
-//}
 
 void LibWindow::fileNewLib() {
     // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
@@ -122,8 +121,6 @@ void LibWindow::fileNewLib() {
 
     m_pLogger->log("LibWindow: file new lib");
     m_pCore->newLib(fullpath.toStdString());
-    //_openLibTreeView(libname_extended, fullpath);
-
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
@@ -132,7 +129,6 @@ void LibWindow::fileOpenLib() {
         ".", tr("Open Library"), tr("Any (*);;Library files (*.SchLib *.db)"));
     std::string filename(qfilename.toStdString());
     m_pCore->openLib(filename);
-    //_openLibTreeView(QString::fromStdString(filename), QString::fromStdString(filename));
     m_pCore->pushActiveDb(filename);
 }
 void LibWindow::fileSaveLib() {

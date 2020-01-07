@@ -1,5 +1,7 @@
 
 #include "uimanager.h"
+#include "closingdockwidget.h"
+#include <QObject>
 #include <QString>
 
 UIManager::UIManager()
@@ -13,19 +15,23 @@ QMainWindow *UIManager::parentMW() const {
     return m_parentMW;
 }
 
-QDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
-    LibTreeWidget* trLibItems = new LibTreeWidget(parentMW());
-    trLibItems->setCore(core());
-    trLibItems->setLogger(logger());
-    trLibItems->setDbConn(title.toStdString());
+ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
+    LibTreeWidget* libTreeWidget = new LibTreeWidget(parentMW());
+    libTreeWidget->setCore(core());
+    libTreeWidget->setLogger(logger());
+    libTreeWidget->setDbConn(title.toStdString());
 
-    QDockWidget* dwLibItems = new QDockWidget(parentMW());
-    dwLibItems->setFocusPolicy(Qt::StrongFocus);
-    dwLibItems->setWidget(trLibItems);
-    dwLibItems->setWindowTitle(title);
+    ClosingDockWidget* libDockWidget = new ClosingDockWidget(parentMW());
+    libTreeWidget->setFocusProxy(libDockWidget); // doesn't seem to do anything
+    libDockWidget->setFocusPolicy(Qt::StrongFocus);
+    libDockWidget->setWidget(libTreeWidget);
+    libDockWidget->setWindowTitle(title);
 
-    parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dwLibItems);
-    return dwLibItems;
+    // Send close signal somewhere
+    QObject::connect(libDockWidget, &ClosingDockWidget::closing, [=](){log("Closed lambda");});
+
+    parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget);
+    return libDockWidget;
 }
 std::any UIManager::OpenUI(UITYPE uit, std::string title) {
     if(uit == UITYPE::LIBVIEW) {

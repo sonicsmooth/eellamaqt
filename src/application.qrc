@@ -1,626 +1,629 @@
 <RCC>
     <qresource prefix="/animations"/>
     <qresource prefix="/actions">
-        <file>icons/oxygen-icons/32x32/actions/address-book-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-bottom-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-center.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-left-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-right-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-horizontal-top-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-vertical-bottom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-vertical-center.png</file>
-        <file>icons/oxygen-icons/32x32/actions/align-vertical-top.png</file>
-        <file>icons/oxygen-icons/32x32/actions/application-exit.png</file>
-        <file>icons/oxygen-icons/32x32/actions/appointment-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/archive-extract.png</file>
-        <file>icons/oxygen-icons/32x32/actions/archive-insert.png</file>
-        <file>icons/oxygen-icons/32x32/actions/archive-insert-directory.png</file>
-        <file>icons/oxygen-icons/32x32/actions/archive-remove.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-down.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-down-double.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-left-double.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-right-double.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-up.png</file>
-        <file>icons/oxygen-icons/32x32/actions/arrow-up-double.png</file>
-        <file>icons/oxygen-icons/32x32/actions/bookmark-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/bookmark-new-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/bookmarks-organize.png</file>
-        <file>icons/oxygen-icons/32x32/actions/bookmark-toolbar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/call-start.png</file>
-        <file>icons/oxygen-icons/32x32/actions/call-stop.png</file>
-        <file>icons/oxygen-icons/32x32/actions/character-set.png</file>
-        <file>icons/oxygen-icons/32x32/actions/checkbox.png</file>
-        <file>icons/oxygen-icons/32x32/actions/chronometer.png</file>
-        <file>icons/oxygen-icons/32x32/actions/code-block.png</file>
-        <file>icons/oxygen-icons/32x32/actions/code-class.png</file>
-        <file>icons/oxygen-icons/32x32/actions/code-context.png</file>
-        <file>icons/oxygen-icons/32x32/actions/code-function.png</file>
-        <file>icons/oxygen-icons/32x32/actions/code-typedef.png</file>
-        <file>icons/oxygen-icons/32x32/actions/code-variable.png</file>
-        <file>icons/oxygen-icons/32x32/actions/color-picker.png</file>
-        <file>icons/oxygen-icons/32x32/actions/color-picker-black.png</file>
-        <file>icons/oxygen-icons/32x32/actions/color-picker-grey.png</file>
-        <file>icons/oxygen-icons/32x32/actions/color-picker-white.png</file>
-        <file>icons/oxygen-icons/32x32/actions/configure.png</file>
-        <file>icons/oxygen-icons/32x32/actions/configure-shortcuts.png</file>
-        <file>icons/oxygen-icons/32x32/actions/configure-toolbars.png</file>
-        <file>icons/oxygen-icons/32x32/actions/contact-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/dashboard-show.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-execute-from-cursor.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-execute-to-cursor.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-run.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-run-cursor.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-step-instruction.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-step-into.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-step-into-instruction.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-step-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/debug-step-over.png</file>
-        <file>icons/oxygen-icons/32x32/actions/dialog-cancel.png</file>
-        <file>icons/oxygen-icons/32x32/actions/dialog-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/dialog-ok.png</file>
-        <file>icons/oxygen-icons/32x32/actions/dialog-ok-apply.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-center.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-equal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-margin.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-page.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-horizontal-x.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-bottom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-center.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-equal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-margin.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-page.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-top.png</file>
-        <file>icons/oxygen-icons/32x32/actions/distribute-vertical-y.png</file>
-        <file>icons/oxygen-icons/32x32/actions/documentation.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-decrypt.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit-decrypt.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit-decrypt-verify.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit-encrypt.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit-sign.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit-sign-encrypt.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-edit-verify.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-encrypt.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-encrypted.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-export.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-export-table.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-import.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-open.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-open-folder.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-open-recent.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-open-remote.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-preview.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-preview-archive.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-print.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-print-direct.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-print-frame.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-print-preview.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-properties.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-revert.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-save.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-save-all.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-save-as.png</file>
-        <file>icons/oxygen-icons/32x32/actions/document-sign.png</file>
-        <file>icons/oxygen-icons/32x32/actions/download.png</file>
-        <file>icons/oxygen-icons/32x32/actions/download-later.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-arrow-back.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-arrow-down.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-arrow-forward.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-arrow-up.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-bezier-curves.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-brush.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-circle.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-cross.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-donut.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-ellipse.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-eraser.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-freehand.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-halfcircle1.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-halfcircle2.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-halfcircle3.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-halfcircle4.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-path.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-polygon.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-polyline.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-rectangle.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-spiral.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-square-inverted-corners.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-star.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-text.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-triangle.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-triangle1.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-triangle2.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-triangle3.png</file>
-        <file>icons/oxygen-icons/32x32/actions/draw-triangle4.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-bomb.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-clear.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-clear-history.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-clear-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-clear-locationbar-ltr.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-clear-locationbar-rtl.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-copy.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-cut.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-delete.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-delete-shred.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-find.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-find-mail.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-find-project.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-find-replace.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-find-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-guides.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-image-face-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-image-face-detect.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-image-face-recognize.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-image-face-show.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-paste.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-redo.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-rename.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-select.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-select-all.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-cell-merge.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-cell-split.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-delete-column.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-delete-row.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-insert-column-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-insert-column-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-insert-row-above.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-table-insert-row-below.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-text-frame-update.png</file>
-        <file>icons/oxygen-icons/32x32/actions/edit-undo.png</file>
-        <file>icons/oxygen-icons/32x32/actions/feed-subscribe.png</file>
-        <file>icons/oxygen-icons/32x32/actions/fileview-preview.png</file>
-        <file>icons/oxygen-icons/32x32/actions/fill-color.png</file>
-        <file>icons/oxygen-icons/32x32/actions/flag.png</file>
-        <file>icons/oxygen-icons/32x32/actions/flag-black.png</file>
-        <file>icons/oxygen-icons/32x32/actions/flag-blue.png</file>
-        <file>icons/oxygen-icons/32x32/actions/flag-green.png</file>
-        <file>icons/oxygen-icons/32x32/actions/flag-red.png</file>
-        <file>icons/oxygen-icons/32x32/actions/flag-yellow.png</file>
-        <file>icons/oxygen-icons/32x32/actions/folder-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/folder-sync.png</file>
-        <file>icons/oxygen-icons/32x32/actions/fork.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-add-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-break-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-connect-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-disconnect-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-fill-color.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-font-size-less.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-font-size-more.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-indent-less.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-indent-more.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-join-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-justify-center.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-justify-fill.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-justify-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-justify-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-line-spacing-double.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-line-spacing-normal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-line-spacing-triple.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-list-ordered.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-list-unordered.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-remove-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-stroke-color.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-bold.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-color.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-direction-ltr.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-direction-rtl.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-italic.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-strikethrough.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-subscript.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-superscript.png</file>
-        <file>icons/oxygen-icons/32x32/actions/format-text-underline.png</file>
-        <file>icons/oxygen-icons/32x32/actions/formula.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-achievements.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-config-background.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-config-board.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-config-custom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-config-options.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-config-theme.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-config-tiles.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-difficult.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-endturn.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-highscores.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-hint.png</file>
-        <file>icons/oxygen-icons/32x32/actions/games-solve.png</file>
-        <file>icons/oxygen-icons/32x32/actions/get-hot-new-stuff.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-bottom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-down.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-down-search.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-first.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-first-view.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-first-view-page.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-home.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-jump.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-jump-declaration.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-jump-definition.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-jump-locationbar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-jump-today.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-last.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-last-view.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-last-view-page.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-next.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-next-context.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-next-use.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-next-view.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-next-view-page.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-previous.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-previous-context.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-previous-use.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-previous-view.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-previous-view-page.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-top.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-up.png</file>
-        <file>icons/oxygen-icons/32x32/actions/go-up-search.png</file>
-        <file>icons/oxygen-icons/32x32/actions/help-about.png</file>
-        <file>icons/oxygen-icons/32x32/actions/help-contents.png</file>
-        <file>icons/oxygen-icons/32x32/actions/help-contextual.png</file>
-        <file>icons/oxygen-icons/32x32/actions/help-donate.png</file>
-        <file>icons/oxygen-icons/32x32/actions/help-feedback.png</file>
-        <file>icons/oxygen-icons/32x32/actions/help-hint.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-aim.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-ban-kick-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-ban-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-facebook.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-gadugadu.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-google.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-google-talk.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-icq.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-identi.ca.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-invisible-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-jabber.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-kick-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-msn.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-qq.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-skype.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-twitter.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-user-away.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-user-busy.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-user-offline.png</file>
-        <file>icons/oxygen-icons/32x32/actions/im-yahoo.png</file>
-        <file>icons/oxygen-icons/32x32/actions/insert-horizontal-rule.png</file>
-        <file>icons/oxygen-icons/32x32/actions/insert-image.png</file>
-        <file>icons/oxygen-icons/32x32/actions/insert-link.png</file>
-        <file>icons/oxygen-icons/32x32/actions/insert-table.png</file>
-        <file>icons/oxygen-icons/32x32/actions/insert-text.png</file>
-        <file>icons/oxygen-icons/32x32/actions/irc-close-channel.png</file>
-        <file>icons/oxygen-icons/32x32/actions/irc-join-channel.png</file>
-        <file>icons/oxygen-icons/32x32/actions/irc-operator.png</file>
-        <file>icons/oxygen-icons/32x32/actions/irc-remove-operator.png</file>
-        <file>icons/oxygen-icons/32x32/actions/irc-unvoice.png</file>
-        <file>icons/oxygen-icons/32x32/actions/irc-voice.png</file>
-        <file>icons/oxygen-icons/32x32/actions/journal-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/key-enter.png</file>
-        <file>icons/oxygen-icons/32x32/actions/layer-visible-off.png</file>
-        <file>icons/oxygen-icons/32x32/actions/layer-visible-on.png</file>
-        <file>icons/oxygen-icons/32x32/actions/list-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/list-add-font.png</file>
-        <file>icons/oxygen-icons/32x32/actions/list-add-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/list-remove.png</file>
-        <file>icons/oxygen-icons/32x32/actions/list-remove-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/list-resource-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-encrypted.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-encrypted-full.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-encrypted-part.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-flag.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-forward.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-forwarded.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-invitation.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-important.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-junk.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-notjunk.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-read.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-task.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-unread.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-mark-unread-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-meeting-request-reply.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-message-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-message-new-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-queue.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-receive.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-replied.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-reply-all.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-reply-custom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-reply-custom-all.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-reply-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-reply-sender.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-send.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-signature-unknown.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-signed.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-signed-full.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-signed-part.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-signed-verified.png</file>
-        <file>icons/oxygen-icons/32x32/actions/mail-tagged.png</file>
-        <file>icons/oxygen-icons/32x32/actions/measure.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-eject.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-playback-pause.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-playback-start.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-playback-stop.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-record.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-seek-backward.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-seek-forward.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-skip-backward.png</file>
-        <file>icons/oxygen-icons/32x32/actions/media-skip-forward.png</file>
-        <file>icons/oxygen-icons/32x32/actions/meeting-attending.png</file>
-        <file>icons/oxygen-icons/32x32/actions/meeting-attending-tentative.png</file>
-        <file>icons/oxygen-icons/32x32/actions/meeting-participant-no-response.png</file>
-        <file>icons/oxygen-icons/32x32/actions/meeting-participant-request-response.png</file>
-        <file>icons/oxygen-icons/32x32/actions/merge.png</file>
-        <file>icons/oxygen-icons/32x32/actions/milestone.png</file>
-        <file>icons/oxygen-icons/32x32/actions/network-connect.png</file>
-        <file>icons/oxygen-icons/32x32/actions/network-disconnect.png</file>
-        <file>icons/oxygen-icons/32x32/actions/news-subscribe.png</file>
-        <file>icons/oxygen-icons/32x32/actions/news-unsubscribe.png</file>
-        <file>icons/oxygen-icons/32x32/actions/object-flip-horizontal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/object-flip-vertical.png</file>
-        <file>icons/oxygen-icons/32x32/actions/object-rotate-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/object-rotate-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-area.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-area-focus-peak-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-area-percentage.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-area-stacked.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-bar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-bar-percentage.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-bar-stacked.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-line.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-line-percentage.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-line-stacked.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-pie.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-polar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-polar-stacked.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-ring.png</file>
-        <file>icons/oxygen-icons/32x32/actions/office-chart-scatter.png</file>
-        <file>icons/oxygen-icons/32x32/actions/page-2sides.png</file>
-        <file>icons/oxygen-icons/32x32/actions/page-3sides.png</file>
-        <file>icons/oxygen-icons/32x32/actions/page-4sides.png</file>
-        <file>icons/oxygen-icons/32x32/actions/page-simple.png</file>
-        <file>icons/oxygen-icons/32x32/actions/page-zoom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/player-time.png</file>
-        <file>icons/oxygen-icons/32x32/actions/player-volume.png</file>
-        <file>icons/oxygen-icons/32x32/actions/preferences-activities.png</file>
-        <file>icons/oxygen-icons/32x32/actions/preflight-verifier.png</file>
-        <file>icons/oxygen-icons/32x32/actions/process-stop.png</file>
-        <file>icons/oxygen-icons/32x32/actions/project-development.png</file>
-        <file>icons/oxygen-icons/32x32/actions/project-development-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/project-development-close-all.png</file>
-        <file>icons/oxygen-icons/32x32/actions/project-development-new-template.png</file>
-        <file>icons/oxygen-icons/32x32/actions/project-open.png</file>
-        <file>icons/oxygen-icons/32x32/actions/quickopen.png</file>
-        <file>icons/oxygen-icons/32x32/actions/quickopen-class.png</file>
-        <file>icons/oxygen-icons/32x32/actions/quickopen-file.png</file>
-        <file>icons/oxygen-icons/32x32/actions/quickopen-function.png</file>
-        <file>icons/oxygen-icons/32x32/actions/rating.png</file>
-        <file>icons/oxygen-icons/32x32/actions/resource-calendar-child.png</file>
-        <file>icons/oxygen-icons/32x32/actions/resource-calendar-child-insert.png</file>
-        <file>icons/oxygen-icons/32x32/actions/resource-calendar-insert.png</file>
-        <file>icons/oxygen-icons/32x32/actions/resource-group.png</file>
-        <file>icons/oxygen-icons/32x32/actions/resource-group-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/roll.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build-clean.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build-configure.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build-file.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build-install.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build-install-root.png</file>
-        <file>icons/oxygen-icons/32x32/actions/run-build-prune.png</file>
-        <file>icons/oxygen-icons/32x32/actions/select-rectangular.png</file>
-        <file>icons/oxygen-icons/32x32/actions/services.png</file>
-        <file>icons/oxygen-icons/32x32/actions/shapes.png</file>
-        <file>icons/oxygen-icons/32x32/actions/show-menu.png</file>
-        <file>icons/oxygen-icons/32x32/actions/snap-extension.png</file>
-        <file>icons/oxygen-icons/32x32/actions/snap-guideline.png</file>
-        <file>icons/oxygen-icons/32x32/actions/snap-intersection.png</file>
-        <file>icons/oxygen-icons/32x32/actions/snap-node.png</file>
-        <file>icons/oxygen-icons/32x32/actions/snap-orthogonal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/speaker.png</file>
-        <file>icons/oxygen-icons/32x32/actions/split.png</file>
-        <file>icons/oxygen-icons/32x32/actions/story-editor.png</file>
-        <file>icons/oxygen-icons/32x32/actions/stroke-cap-butt.png</file>
-        <file>icons/oxygen-icons/32x32/actions/stroke-cap-round.png</file>
-        <file>icons/oxygen-icons/32x32/actions/stroke-cap-square.png</file>
-        <file>icons/oxygen-icons/32x32/actions/stroke-join-bevel.png</file>
-        <file>icons/oxygen-icons/32x32/actions/stroke-join-miter.png</file>
-        <file>icons/oxygen-icons/32x32/actions/stroke-join-round.png</file>
-        <file>icons/oxygen-icons/32x32/actions/svn-commit.png</file>
-        <file>icons/oxygen-icons/32x32/actions/svn-update.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-lock-screen.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-log-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-reboot.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-run.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-search.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-shutdown.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-suspend.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-suspend-hibernate.png</file>
-        <file>icons/oxygen-icons/32x32/actions/system-switch-user.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tab-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tab-close-other.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tab-detach.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tab-duplicate.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tab-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tab-new-background.png</file>
-        <file>icons/oxygen-icons/32x32/actions/task-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/taxes-finances.png</file>
-        <file>icons/oxygen-icons/32x32/actions/text-field.png</file>
-        <file>icons/oxygen-icons/32x32/actions/text-frame-link.png</file>
-        <file>icons/oxygen-icons/32x32/actions/text-frame-unlink.png</file>
-        <file>icons/oxygen-icons/32x32/actions/text-speak.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tool-animator.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-check-spelling.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-media-optical-burn.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-media-optical-burn-image.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-media-optical-copy.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-media-optical-erase.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-media-optical-format.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-report-bug.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-rip-audio-cd.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-rip-video-cd.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-rip-video-dvd.png</file>
-        <file>icons/oxygen-icons/32x32/actions/tools-wizard.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-crop.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-crop-and-resize.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-move.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-rotate.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-scale.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-scale-textbox-points.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-shear-down.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-shear-left.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-shear-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/transform-shear-up.png</file>
-        <file>icons/oxygen-icons/32x32/actions/trash-empty.png</file>
-        <file>icons/oxygen-icons/32x32/actions/user-group-delete.png</file>
-        <file>icons/oxygen-icons/32x32/actions/user-group-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/user-group-properties.png</file>
-        <file>icons/oxygen-icons/32x32/actions/user-properties.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-bank.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-bank-account.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-bank-account-checking.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-bank-account-savings.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-barcode.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-barcode-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-agenda.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-birthday.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-day.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-holiday.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-journal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-month.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-special-occasion.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-tasks.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-timeline.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-time-spent.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-upcoming-days.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-upcoming-events.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-wedding-anniversary.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-week.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-whatsnext.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-calendar-workweek.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-catalog.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-categories.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-export.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-export-secret.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-export-server.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-import.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-server-configure.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-certificate-sign.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-choose.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-conversation-balloon.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-credit-card-account.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-currency-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-documents-finances.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-expenses-categories.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-file-columns.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-filter.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-financial-categories.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-financial-forecast.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-financial-list.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-financial-payment-mode.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-financial-transfer.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-form.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-form-action.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-form-table.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-fullscreen.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-grid.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-group.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-history.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-income-categories.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-investment.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-ldap-resource.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-left-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-list-details.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-list-icons.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-list-text.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-list-tree.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-loan.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-loan-asset.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-media-artist.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-media-equalizer.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-media-lyrics.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-media-playlist.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-media-visualization.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-multiple-objects.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-object-histogram-linear.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-object-histogram-logarithmic.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-calendar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-contacts.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-journal.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-mail.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-news.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-notes.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-summary.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-tasks.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-pim-tasks-pending.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-presentation.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-preview.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-process-all.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-process-all-tree.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-process-own.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-process-system.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-process-users.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-refresh.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-resource-calendar.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-restore.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-right-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-right-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-sidetree.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-sort-ascending.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-sort-descending.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-split-left-right.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-split-top-bottom.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-statistics.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-stock-account.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-table-of-contents-ltr.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-table-of-contents-rtl.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-task.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-task-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-task-child.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-task-child-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-baselined.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-baselined-add.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-baselined-remove.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-calculus.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-child-insert.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-edit.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-time-schedule-insert.png</file>
-        <file>icons/oxygen-icons/32x32/actions/view-web-browser-dom-tree.png</file>
-        <file>icons/oxygen-icons/32x32/actions/window-close.png</file>
-        <file>icons/oxygen-icons/32x32/actions/window-duplicate.png</file>
-        <file>icons/oxygen-icons/32x32/actions/window-new.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-1-to-2.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-2-to-1.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-draw.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-fit-best.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-fit-height.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-fit-width.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-in.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-next.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-original.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-out.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-previous.png</file>
-        <file>icons/oxygen-icons/32x32/actions/zoom-select.png</file>
+        <file alias="address-book-new.png">icons/oxygen-icons/32x32/actions/address-book-new.png</file>
+        <file alias="align-horizontal-bottom-out.png">icons/oxygen-icons/32x32/actions/align-horizontal-bottom-out.png</file>
+        <file alias="align-horizontal-center.png">icons/oxygen-icons/32x32/actions/align-horizontal-center.png</file>
+        <file alias="align-horizontal-left.png">icons/oxygen-icons/32x32/actions/align-horizontal-left.png</file>
+        <file alias="align-horizontal-left-out.png">icons/oxygen-icons/32x32/actions/align-horizontal-left-out.png</file>
+        <file alias="align-horizontal-right.png">icons/oxygen-icons/32x32/actions/align-horizontal-right.png</file>
+        <file alias="align-horizontal-right-out.png">icons/oxygen-icons/32x32/actions/align-horizontal-right-out.png</file>
+        <file alias="align-horizontal-top-out.png">icons/oxygen-icons/32x32/actions/align-horizontal-top-out.png</file>
+        <file alias="align-vertical-bottom.png">icons/oxygen-icons/32x32/actions/align-vertical-bottom.png</file>
+        <file alias="align-vertical-center.png">icons/oxygen-icons/32x32/actions/align-vertical-center.png</file>
+        <file alias="align-vertical-top.png">icons/oxygen-icons/32x32/actions/align-vertical-top.png</file>
+        <file alias="application-exit.png">icons/oxygen-icons/32x32/actions/application-exit.png</file>
+        <file alias="appointment-new.png">icons/oxygen-icons/32x32/actions/appointment-new.png</file>
+        <file alias="archive-extract.png">icons/oxygen-icons/32x32/actions/archive-extract.png</file>
+        <file alias="archive-insert.png">icons/oxygen-icons/32x32/actions/archive-insert.png</file>
+        <file alias="archive-insert-directory.png">icons/oxygen-icons/32x32/actions/archive-insert-directory.png</file>
+        <file alias="archive-remove.png">icons/oxygen-icons/32x32/actions/archive-remove.png</file>
+        <file alias="arrow-down.png">icons/oxygen-icons/32x32/actions/arrow-down.png</file>
+        <file alias="arrow-down-double.png">icons/oxygen-icons/32x32/actions/arrow-down-double.png</file>
+        <file alias="arrow-left.png">icons/oxygen-icons/32x32/actions/arrow-left.png</file>
+        <file alias="arrow-left-double.png">icons/oxygen-icons/32x32/actions/arrow-left-double.png</file>
+        <file alias="arrow-right.png">icons/oxygen-icons/32x32/actions/arrow-right.png</file>
+        <file alias="arrow-right-double.png">icons/oxygen-icons/32x32/actions/arrow-right-double.png</file>
+        <file alias="arrow-up.png">icons/oxygen-icons/32x32/actions/arrow-up.png</file>
+        <file alias="arrow-up-double.png">icons/oxygen-icons/32x32/actions/arrow-up-double.png</file>
+        <file alias="bookmark-new.png">icons/oxygen-icons/32x32/actions/bookmark-new.png</file>
+        <file alias="bookmark-new-list.png">icons/oxygen-icons/32x32/actions/bookmark-new-list.png</file>
+        <file alias="bookmarks-organize.png">icons/oxygen-icons/32x32/actions/bookmarks-organize.png</file>
+        <file alias="bookmark-toolbar.png">icons/oxygen-icons/32x32/actions/bookmark-toolbar.png</file>
+        <file alias="call-start.png">icons/oxygen-icons/32x32/actions/call-start.png</file>
+        <file alias="call-stop.png">icons/oxygen-icons/32x32/actions/call-stop.png</file>
+        <file alias="character-set.png">icons/oxygen-icons/32x32/actions/character-set.png</file>
+        <file alias="checkbox.png">icons/oxygen-icons/32x32/actions/checkbox.png</file>
+        <file alias="chronometer.png">icons/oxygen-icons/32x32/actions/chronometer.png</file>
+        <file alias="code-block.png">icons/oxygen-icons/32x32/actions/code-block.png</file>
+        <file alias="code-class.png">icons/oxygen-icons/32x32/actions/code-class.png</file>
+        <file alias="code-context.png">icons/oxygen-icons/32x32/actions/code-context.png</file>
+        <file alias="code-function.png">icons/oxygen-icons/32x32/actions/code-function.png</file>
+        <file alias="code-typedef.png">icons/oxygen-icons/32x32/actions/code-typedef.png</file>
+        <file alias="code-variable.png">icons/oxygen-icons/32x32/actions/code-variable.png</file>
+        <file alias="color-picker.png">icons/oxygen-icons/32x32/actions/color-picker.png</file>
+        <file alias="color-picker-black.png">icons/oxygen-icons/32x32/actions/color-picker-black.png</file>
+        <file alias="color-picker-grey.png">icons/oxygen-icons/32x32/actions/color-picker-grey.png</file>
+        <file alias="color-picker-white.png">icons/oxygen-icons/32x32/actions/color-picker-white.png</file>
+        <file alias="configure.png">icons/oxygen-icons/32x32/actions/configure.png</file>
+        <file alias="configure-shortcuts.png">icons/oxygen-icons/32x32/actions/configure-shortcuts.png</file>
+        <file alias="configure-toolbars.png">icons/oxygen-icons/32x32/actions/configure-toolbars.png</file>
+        <file alias="contact-new.png">icons/oxygen-icons/32x32/actions/contact-new.png</file>
+        <file alias="dashboard-show.png">icons/oxygen-icons/32x32/actions/dashboard-show.png</file>
+        <file alias="debug-execute-from-cursor.png">icons/oxygen-icons/32x32/actions/debug-execute-from-cursor.png</file>
+        <file alias="debug-execute-to-cursor.png">icons/oxygen-icons/32x32/actions/debug-execute-to-cursor.png</file>
+        <file alias="debug-run.png">icons/oxygen-icons/32x32/actions/debug-run.png</file>
+        <file alias="debug-run-cursor.png">icons/oxygen-icons/32x32/actions/debug-run-cursor.png</file>
+        <file alias="debug-step-instruction.png">icons/oxygen-icons/32x32/actions/debug-step-instruction.png</file>
+        <file alias="debug-step-into.png">icons/oxygen-icons/32x32/actions/debug-step-into.png</file>
+        <file alias="debug-step-into-instruction.png">icons/oxygen-icons/32x32/actions/debug-step-into-instruction.png</file>
+        <file alias="debug-step-out.png">icons/oxygen-icons/32x32/actions/debug-step-out.png</file>
+        <file alias="debug-step-over.png">icons/oxygen-icons/32x32/actions/debug-step-over.png</file>
+        <file alias="dialog-cancel.png">icons/oxygen-icons/32x32/actions/dialog-cancel.png</file>
+        <file alias="dialog-close.png">icons/oxygen-icons/32x32/actions/dialog-close.png</file>
+        <file alias="dialog-ok.png">icons/oxygen-icons/32x32/actions/dialog-ok.png</file>
+        <file alias="dialog-ok-apply.png">icons/oxygen-icons/32x32/actions/dialog-ok-apply.png</file>
+        <file alias="distribute-horizontal-center.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-center.png</file>
+        <file alias="distribute-horizontal-equal.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-equal.png</file>
+        <file alias="distribute-horizontal-left.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-left.png</file>
+        <file alias="distribute-horizontal-margin.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-margin.png</file>
+        <file alias="distribute-horizontal-page.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-page.png</file>
+        <file alias="distribute-horizontal-right.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-right.png</file>
+        <file alias="distribute-horizontal-x.png">icons/oxygen-icons/32x32/actions/distribute-horizontal-x.png</file>
+        <file alias="distribute-vertical-bottom.png">icons/oxygen-icons/32x32/actions/distribute-vertical-bottom.png</file>
+        <file alias="distribute-vertical-center.png">icons/oxygen-icons/32x32/actions/distribute-vertical-center.png</file>
+        <file alias="distribute-vertical-equal.png">icons/oxygen-icons/32x32/actions/distribute-vertical-equal.png</file>
+        <file alias="distribute-vertical-margin.png">icons/oxygen-icons/32x32/actions/distribute-vertical-margin.png</file>
+        <file alias="distribute-vertical-page.png">icons/oxygen-icons/32x32/actions/distribute-vertical-page.png</file>
+        <file alias="distribute-vertical-top.png">icons/oxygen-icons/32x32/actions/distribute-vertical-top.png</file>
+        <file alias="distribute-vertical-y.png">icons/oxygen-icons/32x32/actions/distribute-vertical-y.png</file>
+        <file alias="documentation.png">icons/oxygen-icons/32x32/actions/documentation.png</file>
+        <file alias="document-close.png">icons/oxygen-icons/32x32/actions/document-close.png</file>
+        <file alias="document-decrypt.png">icons/oxygen-icons/32x32/actions/document-decrypt.png</file>
+        <file alias="document-edit.png">icons/oxygen-icons/32x32/actions/document-edit.png</file>
+        <file alias="document-edit-decrypt.png">icons/oxygen-icons/32x32/actions/document-edit-decrypt.png</file>
+        <file alias="document-edit-decrypt-verify.png">icons/oxygen-icons/32x32/actions/document-edit-decrypt-verify.png</file>
+        <file alias="document-edit-encrypt.png">icons/oxygen-icons/32x32/actions/document-edit-encrypt.png</file>
+        <file alias="document-edit-sign.png">icons/oxygen-icons/32x32/actions/document-edit-sign.png</file>
+        <file alias="document-edit-sign-encrypt.png">icons/oxygen-icons/32x32/actions/document-edit-sign-encrypt.png</file>
+        <file alias="document-edit-verify.png">icons/oxygen-icons/32x32/actions/document-edit-verify.png</file>
+        <file alias="document-encrypt.png">icons/oxygen-icons/32x32/actions/document-encrypt.png</file>
+        <file alias="document-encrypted.png">icons/oxygen-icons/32x32/actions/document-encrypted.png</file>
+        <file alias="document-export.png">icons/oxygen-icons/32x32/actions/document-export.png</file>
+        <file alias="document-export-table.png">icons/oxygen-icons/32x32/actions/document-export-table.png</file>
+        <file alias="document-import.png">icons/oxygen-icons/32x32/actions/document-import.png</file>
+        <file alias="document-new.png">icons/oxygen-icons/32x32/actions/document-new.png</file>
+        <file alias="document-open.png">icons/oxygen-icons/32x32/actions/document-open.png</file>
+        <file alias="document-open-folder.png">icons/oxygen-icons/32x32/actions/document-open-folder.png</file>
+        <file alias="document-open-recent.png">icons/oxygen-icons/32x32/actions/document-open-recent.png</file>
+        <file alias="document-open-remote.png">icons/oxygen-icons/32x32/actions/document-open-remote.png</file>
+        <file alias="document-preview.png">icons/oxygen-icons/32x32/actions/document-preview.png</file>
+        <file alias="document-preview-archive.png">icons/oxygen-icons/32x32/actions/document-preview-archive.png</file>
+        <file alias="document-print.png">icons/oxygen-icons/32x32/actions/document-print.png</file>
+        <file alias="document-print-direct.png">icons/oxygen-icons/32x32/actions/document-print-direct.png</file>
+        <file alias="document-print-frame.png">icons/oxygen-icons/32x32/actions/document-print-frame.png</file>
+        <file alias="document-print-preview.png">icons/oxygen-icons/32x32/actions/document-print-preview.png</file>
+        <file alias="document-properties.png">icons/oxygen-icons/32x32/actions/document-properties.png</file>
+        <file alias="document-revert.png">icons/oxygen-icons/32x32/actions/document-revert.png</file>
+        <file alias="document-save.png">icons/oxygen-icons/32x32/actions/document-save.png</file>
+        <file alias="document-save-all.png">icons/oxygen-icons/32x32/actions/document-save-all.png</file>
+        <file alias="document-save-as.png">icons/oxygen-icons/32x32/actions/document-save-as.png</file>
+        <file alias="document-sign.png">icons/oxygen-icons/32x32/actions/document-sign.png</file>
+        <file alias="download.png">icons/oxygen-icons/32x32/actions/download.png</file>
+        <file alias="download-later.png">icons/oxygen-icons/32x32/actions/download-later.png</file>
+        <file alias="draw-arrow-back.png">icons/oxygen-icons/32x32/actions/draw-arrow-back.png</file>
+        <file alias="draw-arrow-down.png">icons/oxygen-icons/32x32/actions/draw-arrow-down.png</file>
+        <file alias="draw-arrow-forward.png">icons/oxygen-icons/32x32/actions/draw-arrow-forward.png</file>
+        <file alias="draw-arrow-up.png">icons/oxygen-icons/32x32/actions/draw-arrow-up.png</file>
+        <file alias="draw-bezier-curves.png">icons/oxygen-icons/32x32/actions/draw-bezier-curves.png</file>
+        <file alias="draw-brush.png">icons/oxygen-icons/32x32/actions/draw-brush.png</file>
+        <file alias="draw-circle.png">icons/oxygen-icons/32x32/actions/draw-circle.png</file>
+        <file alias="draw-cross.png">icons/oxygen-icons/32x32/actions/draw-cross.png</file>
+        <file alias="draw-donut.png">icons/oxygen-icons/32x32/actions/draw-donut.png</file>
+        <file alias="draw-ellipse.png">icons/oxygen-icons/32x32/actions/draw-ellipse.png</file>
+        <file alias="draw-eraser.png">icons/oxygen-icons/32x32/actions/draw-eraser.png</file>
+        <file alias="draw-freehand.png">icons/oxygen-icons/32x32/actions/draw-freehand.png</file>
+        <file alias="draw-halfcircle1.png">icons/oxygen-icons/32x32/actions/draw-halfcircle1.png</file>
+        <file alias="draw-halfcircle2.png">icons/oxygen-icons/32x32/actions/draw-halfcircle2.png</file>
+        <file alias="draw-halfcircle3.png">icons/oxygen-icons/32x32/actions/draw-halfcircle3.png</file>
+        <file alias="draw-halfcircle4.png">icons/oxygen-icons/32x32/actions/draw-halfcircle4.png</file>
+        <file alias="draw-path.png">icons/oxygen-icons/32x32/actions/draw-path.png</file>
+        <file alias="draw-polygon.png">icons/oxygen-icons/32x32/actions/draw-polygon.png</file>
+        <file alias="draw-polyline.png">icons/oxygen-icons/32x32/actions/draw-polyline.png</file>
+        <file alias="draw-rectangle.png">icons/oxygen-icons/32x32/actions/draw-rectangle.png</file>
+        <file alias="draw-spiral.png">icons/oxygen-icons/32x32/actions/draw-spiral.png</file>
+        <file alias="draw-square-inverted-corners.png">icons/oxygen-icons/32x32/actions/draw-square-inverted-corners.png</file>
+        <file alias="draw-star.png">icons/oxygen-icons/32x32/actions/draw-star.png</file>
+        <file alias="draw-text.png">icons/oxygen-icons/32x32/actions/draw-text.png</file>
+        <file alias="draw-triangle.png">icons/oxygen-icons/32x32/actions/draw-triangle.png</file>
+        <file alias="draw-triangle1.png">icons/oxygen-icons/32x32/actions/draw-triangle1.png</file>
+        <file alias="draw-triangle2.png">icons/oxygen-icons/32x32/actions/draw-triangle2.png</file>
+        <file alias="draw-triangle3.png">icons/oxygen-icons/32x32/actions/draw-triangle3.png</file>
+        <file alias="draw-triangle4.png">icons/oxygen-icons/32x32/actions/draw-triangle4.png</file>
+        <file alias="edit-bomb.png">icons/oxygen-icons/32x32/actions/edit-bomb.png</file>
+        <file alias="edit-clear.png">icons/oxygen-icons/32x32/actions/edit-clear.png</file>
+        <file alias="edit-clear-history.png">icons/oxygen-icons/32x32/actions/edit-clear-history.png</file>
+        <file alias="edit-clear-list.png">icons/oxygen-icons/32x32/actions/edit-clear-list.png</file>
+        <file alias="edit-clear-locationbar-ltr.png">icons/oxygen-icons/32x32/actions/edit-clear-locationbar-ltr.png</file>
+        <file alias="edit-clear-locationbar-rtl.png">icons/oxygen-icons/32x32/actions/edit-clear-locationbar-rtl.png</file>
+        <file alias="edit-copy.png">icons/oxygen-icons/32x32/actions/edit-copy.png</file>
+        <file alias="edit-cut.png">icons/oxygen-icons/32x32/actions/edit-cut.png</file>
+        <file alias="edit-delete.png">icons/oxygen-icons/32x32/actions/edit-delete.png</file>
+        <file alias="edit-delete-shred.png">icons/oxygen-icons/32x32/actions/edit-delete-shred.png</file>
+        <file alias="edit-find.png">icons/oxygen-icons/32x32/actions/edit-find.png</file>
+        <file alias="edit-find-mail.png">icons/oxygen-icons/32x32/actions/edit-find-mail.png</file>
+        <file alias="edit-find-project.png">icons/oxygen-icons/32x32/actions/edit-find-project.png</file>
+        <file alias="edit-find-replace.png">icons/oxygen-icons/32x32/actions/edit-find-replace.png</file>
+        <file alias="edit-find-user.png">icons/oxygen-icons/32x32/actions/edit-find-user.png</file>
+        <file alias="edit-guides.png">icons/oxygen-icons/32x32/actions/edit-guides.png</file>
+        <file alias="edit-image-face-add.png">icons/oxygen-icons/32x32/actions/edit-image-face-add.png</file>
+        <file alias="edit-image-face-detect.png">icons/oxygen-icons/32x32/actions/edit-image-face-detect.png</file>
+        <file alias="edit-image-face-recognize.png">icons/oxygen-icons/32x32/actions/edit-image-face-recognize.png</file>
+        <file alias="edit-image-face-show.png">icons/oxygen-icons/32x32/actions/edit-image-face-show.png</file>
+        <file alias="edit-node.png">icons/oxygen-icons/32x32/actions/edit-node.png</file>
+        <file alias="edit-paste.png">icons/oxygen-icons/32x32/actions/edit-paste.png</file>
+        <file alias="edit-redo.png">icons/oxygen-icons/32x32/actions/edit-redo.png</file>
+        <file alias="edit-rename.png">icons/oxygen-icons/32x32/actions/edit-rename.png</file>
+        <file alias="edit-select.png">icons/oxygen-icons/32x32/actions/edit-select.png</file>
+        <file alias="edit-select-all.png">icons/oxygen-icons/32x32/actions/edit-select-all.png</file>
+        <file alias="edit-table-cell-merge.png">icons/oxygen-icons/32x32/actions/edit-table-cell-merge.png</file>
+        <file alias="edit-table-cell-split.png">icons/oxygen-icons/32x32/actions/edit-table-cell-split.png</file>
+        <file alias="edit-table-delete-column.png">icons/oxygen-icons/32x32/actions/edit-table-delete-column.png</file>
+        <file alias="edit-table-delete-row.png">icons/oxygen-icons/32x32/actions/edit-table-delete-row.png</file>
+        <file alias="edit-table-insert-column-left.png">icons/oxygen-icons/32x32/actions/edit-table-insert-column-left.png</file>
+        <file alias="edit-table-insert-column-right.png">icons/oxygen-icons/32x32/actions/edit-table-insert-column-right.png</file>
+        <file alias="edit-table-insert-row-above.png">icons/oxygen-icons/32x32/actions/edit-table-insert-row-above.png</file>
+        <file alias="edit-table-insert-row-below.png">icons/oxygen-icons/32x32/actions/edit-table-insert-row-below.png</file>
+        <file alias="edit-text-frame-update.png">icons/oxygen-icons/32x32/actions/edit-text-frame-update.png</file>
+        <file alias="edit-undo.png">icons/oxygen-icons/32x32/actions/edit-undo.png</file>
+        <file alias="feed-subscribe.png">icons/oxygen-icons/32x32/actions/feed-subscribe.png</file>
+        <file alias="fileview-preview.png">icons/oxygen-icons/32x32/actions/fileview-preview.png</file>
+        <file alias="fill-color.png">icons/oxygen-icons/32x32/actions/fill-color.png</file>
+        <file alias="flag.png">icons/oxygen-icons/32x32/actions/flag.png</file>
+        <file alias="flag-black.png">icons/oxygen-icons/32x32/actions/flag-black.png</file>
+        <file alias="flag-blue.png">icons/oxygen-icons/32x32/actions/flag-blue.png</file>
+        <file alias="flag-green.png">icons/oxygen-icons/32x32/actions/flag-green.png</file>
+        <file alias="flag-red.png">icons/oxygen-icons/32x32/actions/flag-red.png</file>
+        <file alias="flag-yellow.png">icons/oxygen-icons/32x32/actions/flag-yellow.png</file>
+        <file alias="folder-new.png">icons/oxygen-icons/32x32/actions/folder-new.png</file>
+        <file alias="folder-sync.png">icons/oxygen-icons/32x32/actions/folder-sync.png</file>
+        <file alias="fork.png">icons/oxygen-icons/32x32/actions/fork.png</file>
+        <file alias="format-add-node.png">icons/oxygen-icons/32x32/actions/format-add-node.png</file>
+        <file alias="format-break-node.png">icons/oxygen-icons/32x32/actions/format-break-node.png</file>
+        <file alias="format-connect-node.png">icons/oxygen-icons/32x32/actions/format-connect-node.png</file>
+        <file alias="format-disconnect-node.png">icons/oxygen-icons/32x32/actions/format-disconnect-node.png</file>
+        <file alias="format-fill-color.png">icons/oxygen-icons/32x32/actions/format-fill-color.png</file>
+        <file alias="format-font-size-less.png">icons/oxygen-icons/32x32/actions/format-font-size-less.png</file>
+        <file alias="format-font-size-more.png">icons/oxygen-icons/32x32/actions/format-font-size-more.png</file>
+        <file alias="format-indent-less.png">icons/oxygen-icons/32x32/actions/format-indent-less.png</file>
+        <file alias="format-indent-more.png">icons/oxygen-icons/32x32/actions/format-indent-more.png</file>
+        <file alias="format-join-node.png">icons/oxygen-icons/32x32/actions/format-join-node.png</file>
+        <file alias="format-justify-center.png">icons/oxygen-icons/32x32/actions/format-justify-center.png</file>
+        <file alias="format-justify-fill.png">icons/oxygen-icons/32x32/actions/format-justify-fill.png</file>
+        <file alias="format-justify-left.png">icons/oxygen-icons/32x32/actions/format-justify-left.png</file>
+        <file alias="format-justify-right.png">icons/oxygen-icons/32x32/actions/format-justify-right.png</file>
+        <file alias="format-line-spacing-double.png">icons/oxygen-icons/32x32/actions/format-line-spacing-double.png</file>
+        <file alias="format-line-spacing-normal.png">icons/oxygen-icons/32x32/actions/format-line-spacing-normal.png</file>
+        <file alias="format-line-spacing-triple.png">icons/oxygen-icons/32x32/actions/format-line-spacing-triple.png</file>
+        <file alias="format-list-ordered.png">icons/oxygen-icons/32x32/actions/format-list-ordered.png</file>
+        <file alias="format-list-unordered.png">icons/oxygen-icons/32x32/actions/format-list-unordered.png</file>
+        <file alias="format-remove-node.png">icons/oxygen-icons/32x32/actions/format-remove-node.png</file>
+        <file alias="format-stroke-color.png">icons/oxygen-icons/32x32/actions/format-stroke-color.png</file>
+        <file alias="format-text-bold.png">icons/oxygen-icons/32x32/actions/format-text-bold.png</file>
+        <file alias="format-text-color.png">icons/oxygen-icons/32x32/actions/format-text-color.png</file>
+        <file alias="format-text-direction-ltr.png">icons/oxygen-icons/32x32/actions/format-text-direction-ltr.png</file>
+        <file alias="format-text-direction-rtl.png">icons/oxygen-icons/32x32/actions/format-text-direction-rtl.png</file>
+        <file alias="format-text-italic.png">icons/oxygen-icons/32x32/actions/format-text-italic.png</file>
+        <file alias="format-text-strikethrough.png">icons/oxygen-icons/32x32/actions/format-text-strikethrough.png</file>
+        <file alias="format-text-subscript.png">icons/oxygen-icons/32x32/actions/format-text-subscript.png</file>
+        <file alias="format-text-superscript.png">icons/oxygen-icons/32x32/actions/format-text-superscript.png</file>
+        <file alias="format-text-underline.png">icons/oxygen-icons/32x32/actions/format-text-underline.png</file>
+        <file alias="formula.png">icons/oxygen-icons/32x32/actions/formula.png</file>
+        <file alias="games-achievements.png">icons/oxygen-icons/32x32/actions/games-achievements.png</file>
+        <file alias="games-config-background.png">icons/oxygen-icons/32x32/actions/games-config-background.png</file>
+        <file alias="games-config-board.png">icons/oxygen-icons/32x32/actions/games-config-board.png</file>
+        <file alias="games-config-custom.png">icons/oxygen-icons/32x32/actions/games-config-custom.png</file>
+        <file alias="games-config-options.png">icons/oxygen-icons/32x32/actions/games-config-options.png</file>
+        <file alias="games-config-theme.png">icons/oxygen-icons/32x32/actions/games-config-theme.png</file>
+        <file alias="games-config-tiles.png">icons/oxygen-icons/32x32/actions/games-config-tiles.png</file>
+        <file alias="games-difficult.png">icons/oxygen-icons/32x32/actions/games-difficult.png</file>
+        <file alias="games-endturn.png">icons/oxygen-icons/32x32/actions/games-endturn.png</file>
+        <file alias="games-highscores.png">icons/oxygen-icons/32x32/actions/games-highscores.png</file>
+        <file alias="games-hint.png">icons/oxygen-icons/32x32/actions/games-hint.png</file>
+        <file alias="games-solve.png">icons/oxygen-icons/32x32/actions/games-solve.png</file>
+        <file alias="get-hot-new-stuff.png">icons/oxygen-icons/32x32/actions/get-hot-new-stuff.png</file>
+        <file alias="go-bottom.png">icons/oxygen-icons/32x32/actions/go-bottom.png</file>
+        <file alias="go-down.png">icons/oxygen-icons/32x32/actions/go-down.png</file>
+        <file alias="go-down-search.png">icons/oxygen-icons/32x32/actions/go-down-search.png</file>
+        <file alias="go-first.png">icons/oxygen-icons/32x32/actions/go-first.png</file>
+        <file alias="go-first-view.png">icons/oxygen-icons/32x32/actions/go-first-view.png</file>
+        <file alias="go-first-view-page.png">icons/oxygen-icons/32x32/actions/go-first-view-page.png</file>
+        <file alias="go-home.png">icons/oxygen-icons/32x32/actions/go-home.png</file>
+        <file alias="go-jump.png">icons/oxygen-icons/32x32/actions/go-jump.png</file>
+        <file alias="go-jump-declaration.png">icons/oxygen-icons/32x32/actions/go-jump-declaration.png</file>
+        <file alias="go-jump-definition.png">icons/oxygen-icons/32x32/actions/go-jump-definition.png</file>
+        <file alias="go-jump-locationbar.png">icons/oxygen-icons/32x32/actions/go-jump-locationbar.png</file>
+        <file alias="go-jump-today.png">icons/oxygen-icons/32x32/actions/go-jump-today.png</file>
+        <file alias="go-last.png">icons/oxygen-icons/32x32/actions/go-last.png</file>
+        <file alias="go-last-view.png">icons/oxygen-icons/32x32/actions/go-last-view.png</file>
+        <file alias="go-last-view-page.png">icons/oxygen-icons/32x32/actions/go-last-view-page.png</file>
+        <file alias="go-next.png">icons/oxygen-icons/32x32/actions/go-next.png</file>
+        <file alias="go-next-context.png">icons/oxygen-icons/32x32/actions/go-next-context.png</file>
+        <file alias="go-next-use.png">icons/oxygen-icons/32x32/actions/go-next-use.png</file>
+        <file alias="go-next-view.png">icons/oxygen-icons/32x32/actions/go-next-view.png</file>
+        <file alias="go-next-view-page.png">icons/oxygen-icons/32x32/actions/go-next-view-page.png</file>
+        <file alias="go-previous.png">icons/oxygen-icons/32x32/actions/go-previous.png</file>
+        <file alias="go-previous-context.png">icons/oxygen-icons/32x32/actions/go-previous-context.png</file>
+        <file alias="go-previous-use.png">icons/oxygen-icons/32x32/actions/go-previous-use.png</file>
+        <file alias="go-previous-view.png">icons/oxygen-icons/32x32/actions/go-previous-view.png</file>
+        <file alias="go-previous-view-page.png">icons/oxygen-icons/32x32/actions/go-previous-view-page.png</file>
+        <file alias="go-top.png">icons/oxygen-icons/32x32/actions/go-top.png</file>
+        <file alias="go-up.png">icons/oxygen-icons/32x32/actions/go-up.png</file>
+        <file alias="go-up-search.png">icons/oxygen-icons/32x32/actions/go-up-search.png</file>
+        <file alias="help-about.png">icons/oxygen-icons/32x32/actions/help-about.png</file>
+        <file alias="help-contents.png">icons/oxygen-icons/32x32/actions/help-contents.png</file>
+        <file alias="help-contextual.png">icons/oxygen-icons/32x32/actions/help-contextual.png</file>
+        <file alias="help-donate.png">icons/oxygen-icons/32x32/actions/help-donate.png</file>
+        <file alias="help-feedback.png">icons/oxygen-icons/32x32/actions/help-feedback.png</file>
+        <file alias="help-hint.png">icons/oxygen-icons/32x32/actions/help-hint.png</file>
+        <file alias="im-aim.png">icons/oxygen-icons/32x32/actions/im-aim.png</file>
+        <file alias="im-ban-kick-user.png">icons/oxygen-icons/32x32/actions/im-ban-kick-user.png</file>
+        <file alias="im-ban-user.png">icons/oxygen-icons/32x32/actions/im-ban-user.png</file>
+        <file alias="im-facebook.png">icons/oxygen-icons/32x32/actions/im-facebook.png</file>
+        <file alias="im-gadugadu.png">icons/oxygen-icons/32x32/actions/im-gadugadu.png</file>
+        <file alias="im-google.png">icons/oxygen-icons/32x32/actions/im-google.png</file>
+        <file alias="im-google-talk.png">icons/oxygen-icons/32x32/actions/im-google-talk.png</file>
+        <file alias="im-icq.png">icons/oxygen-icons/32x32/actions/im-icq.png</file>
+        <file alias="im-identi.ca.png">icons/oxygen-icons/32x32/actions/im-identi.ca.png</file>
+        <file alias="im-invisible-user.png">icons/oxygen-icons/32x32/actions/im-invisible-user.png</file>
+        <file alias="im-jabber.png">icons/oxygen-icons/32x32/actions/im-jabber.png</file>
+        <file alias="im-kick-user.png">icons/oxygen-icons/32x32/actions/im-kick-user.png</file>
+        <file alias="im-msn.png">icons/oxygen-icons/32x32/actions/im-msn.png</file>
+        <file alias="im-qq.png">icons/oxygen-icons/32x32/actions/im-qq.png</file>
+        <file alias="im-skype.png">icons/oxygen-icons/32x32/actions/im-skype.png</file>
+        <file alias="im-twitter.png">icons/oxygen-icons/32x32/actions/im-twitter.png</file>
+        <file alias="im-user.png">icons/oxygen-icons/32x32/actions/im-user.png</file>
+        <file alias="im-user-away.png">icons/oxygen-icons/32x32/actions/im-user-away.png</file>
+        <file alias="im-user-busy.png">icons/oxygen-icons/32x32/actions/im-user-busy.png</file>
+        <file alias="im-user-offline.png">icons/oxygen-icons/32x32/actions/im-user-offline.png</file>
+        <file alias="im-yahoo.png">icons/oxygen-icons/32x32/actions/im-yahoo.png</file>
+        <file alias="insert-horizontal-rule.png">icons/oxygen-icons/32x32/actions/insert-horizontal-rule.png</file>
+        <file alias="insert-image.png">icons/oxygen-icons/32x32/actions/insert-image.png</file>
+        <file alias="insert-link.png">icons/oxygen-icons/32x32/actions/insert-link.png</file>
+        <file alias="insert-table.png">icons/oxygen-icons/32x32/actions/insert-table.png</file>
+        <file alias="insert-text.png">icons/oxygen-icons/32x32/actions/insert-text.png</file>
+        <file alias="irc-close-channel.png">icons/oxygen-icons/32x32/actions/irc-close-channel.png</file>
+        <file alias="irc-join-channel.png">icons/oxygen-icons/32x32/actions/irc-join-channel.png</file>
+        <file alias="irc-operator.png">icons/oxygen-icons/32x32/actions/irc-operator.png</file>
+        <file alias="irc-remove-operator.png">icons/oxygen-icons/32x32/actions/irc-remove-operator.png</file>
+        <file alias="irc-unvoice.png">icons/oxygen-icons/32x32/actions/irc-unvoice.png</file>
+        <file alias="irc-voice.png">icons/oxygen-icons/32x32/actions/irc-voice.png</file>
+        <file alias="journal-new.png">icons/oxygen-icons/32x32/actions/journal-new.png</file>
+        <file alias="key-enter.png">icons/oxygen-icons/32x32/actions/key-enter.png</file>
+        <file alias="layer-visible-off.png">icons/oxygen-icons/32x32/actions/layer-visible-off.png</file>
+        <file alias="layer-visible-on.png">icons/oxygen-icons/32x32/actions/layer-visible-on.png</file>
+        <file alias="list-add.png">icons/oxygen-icons/32x32/actions/list-add.png</file>
+        <file alias="list-add-font.png">icons/oxygen-icons/32x32/actions/list-add-font.png</file>
+        <file alias="list-add-user.png">icons/oxygen-icons/32x32/actions/list-add-user.png</file>
+        <file alias="list-remove.png">icons/oxygen-icons/32x32/actions/list-remove.png</file>
+        <file alias="list-remove-user.png">icons/oxygen-icons/32x32/actions/list-remove-user.png</file>
+        <file alias="list-resource-add.png">icons/oxygen-icons/32x32/actions/list-resource-add.png</file>
+        <file alias="mail-encrypted.png">icons/oxygen-icons/32x32/actions/mail-encrypted.png</file>
+        <file alias="mail-encrypted-full.png">icons/oxygen-icons/32x32/actions/mail-encrypted-full.png</file>
+        <file alias="mail-encrypted-part.png">icons/oxygen-icons/32x32/actions/mail-encrypted-part.png</file>
+        <file alias="mail-flag.png">icons/oxygen-icons/32x32/actions/mail-flag.png</file>
+        <file alias="mail-forward.png">icons/oxygen-icons/32x32/actions/mail-forward.png</file>
+        <file alias="mail-forwarded.png">icons/oxygen-icons/32x32/actions/mail-forwarded.png</file>
+        <file alias="mail-invitation.png">icons/oxygen-icons/32x32/actions/mail-invitation.png</file>
+        <file alias="mail-mark-important.png">icons/oxygen-icons/32x32/actions/mail-mark-important.png</file>
+        <file alias="mail-mark-junk.png">icons/oxygen-icons/32x32/actions/mail-mark-junk.png</file>
+        <file alias="mail-mark-notjunk.png">icons/oxygen-icons/32x32/actions/mail-mark-notjunk.png</file>
+        <file alias="mail-mark-read.png">icons/oxygen-icons/32x32/actions/mail-mark-read.png</file>
+        <file alias="mail-mark-task.png">icons/oxygen-icons/32x32/actions/mail-mark-task.png</file>
+        <file alias="mail-mark-unread.png">icons/oxygen-icons/32x32/actions/mail-mark-unread.png</file>
+        <file alias="mail-mark-unread-new.png">icons/oxygen-icons/32x32/actions/mail-mark-unread-new.png</file>
+        <file alias="mail-meeting-request-reply.png">icons/oxygen-icons/32x32/actions/mail-meeting-request-reply.png</file>
+        <file alias="mail-message-new.png">icons/oxygen-icons/32x32/actions/mail-message-new.png</file>
+        <file alias="mail-message-new-list.png">icons/oxygen-icons/32x32/actions/mail-message-new-list.png</file>
+        <file alias="mail-queue.png">icons/oxygen-icons/32x32/actions/mail-queue.png</file>
+        <file alias="mail-receive.png">icons/oxygen-icons/32x32/actions/mail-receive.png</file>
+        <file alias="mail-replied.png">icons/oxygen-icons/32x32/actions/mail-replied.png</file>
+        <file alias="mail-reply-all.png">icons/oxygen-icons/32x32/actions/mail-reply-all.png</file>
+        <file alias="mail-reply-custom.png">icons/oxygen-icons/32x32/actions/mail-reply-custom.png</file>
+        <file alias="mail-reply-custom-all.png">icons/oxygen-icons/32x32/actions/mail-reply-custom-all.png</file>
+        <file alias="mail-reply-list.png">icons/oxygen-icons/32x32/actions/mail-reply-list.png</file>
+        <file alias="mail-reply-sender.png">icons/oxygen-icons/32x32/actions/mail-reply-sender.png</file>
+        <file alias="mail-send.png">icons/oxygen-icons/32x32/actions/mail-send.png</file>
+        <file alias="mail-signature-unknown.png">icons/oxygen-icons/32x32/actions/mail-signature-unknown.png</file>
+        <file alias="mail-signed.png">icons/oxygen-icons/32x32/actions/mail-signed.png</file>
+        <file alias="mail-signed-full.png">icons/oxygen-icons/32x32/actions/mail-signed-full.png</file>
+        <file alias="mail-signed-part.png">icons/oxygen-icons/32x32/actions/mail-signed-part.png</file>
+        <file alias="mail-signed-verified.png">icons/oxygen-icons/32x32/actions/mail-signed-verified.png</file>
+        <file alias="mail-tagged.png">icons/oxygen-icons/32x32/actions/mail-tagged.png</file>
+        <file alias="measure.png">icons/oxygen-icons/32x32/actions/measure.png</file>
+        <file alias="media-eject.png">icons/oxygen-icons/32x32/actions/media-eject.png</file>
+        <file alias="media-playback-pause.png">icons/oxygen-icons/32x32/actions/media-playback-pause.png</file>
+        <file alias="media-playback-start.png">icons/oxygen-icons/32x32/actions/media-playback-start.png</file>
+        <file alias="media-playback-stop.png">icons/oxygen-icons/32x32/actions/media-playback-stop.png</file>
+        <file alias="media-record.png">icons/oxygen-icons/32x32/actions/media-record.png</file>
+        <file alias="media-seek-backward.png">icons/oxygen-icons/32x32/actions/media-seek-backward.png</file>
+        <file alias="media-seek-forward.png">icons/oxygen-icons/32x32/actions/media-seek-forward.png</file>
+        <file alias="media-skip-backward.png">icons/oxygen-icons/32x32/actions/media-skip-backward.png</file>
+        <file alias="media-skip-forward.png">icons/oxygen-icons/32x32/actions/media-skip-forward.png</file>
+        <file alias="meeting-attending.png">icons/oxygen-icons/32x32/actions/meeting-attending.png</file>
+        <file alias="meeting-attending-tentative.png">icons/oxygen-icons/32x32/actions/meeting-attending-tentative.png</file>
+        <file alias="meeting-participant-no-response.png">icons/oxygen-icons/32x32/actions/meeting-participant-no-response.png</file>
+        <file alias="meeting-participant-request-response.png">icons/oxygen-icons/32x32/actions/meeting-participant-request-response.png</file>
+        <file alias="merge.png">icons/oxygen-icons/32x32/actions/merge.png</file>
+        <file alias="milestone.png">icons/oxygen-icons/32x32/actions/milestone.png</file>
+        <file alias="network-connect.png">icons/oxygen-icons/32x32/actions/network-connect.png</file>
+        <file alias="network-disconnect.png">icons/oxygen-icons/32x32/actions/network-disconnect.png</file>
+        <file alias="news-subscribe.png">icons/oxygen-icons/32x32/actions/news-subscribe.png</file>
+        <file alias="news-unsubscribe.png">icons/oxygen-icons/32x32/actions/news-unsubscribe.png</file>
+        <file alias="object-flip-horizontal.png">icons/oxygen-icons/32x32/actions/object-flip-horizontal.png</file>
+        <file alias="object-flip-vertical.png">icons/oxygen-icons/32x32/actions/object-flip-vertical.png</file>
+        <file alias="object-rotate-left.png">icons/oxygen-icons/32x32/actions/object-rotate-left.png</file>
+        <file alias="object-rotate-right.png">icons/oxygen-icons/32x32/actions/object-rotate-right.png</file>
+        <file alias="office-chart-area.png">icons/oxygen-icons/32x32/actions/office-chart-area.png</file>
+        <file alias="office-chart-area-focus-peak-node.png">icons/oxygen-icons/32x32/actions/office-chart-area-focus-peak-node.png</file>
+        <file alias="office-chart-area-percentage.png">icons/oxygen-icons/32x32/actions/office-chart-area-percentage.png</file>
+        <file alias="office-chart-area-stacked.png">icons/oxygen-icons/32x32/actions/office-chart-area-stacked.png</file>
+        <file alias="office-chart-bar.png">icons/oxygen-icons/32x32/actions/office-chart-bar.png</file>
+        <file alias="office-chart-bar-percentage.png">icons/oxygen-icons/32x32/actions/office-chart-bar-percentage.png</file>
+        <file alias="office-chart-bar-stacked.png">icons/oxygen-icons/32x32/actions/office-chart-bar-stacked.png</file>
+        <file alias="office-chart-line.png">icons/oxygen-icons/32x32/actions/office-chart-line.png</file>
+        <file alias="office-chart-line-percentage.png">icons/oxygen-icons/32x32/actions/office-chart-line-percentage.png</file>
+        <file alias="office-chart-line-stacked.png">icons/oxygen-icons/32x32/actions/office-chart-line-stacked.png</file>
+        <file alias="office-chart-pie.png">icons/oxygen-icons/32x32/actions/office-chart-pie.png</file>
+        <file alias="office-chart-polar.png">icons/oxygen-icons/32x32/actions/office-chart-polar.png</file>
+        <file alias="office-chart-polar-stacked.png">icons/oxygen-icons/32x32/actions/office-chart-polar-stacked.png</file>
+        <file alias="office-chart-ring.png">icons/oxygen-icons/32x32/actions/office-chart-ring.png</file>
+        <file alias="office-chart-scatter.png">icons/oxygen-icons/32x32/actions/office-chart-scatter.png</file>
+        <file alias="page-2sides.png">icons/oxygen-icons/32x32/actions/page-2sides.png</file>
+        <file alias="page-3sides.png">icons/oxygen-icons/32x32/actions/page-3sides.png</file>
+        <file alias="page-4sides.png">icons/oxygen-icons/32x32/actions/page-4sides.png</file>
+        <file alias="page-simple.png">icons/oxygen-icons/32x32/actions/page-simple.png</file>
+        <file alias="page-zoom.png">icons/oxygen-icons/32x32/actions/page-zoom.png</file>
+        <file alias="player-time.png">icons/oxygen-icons/32x32/actions/player-time.png</file>
+        <file alias="player-volume.png">icons/oxygen-icons/32x32/actions/player-volume.png</file>
+        <file alias="preferences-activities.png">icons/oxygen-icons/32x32/actions/preferences-activities.png</file>
+        <file alias="preflight-verifier.png">icons/oxygen-icons/32x32/actions/preflight-verifier.png</file>
+        <file alias="process-stop.png">icons/oxygen-icons/32x32/actions/process-stop.png</file>
+        <file alias="project-development.png">icons/oxygen-icons/32x32/actions/project-development.png</file>
+        <file alias="project-development-close.png">icons/oxygen-icons/32x32/actions/project-development-close.png</file>
+        <file alias="project-development-close-all.png">icons/oxygen-icons/32x32/actions/project-development-close-all.png</file>
+        <file alias="project-development-new-template.png">icons/oxygen-icons/32x32/actions/project-development-new-template.png</file>
+        <file alias="project-open.png">icons/oxygen-icons/32x32/actions/project-open.png</file>
+        <file alias="quickopen.png">icons/oxygen-icons/32x32/actions/quickopen.png</file>
+        <file alias="quickopen-class.png">icons/oxygen-icons/32x32/actions/quickopen-class.png</file>
+        <file alias="quickopen-file.png">icons/oxygen-icons/32x32/actions/quickopen-file.png</file>
+        <file alias="quickopen-function.png">icons/oxygen-icons/32x32/actions/quickopen-function.png</file>
+        <file alias="rating.png">icons/oxygen-icons/32x32/actions/rating.png</file>
+        <file alias="resource-calendar-child.png">icons/oxygen-icons/32x32/actions/resource-calendar-child.png</file>
+        <file alias="resource-calendar-child-insert.png">icons/oxygen-icons/32x32/actions/resource-calendar-child-insert.png</file>
+        <file alias="resource-calendar-insert.png">icons/oxygen-icons/32x32/actions/resource-calendar-insert.png</file>
+        <file alias="resource-group.png">icons/oxygen-icons/32x32/actions/resource-group.png</file>
+        <file alias="resource-group-new.png">icons/oxygen-icons/32x32/actions/resource-group-new.png</file>
+        <file alias="roll.png">icons/oxygen-icons/32x32/actions/roll.png</file>
+        <file alias="run-build.png">icons/oxygen-icons/32x32/actions/run-build.png</file>
+        <file alias="run-build-clean.png">icons/oxygen-icons/32x32/actions/run-build-clean.png</file>
+        <file alias="run-build-configure.png">icons/oxygen-icons/32x32/actions/run-build-configure.png</file>
+        <file alias="run-build-file.png">icons/oxygen-icons/32x32/actions/run-build-file.png</file>
+        <file alias="run-build-install.png">icons/oxygen-icons/32x32/actions/run-build-install.png</file>
+        <file alias="run-build-install-root.png">icons/oxygen-icons/32x32/actions/run-build-install-root.png</file>
+        <file alias="run-build-prune.png">icons/oxygen-icons/32x32/actions/run-build-prune.png</file>
+        <file alias="select-rectangular.png">icons/oxygen-icons/32x32/actions/select-rectangular.png</file>
+        <file alias="services.png">icons/oxygen-icons/32x32/actions/services.png</file>
+        <file alias="shapes.png">icons/oxygen-icons/32x32/actions/shapes.png</file>
+        <file alias="show-menu.png">icons/oxygen-icons/32x32/actions/show-menu.png</file>
+        <file alias="snap-extension.png">icons/oxygen-icons/32x32/actions/snap-extension.png</file>
+        <file alias="snap-guideline.png">icons/oxygen-icons/32x32/actions/snap-guideline.png</file>
+        <file alias="snap-intersection.png">icons/oxygen-icons/32x32/actions/snap-intersection.png</file>
+        <file alias="snap-node.png">icons/oxygen-icons/32x32/actions/snap-node.png</file>
+        <file alias="snap-orthogonal.png">icons/oxygen-icons/32x32/actions/snap-orthogonal.png</file>
+        <file alias="speaker.png">icons/oxygen-icons/32x32/actions/speaker.png</file>
+        <file alias="split.png">icons/oxygen-icons/32x32/actions/split.png</file>
+        <file alias="story-editor.png">icons/oxygen-icons/32x32/actions/story-editor.png</file>
+        <file alias="stroke-cap-butt.png">icons/oxygen-icons/32x32/actions/stroke-cap-butt.png</file>
+        <file alias="stroke-cap-round.png">icons/oxygen-icons/32x32/actions/stroke-cap-round.png</file>
+        <file alias="stroke-cap-square.png">icons/oxygen-icons/32x32/actions/stroke-cap-square.png</file>
+        <file alias="stroke-join-bevel.png">icons/oxygen-icons/32x32/actions/stroke-join-bevel.png</file>
+        <file alias="stroke-join-miter.png">icons/oxygen-icons/32x32/actions/stroke-join-miter.png</file>
+        <file alias="stroke-join-round.png">icons/oxygen-icons/32x32/actions/stroke-join-round.png</file>
+        <file alias="svn-commit.png">icons/oxygen-icons/32x32/actions/svn-commit.png</file>
+        <file alias="svn-update.png">icons/oxygen-icons/32x32/actions/svn-update.png</file>
+        <file alias="system-lock-screen.png">icons/oxygen-icons/32x32/actions/system-lock-screen.png</file>
+        <file alias="system-log-out.png">icons/oxygen-icons/32x32/actions/system-log-out.png</file>
+        <file alias="system-reboot.png">icons/oxygen-icons/32x32/actions/system-reboot.png</file>
+        <file alias="system-run.png">icons/oxygen-icons/32x32/actions/system-run.png</file>
+        <file alias="system-search.png">icons/oxygen-icons/32x32/actions/system-search.png</file>
+        <file alias="system-shutdown.png">icons/oxygen-icons/32x32/actions/system-shutdown.png</file>
+        <file alias="system-suspend.png">icons/oxygen-icons/32x32/actions/system-suspend.png</file>
+        <file alias="system-suspend-hibernate.png">icons/oxygen-icons/32x32/actions/system-suspend-hibernate.png</file>
+        <file alias="system-switch-user.png">icons/oxygen-icons/32x32/actions/system-switch-user.png</file>
+        <file alias="tab-close.png">icons/oxygen-icons/32x32/actions/tab-close.png</file>
+        <file alias="tab-close-other.png">icons/oxygen-icons/32x32/actions/tab-close-other.png</file>
+        <file alias="tab-detach.png">icons/oxygen-icons/32x32/actions/tab-detach.png</file>
+        <file alias="tab-duplicate.png">icons/oxygen-icons/32x32/actions/tab-duplicate.png</file>
+        <file alias="tab-new.png">icons/oxygen-icons/32x32/actions/tab-new.png</file>
+        <file alias="tab-new-background.png">icons/oxygen-icons/32x32/actions/tab-new-background.png</file>
+        <file alias="task-new.png">icons/oxygen-icons/32x32/actions/task-new.png</file>
+        <file alias="taxes-finances.png">icons/oxygen-icons/32x32/actions/taxes-finances.png</file>
+        <file alias="text-field.png">icons/oxygen-icons/32x32/actions/text-field.png</file>
+        <file alias="text-frame-link.png">icons/oxygen-icons/32x32/actions/text-frame-link.png</file>
+        <file alias="text-frame-unlink.png">icons/oxygen-icons/32x32/actions/text-frame-unlink.png</file>
+        <file alias="text-speak.png">icons/oxygen-icons/32x32/actions/text-speak.png</file>
+        <file alias="tool-animator.png">icons/oxygen-icons/32x32/actions/tool-animator.png</file>
+        <file alias="tools-check-spelling.png">icons/oxygen-icons/32x32/actions/tools-check-spelling.png</file>
+        <file alias="tools-media-optical-burn.png">icons/oxygen-icons/32x32/actions/tools-media-optical-burn.png</file>
+        <file alias="tools-media-optical-burn-image.png">icons/oxygen-icons/32x32/actions/tools-media-optical-burn-image.png</file>
+        <file alias="tools-media-optical-copy.png">icons/oxygen-icons/32x32/actions/tools-media-optical-copy.png</file>
+        <file alias="tools-media-optical-erase.png">icons/oxygen-icons/32x32/actions/tools-media-optical-erase.png</file>
+        <file alias="tools-media-optical-format.png">icons/oxygen-icons/32x32/actions/tools-media-optical-format.png</file>
+        <file alias="tools-report-bug.png">icons/oxygen-icons/32x32/actions/tools-report-bug.png</file>
+        <file alias="tools-rip-audio-cd.png">icons/oxygen-icons/32x32/actions/tools-rip-audio-cd.png</file>
+        <file alias="tools-rip-video-cd.png">icons/oxygen-icons/32x32/actions/tools-rip-video-cd.png</file>
+        <file alias="tools-rip-video-dvd.png">icons/oxygen-icons/32x32/actions/tools-rip-video-dvd.png</file>
+        <file alias="tools-wizard.png">icons/oxygen-icons/32x32/actions/tools-wizard.png</file>
+        <file alias="transform-crop.png">icons/oxygen-icons/32x32/actions/transform-crop.png</file>
+        <file alias="transform-crop-and-resize.png">icons/oxygen-icons/32x32/actions/transform-crop-and-resize.png</file>
+        <file alias="transform-move.png">icons/oxygen-icons/32x32/actions/transform-move.png</file>
+        <file alias="transform-rotate.png">icons/oxygen-icons/32x32/actions/transform-rotate.png</file>
+        <file alias="transform-scale.png">icons/oxygen-icons/32x32/actions/transform-scale.png</file>
+        <file alias="transform-scale-textbox-points.png">icons/oxygen-icons/32x32/actions/transform-scale-textbox-points.png</file>
+        <file alias="transform-shear-down.png">icons/oxygen-icons/32x32/actions/transform-shear-down.png</file>
+        <file alias="transform-shear-left.png">icons/oxygen-icons/32x32/actions/transform-shear-left.png</file>
+        <file alias="transform-shear-right.png">icons/oxygen-icons/32x32/actions/transform-shear-right.png</file>
+        <file alias="transform-shear-up.png">icons/oxygen-icons/32x32/actions/transform-shear-up.png</file>
+        <file alias="trash-empty.png">icons/oxygen-icons/32x32/actions/trash-empty.png</file>
+        <file alias="user-group-delete.png">icons/oxygen-icons/32x32/actions/user-group-delete.png</file>
+        <file alias="user-group-new.png">icons/oxygen-icons/32x32/actions/user-group-new.png</file>
+        <file alias="user-group-properties.png">icons/oxygen-icons/32x32/actions/user-group-properties.png</file>
+        <file alias="user-properties.png">icons/oxygen-icons/32x32/actions/user-properties.png</file>
+        <file alias="view-bank.png">icons/oxygen-icons/32x32/actions/view-bank.png</file>
+        <file alias="view-bank-account.png">icons/oxygen-icons/32x32/actions/view-bank-account.png</file>
+        <file alias="view-bank-account-checking.png">icons/oxygen-icons/32x32/actions/view-bank-account-checking.png</file>
+        <file alias="view-bank-account-savings.png">icons/oxygen-icons/32x32/actions/view-bank-account-savings.png</file>
+        <file alias="view-barcode.png">icons/oxygen-icons/32x32/actions/view-barcode.png</file>
+        <file alias="view-barcode-add.png">icons/oxygen-icons/32x32/actions/view-barcode-add.png</file>
+        <file alias="view-calendar.png">icons/oxygen-icons/32x32/actions/view-calendar.png</file>
+        <file alias="view-calendar-agenda.png">icons/oxygen-icons/32x32/actions/view-calendar-agenda.png</file>
+        <file alias="view-calendar-birthday.png">icons/oxygen-icons/32x32/actions/view-calendar-birthday.png</file>
+        <file alias="view-calendar-day.png">icons/oxygen-icons/32x32/actions/view-calendar-day.png</file>
+        <file alias="view-calendar-holiday.png">icons/oxygen-icons/32x32/actions/view-calendar-holiday.png</file>
+        <file alias="view-calendar-journal.png">icons/oxygen-icons/32x32/actions/view-calendar-journal.png</file>
+        <file alias="view-calendar-list.png">icons/oxygen-icons/32x32/actions/view-calendar-list.png</file>
+        <file alias="view-calendar-month.png">icons/oxygen-icons/32x32/actions/view-calendar-month.png</file>
+        <file alias="view-calendar-special-occasion.png">icons/oxygen-icons/32x32/actions/view-calendar-special-occasion.png</file>
+        <file alias="view-calendar-tasks.png">icons/oxygen-icons/32x32/actions/view-calendar-tasks.png</file>
+        <file alias="view-calendar-timeline.png">icons/oxygen-icons/32x32/actions/view-calendar-timeline.png</file>
+        <file alias="view-calendar-time-spent.png">icons/oxygen-icons/32x32/actions/view-calendar-time-spent.png</file>
+        <file alias="view-calendar-upcoming-days.png">icons/oxygen-icons/32x32/actions/view-calendar-upcoming-days.png</file>
+        <file alias="view-calendar-upcoming-events.png">icons/oxygen-icons/32x32/actions/view-calendar-upcoming-events.png</file>
+        <file alias="view-calendar-wedding-anniversary.png">icons/oxygen-icons/32x32/actions/view-calendar-wedding-anniversary.png</file>
+        <file alias="view-calendar-week.png">icons/oxygen-icons/32x32/actions/view-calendar-week.png</file>
+        <file alias="view-calendar-whatsnext.png">icons/oxygen-icons/32x32/actions/view-calendar-whatsnext.png</file>
+        <file alias="view-calendar-workweek.png">icons/oxygen-icons/32x32/actions/view-calendar-workweek.png</file>
+        <file alias="view-catalog.png">icons/oxygen-icons/32x32/actions/view-catalog.png</file>
+        <file alias="view-categories.png">icons/oxygen-icons/32x32/actions/view-categories.png</file>
+        <file alias="view-certificate.png">icons/oxygen-icons/32x32/actions/view-certificate.png</file>
+        <file alias="view-certificate-add.png">icons/oxygen-icons/32x32/actions/view-certificate-add.png</file>
+        <file alias="view-certificate-export.png">icons/oxygen-icons/32x32/actions/view-certificate-export.png</file>
+        <file alias="view-certificate-export-secret.png">icons/oxygen-icons/32x32/actions/view-certificate-export-secret.png</file>
+        <file alias="view-certificate-export-server.png">icons/oxygen-icons/32x32/actions/view-certificate-export-server.png</file>
+        <file alias="view-certificate-import.png">icons/oxygen-icons/32x32/actions/view-certificate-import.png</file>
+        <file alias="view-certificate-server-configure.png">icons/oxygen-icons/32x32/actions/view-certificate-server-configure.png</file>
+        <file alias="view-certificate-sign.png">icons/oxygen-icons/32x32/actions/view-certificate-sign.png</file>
+        <file alias="view-choose.png">icons/oxygen-icons/32x32/actions/view-choose.png</file>
+        <file alias="view-close.png">icons/oxygen-icons/32x32/actions/view-close.png</file>
+        <file alias="view-conversation-balloon.png">icons/oxygen-icons/32x32/actions/view-conversation-balloon.png</file>
+        <file alias="view-credit-card-account.png">icons/oxygen-icons/32x32/actions/view-credit-card-account.png</file>
+        <file alias="view-currency-list.png">icons/oxygen-icons/32x32/actions/view-currency-list.png</file>
+        <file alias="view-documents-finances.png">icons/oxygen-icons/32x32/actions/view-documents-finances.png</file>
+        <file alias="view-expenses-categories.png">icons/oxygen-icons/32x32/actions/view-expenses-categories.png</file>
+        <file alias="view-file-columns.png">icons/oxygen-icons/32x32/actions/view-file-columns.png</file>
+        <file alias="view-filter.png">icons/oxygen-icons/32x32/actions/view-filter.png</file>
+        <file alias="view-financial-categories.png">icons/oxygen-icons/32x32/actions/view-financial-categories.png</file>
+        <file alias="view-financial-forecast.png">icons/oxygen-icons/32x32/actions/view-financial-forecast.png</file>
+        <file alias="view-financial-list.png">icons/oxygen-icons/32x32/actions/view-financial-list.png</file>
+        <file alias="view-financial-payment-mode.png">icons/oxygen-icons/32x32/actions/view-financial-payment-mode.png</file>
+        <file alias="view-financial-transfer.png">icons/oxygen-icons/32x32/actions/view-financial-transfer.png</file>
+        <file alias="view-form.png">icons/oxygen-icons/32x32/actions/view-form.png</file>
+        <file alias="view-form-action.png">icons/oxygen-icons/32x32/actions/view-form-action.png</file>
+        <file alias="view-form-table.png">icons/oxygen-icons/32x32/actions/view-form-table.png</file>
+        <file alias="view-fullscreen.png">icons/oxygen-icons/32x32/actions/view-fullscreen.png</file>
+        <file alias="view-grid.png">icons/oxygen-icons/32x32/actions/view-grid.png</file>
+        <file alias="view-group.png">icons/oxygen-icons/32x32/actions/view-group.png</file>
+        <file alias="view-history.png">icons/oxygen-icons/32x32/actions/view-history.png</file>
+        <file alias="view-income-categories.png">icons/oxygen-icons/32x32/actions/view-income-categories.png</file>
+        <file alias="view-investment.png">icons/oxygen-icons/32x32/actions/view-investment.png</file>
+        <file alias="view-ldap-resource.png">icons/oxygen-icons/32x32/actions/view-ldap-resource.png</file>
+        <file alias="view-left-close.png">icons/oxygen-icons/32x32/actions/view-left-close.png</file>
+        <file alias="view-list-details.png">icons/oxygen-icons/32x32/actions/view-list-details.png</file>
+        <file alias="view-list-icons.png">icons/oxygen-icons/32x32/actions/view-list-icons.png</file>
+        <file alias="view-list-text.png">icons/oxygen-icons/32x32/actions/view-list-text.png</file>
+        <file alias="view-list-tree.png">icons/oxygen-icons/32x32/actions/view-list-tree.png</file>
+        <file alias="view-loan.png">icons/oxygen-icons/32x32/actions/view-loan.png</file>
+        <file alias="view-loan-asset.png">icons/oxygen-icons/32x32/actions/view-loan-asset.png</file>
+        <file alias="view-media-artist.png">icons/oxygen-icons/32x32/actions/view-media-artist.png</file>
+        <file alias="view-media-equalizer.png">icons/oxygen-icons/32x32/actions/view-media-equalizer.png</file>
+        <file alias="view-media-lyrics.png">icons/oxygen-icons/32x32/actions/view-media-lyrics.png</file>
+        <file alias="view-media-playlist.png">icons/oxygen-icons/32x32/actions/view-media-playlist.png</file>
+        <file alias="view-media-visualization.png">icons/oxygen-icons/32x32/actions/view-media-visualization.png</file>
+        <file alias="view-multiple-objects.png">icons/oxygen-icons/32x32/actions/view-multiple-objects.png</file>
+        <file alias="view-object-histogram-linear.png">icons/oxygen-icons/32x32/actions/view-object-histogram-linear.png</file>
+        <file alias="view-object-histogram-logarithmic.png">icons/oxygen-icons/32x32/actions/view-object-histogram-logarithmic.png</file>
+        <file alias="view-pim-calendar.png">icons/oxygen-icons/32x32/actions/view-pim-calendar.png</file>
+        <file alias="view-pim-contacts.png">icons/oxygen-icons/32x32/actions/view-pim-contacts.png</file>
+        <file alias="view-pim-journal.png">icons/oxygen-icons/32x32/actions/view-pim-journal.png</file>
+        <file alias="view-pim-mail.png">icons/oxygen-icons/32x32/actions/view-pim-mail.png</file>
+        <file alias="view-pim-news.png">icons/oxygen-icons/32x32/actions/view-pim-news.png</file>
+        <file alias="view-pim-notes.png">icons/oxygen-icons/32x32/actions/view-pim-notes.png</file>
+        <file alias="view-pim-summary.png">icons/oxygen-icons/32x32/actions/view-pim-summary.png</file>
+        <file alias="view-pim-tasks.png">icons/oxygen-icons/32x32/actions/view-pim-tasks.png</file>
+        <file alias="view-pim-tasks-pending.png">icons/oxygen-icons/32x32/actions/view-pim-tasks-pending.png</file>
+        <file alias="view-presentation.png">icons/oxygen-icons/32x32/actions/view-presentation.png</file>
+        <file alias="view-preview.png">icons/oxygen-icons/32x32/actions/view-preview.png</file>
+        <file alias="view-process-all.png">icons/oxygen-icons/32x32/actions/view-process-all.png</file>
+        <file alias="view-process-all-tree.png">icons/oxygen-icons/32x32/actions/view-process-all-tree.png</file>
+        <file alias="view-process-own.png">icons/oxygen-icons/32x32/actions/view-process-own.png</file>
+        <file alias="view-process-system.png">icons/oxygen-icons/32x32/actions/view-process-system.png</file>
+        <file alias="view-process-users.png">icons/oxygen-icons/32x32/actions/view-process-users.png</file>
+        <file alias="view-refresh.png">icons/oxygen-icons/32x32/actions/view-refresh.png</file>
+        <file alias="view-resource-calendar.png">icons/oxygen-icons/32x32/actions/view-resource-calendar.png</file>
+        <file alias="view-restore.png">icons/oxygen-icons/32x32/actions/view-restore.png</file>
+        <file alias="view-right-close.png">icons/oxygen-icons/32x32/actions/view-right-close.png</file>
+        <file alias="view-right-new.png">icons/oxygen-icons/32x32/actions/view-right-new.png</file>
+        <file alias="view-sidetree.png">icons/oxygen-icons/32x32/actions/view-sidetree.png</file>
+        <file alias="view-sort-ascending.png">icons/oxygen-icons/32x32/actions/view-sort-ascending.png</file>
+        <file alias="view-sort-descending.png">icons/oxygen-icons/32x32/actions/view-sort-descending.png</file>
+        <file alias="view-split-left-right.png">icons/oxygen-icons/32x32/actions/view-split-left-right.png</file>
+        <file alias="view-split-top-bottom.png">icons/oxygen-icons/32x32/actions/view-split-top-bottom.png</file>
+        <file alias="view-statistics.png">icons/oxygen-icons/32x32/actions/view-statistics.png</file>
+        <file alias="view-stock-account.png">icons/oxygen-icons/32x32/actions/view-stock-account.png</file>
+        <file alias="view-table-of-contents-ltr.png">icons/oxygen-icons/32x32/actions/view-table-of-contents-ltr.png</file>
+        <file alias="view-table-of-contents-rtl.png">icons/oxygen-icons/32x32/actions/view-table-of-contents-rtl.png</file>
+        <file alias="view-task.png">icons/oxygen-icons/32x32/actions/view-task.png</file>
+        <file alias="view-task-add.png">icons/oxygen-icons/32x32/actions/view-task-add.png</file>
+        <file alias="view-task-child.png">icons/oxygen-icons/32x32/actions/view-task-child.png</file>
+        <file alias="view-task-child-add.png">icons/oxygen-icons/32x32/actions/view-task-child-add.png</file>
+        <file alias="view-time-schedule.png">icons/oxygen-icons/32x32/actions/view-time-schedule.png</file>
+        <file alias="view-time-schedule-baselined.png">icons/oxygen-icons/32x32/actions/view-time-schedule-baselined.png</file>
+        <file alias="view-time-schedule-baselined-add.png">icons/oxygen-icons/32x32/actions/view-time-schedule-baselined-add.png</file>
+        <file alias="view-time-schedule-baselined-remove.png">icons/oxygen-icons/32x32/actions/view-time-schedule-baselined-remove.png</file>
+        <file alias="view-time-schedule-calculus.png">icons/oxygen-icons/32x32/actions/view-time-schedule-calculus.png</file>
+        <file alias="view-time-schedule-child-insert.png">icons/oxygen-icons/32x32/actions/view-time-schedule-child-insert.png</file>
+        <file alias="view-time-schedule-edit.png">icons/oxygen-icons/32x32/actions/view-time-schedule-edit.png</file>
+        <file alias="view-time-schedule-insert.png">icons/oxygen-icons/32x32/actions/view-time-schedule-insert.png</file>
+        <file alias="view-web-browser-dom-tree.png">icons/oxygen-icons/32x32/actions/view-web-browser-dom-tree.png</file>
+        <file alias="window-close.png">icons/oxygen-icons/32x32/actions/window-close.png</file>
+        <file alias="window-duplicate.png">icons/oxygen-icons/32x32/actions/window-duplicate.png</file>
+        <file alias="window-new.png">icons/oxygen-icons/32x32/actions/window-new.png</file>
+        <file alias="zoom-1-to-2.png">icons/oxygen-icons/32x32/actions/zoom-1-to-2.png</file>
+        <file alias="zoom-2-to-1.png">icons/oxygen-icons/32x32/actions/zoom-2-to-1.png</file>
+        <file alias="zoom-draw.png">icons/oxygen-icons/32x32/actions/zoom-draw.png</file>
+        <file alias="zoom-fit-best.png">icons/oxygen-icons/32x32/actions/zoom-fit-best.png</file>
+        <file alias="zoom-fit-height.png">icons/oxygen-icons/32x32/actions/zoom-fit-height.png</file>
+        <file alias="zoom-fit-width.png">icons/oxygen-icons/32x32/actions/zoom-fit-width.png</file>
+        <file alias="zoom-in.png">icons/oxygen-icons/32x32/actions/zoom-in.png</file>
+        <file alias="zoom-next.png">icons/oxygen-icons/32x32/actions/zoom-next.png</file>
+        <file alias="zoom-original.png">icons/oxygen-icons/32x32/actions/zoom-original.png</file>
+        <file alias="zoom-out.png">icons/oxygen-icons/32x32/actions/zoom-out.png</file>
+        <file alias="zoom-previous.png">icons/oxygen-icons/32x32/actions/zoom-previous.png</file>
+        <file alias="zoom-select.png">icons/oxygen-icons/32x32/actions/zoom-select.png</file>
     </qresource>
     <qresource prefix="/apps"/>
     <qresource prefix="/categories"/>
     <qresource prefix="/devices">
-        <file>icons/oxygen-icons/32x32/devices/cpu.png</file>
-        <file>icons/oxygen-icons/32x32/devices/printer.png</file>
+        <file alias="cpu.png">icons/oxygen-icons/32x32/devices/cpu.png</file>
+        <file alias="printer.png">icons/oxygen-icons/32x32/devices/printer.png</file>
     </qresource>
     <qresource prefix="/emblems"/>
     <qresource prefix="/emotes"/>
     <qresource prefix="/mimetypes"/>
     <qresource prefix="/places"/>
     <qresource prefix="/status"/>
+    <qresource>
+        <file>ui/llamastyle.css</file>
+    </qresource>
 </RCC>

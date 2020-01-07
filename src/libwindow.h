@@ -20,7 +20,6 @@ class LibWindow : public QMainWindow, public Coreable, public Loggable
     Q_OBJECT
 private:
     Ui::LibWindow *ui;
-    //void _openLibTreeView(QString title, QString);
 
 public:
     LibWindow(QWidget *parent = nullptr);

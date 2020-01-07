@@ -25,13 +25,13 @@ LibTreeWidget::LibTreeWidget(QWidget *parent, Qt::WindowFlags flags) :
         m_pCore->newShape();});
 
     QPushButton *pPBNewSymbol = new QPushButton("New Symbol", this);
-    pPBNewSymbol->setFocusProxy(this);
+    pPBNewSymbol->setFocusProxy(parent);
     hb->addWidget(pPBNewSymbol);
     connect(pPBNewSymbol, &QPushButton::clicked, [=](){
         m_pCore->newSymbol();});
 
     QPushButton *pPBDelete = new QPushButton("Delete Item", this);
-    pPBDelete->setFocusProxy(this);
+    pPBDelete->setFocusProxy(parent);
     hb->addWidget(pPBDelete);
     connect(pPBDelete, &QPushButton::clicked, [=](){
         m_pCore->deleteShape("some_shape_to_delete");});

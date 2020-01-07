@@ -4,6 +4,7 @@
 #include "iuimanager.h"
 #include "coreable.h"
 #include "loggable.h"
+#include "closingdockwidget.h"
 #include "libtreewidget.h"
 #include <QString>
 #include <QWidget>
@@ -16,7 +17,7 @@ class UIManager : public IUIManager, public Coreable, public Loggable
 {
 private:
     QMainWindow *m_parentMW;
-    QDockWidget *openLibTreeView(QString, QString);
+    ClosingDockWidget *openLibTreeView(QString, QString);
     std::map<std::string, QWidget *> m_openWidgets;
 public:
     UIManager();

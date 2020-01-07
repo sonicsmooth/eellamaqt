@@ -37,7 +37,7 @@ void LibCore::pushActiveDb(std::string adb) {
     // and that it's at the front
     m_activeDb.remove(adb);
     m_activeDb.push_front(adb);
-    log("Active db set to " + activeDb());
+    //log("Active db set to " + activeDb());
 }
 void LibCore::popActiveDb(std::string adb) {
     // Ensure exactly one adb is in the list
