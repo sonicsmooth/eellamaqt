@@ -3,7 +3,6 @@
 
 // This is the abstract interface to the interface between the core and the Qt database
 
-
 #include <iostream>
 
 class IDbIf

@@ -5,10 +5,11 @@
 #include "coreable.h"
 #include "loggable.h"
 
-#include <any>
-
 #include <QMainWindow>
 #include <QString>
+
+#include <any>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class LibWindow; }
@@ -19,7 +20,7 @@ class LibWindow : public QMainWindow, public Coreable, public Loggable
     Q_OBJECT
 private:
     Ui::LibWindow *ui;
-    void _openLibTreeView(QString title, QString);
+    //void _openLibTreeView(QString title, QString);
 
 public:
     LibWindow(QWidget *parent = nullptr);

@@ -1,10 +1,10 @@
+#include "libcore.h"
 #include <iostream>
 #include <sstream>
 #include <cassert>
 #include <filesystem>
 #include <fstream>
 
-#include "libcore.h"
 
 
 #ifdef _WIN32
@@ -20,6 +20,16 @@ LibCore::~LibCore() {}
 
 void LibCore::setDbIf(IDbIf* pDbIf) {
     m_pDbIf = pDbIf;
+}
+
+IDbIf *LibCore::DbIf() const {
+    return m_pDbIf;
+}
+void LibCore::setUIManager(IUIManager *uim) {
+    m_pUIManager = uim;
+}
+IUIManager *LibCore::UIManager() const {
+    return m_pUIManager;
 }
 
 void LibCore::pushActiveDb(std::string adb) {
@@ -48,12 +58,14 @@ void LibCore::newLib(std::string fullpath) {
     assert(m_pDbIf);
     
     log("LibCore: Creating new Library " + fullpath);
-    m_pDbIf->createDatabase(fullpath);
+    DbIf()->createDatabase(fullpath);
     pushActiveDb(fullpath);
+    UIManager()->OpenUI(UITYPE::LIBVIEW, fullpath);
 }
 void LibCore::openLib(std::string fullpath) {
     log("LibCore: Opening library " + fullpath);
     pushActiveDb(fullpath);
+    UIManager()->OpenUI(UITYPE::LIBVIEW, fullpath);
 }
 void LibCore::saveLib(std::string fullpath) {
     log("LibCore: Saving library " + fullpath);
@@ -62,10 +74,11 @@ void LibCore::saveLib(std::string fullpath) {
 void LibCore::closeLib(std::string fullpath) {
     log("LibCore: Closing library " + fullpath);
     popActiveDb(fullpath);
-
+    UIManager()->CloseUI(fullpath);
 }
-void LibCore::deleteLib(std::string name) {
-    log("LibCore: Deleting library " + name);
+void LibCore::deleteLib(std::string fullpath) {
+    log("LibCore: Deleting library " + fullpath);
+    UIManager()->CloseUI(fullpath);
 }
 
 void LibCore::newShape() {

@@ -1,13 +1,15 @@
-#ifndef LibCore_H
-#define LibCore_H
+#ifndef LIBCORE_H
+#define LIBCORE_H
+
+#include "loggable.h"
+#include "idbif.h"
+#include "iuimanager.h"
 
 #include <string>
 #include <vector>
 #include <list>
 #include <initializer_list>
 
-#include "loggable.h"
-#include "idbif.h"
 
 class Shape {
 private:
@@ -61,10 +63,15 @@ class LibCore : public Loggable
 private:
     IDbIf* m_pDbIf;
     std::list<std::string> m_activeDb;
+    IUIManager *m_pUIManager;
+
 public:
     LibCore();
     ~LibCore();
     void setDbIf(IDbIf*);
+    IDbIf *DbIf() const;
+    void setUIManager(IUIManager *);
+    IUIManager *UIManager() const;
     void pushActiveDb(std::string);
     void popActiveDb(std::string);
     const std::string & activeDb() const;

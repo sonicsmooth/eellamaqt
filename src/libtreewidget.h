@@ -1,12 +1,13 @@
 #ifndef LIBTREEWIDGET_H
 #define LIBTREEWIDGET_H
 
+#include "coreable.h"
+#include "loggable.h"
+
 #include <QDockWidget>
 #include <QTreeView>
 #include <QPushButton>
 
-#include "coreable.h"
-#include "loggable.h"
 
 // Inherits Loggable functions setLogger(), logger(), log()
 // Inherits coreable functions setCore(), core()

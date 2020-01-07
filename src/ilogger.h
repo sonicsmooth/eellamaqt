@@ -6,7 +6,8 @@
 
 class ILogger {
 public:
-    virtual ~ILogger()  {}
+    virtual ~ILogger() {}
+    virtual void vlog(const char *, va_list) = 0;
     virtual void log(const char *, ...) = 0; // Use like printf
     virtual void log(std::string) = 0;
     virtual void log(std::stringstream &) = 0; // clears string when done

@@ -9,7 +9,7 @@ void Loggable::log(const char *fmt, ...) {
     if (m_pLogger) {
         va_list args;
         va_start(args, fmt);
-        m_pLogger->log(fmt, args);
+        m_pLogger->vlog(fmt, args);
         va_end(args);
     }
 }

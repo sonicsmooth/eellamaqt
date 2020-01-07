@@ -16,6 +16,7 @@ public:
 	~Logger() override = default;
 	QTextEdit* textEdit() { return m_pte; }
 	void setTextEdit(QTextEdit*);
+    void vlog(const char *, va_list) override;
 	void log(const char *, ...) override; // Use like printf
 	void log(std::string) override;
     void log(std::stringstream &) override; // clears string when done

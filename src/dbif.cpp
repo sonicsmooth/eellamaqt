@@ -1,16 +1,11 @@
 #include "dbif.h"
-
+#include <QtSql>
 #include <iostream>
 #include <fstream>
 #include <cassert>
 
-#include <QtSql>
 
-QSQDbIf::QSQDbIf() : m_pLogger(nullptr) {}
-void QSQDbIf::setLogger(Logger *pLogger) {
-    m_pLogger = pLogger;
-}
-
+QSQDbIf::QSQDbIf() {}
 
 void QSQDbIf::createDatabase(std::string fullpath) {
 
@@ -20,8 +15,7 @@ void QSQDbIf::createDatabase(std::string fullpath) {
     // keeps a list of available database connection, each of which points to a
     // file of the same name.
 
-    assert(m_pLogger);
-    m_pLogger->log("DbiF: Creating QtSQL database %s", fullpath.c_str());
+log("DbiF: Creating QtSQL database %s", fullpath.c_str());
 
 
     // database name is not the connection name

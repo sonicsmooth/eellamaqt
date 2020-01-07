@@ -6,9 +6,9 @@
 class Coreable {
     public:
         LibCore *m_pCore;
-        Coreable() : m_pCore(nullptr) {};
-        void setCore(LibCore *c) {m_pCore = c;};
-        LibCore *core() const {return m_pCore;};
+        Coreable() : m_pCore(nullptr) {}
+        void setCore(LibCore *c) {m_pCore = c;}
+        LibCore *core() const {return m_pCore;}
 };
 
 

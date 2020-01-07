@@ -4,19 +4,26 @@
 #include <memory>
 #include <cassert>
 
+
+
 void Logger::setTextEdit(QTextEdit* pte) {
 	m_pte = pte;
+}
+
+void Logger::vlog(const char *fmt, va_list argp) {
+    size_t sz = static_cast<size_t>(vsnprintf(nullptr, 0, fmt, argp)) + 1;
+    std::unique_ptr<char> buff(new char [sz]);
+    vsnprintf(buff.get(), sz, fmt, argp);
+    m_pte->append(buff.get());
 }
 
 void Logger::log(const char *fmt, ...) {
     assert(m_pte);
     va_list args;
     va_start(args, fmt);
-    size_t sz = static_cast<size_t>(vsnprintf(nullptr, 0, fmt, args)) + 1;
-    std::unique_ptr<char> buff(new char [sz]);
-    vsnprintf(buff.get(), sz, fmt, args);
+    vlog(fmt, args);
     va_end(args);
-    m_pte->append(buff.get());
+
 }
 
 void Logger::log(std::string msg) {

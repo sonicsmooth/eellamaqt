@@ -23,15 +23,22 @@ SOURCES += \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
+    ../src/uimanager.cpp
+
 
 HEADERS += \
+    ../src/coreable.h \
     ../src/dbif.h \
     ../src/idbif.h \
     ../src/ilogger.h \
+    ../src/iuimanager.h \
     ../src/libcore.h \
     ../src/libtreewidget.h \
     ../src/libwindow.h \
+    ../src/loggable.h \
     ../src/logger.h \
+    ../src/uimanager.h
+
 
 FORMS += \
     ../src/ui/libwindow.ui \

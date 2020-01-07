@@ -80,19 +80,19 @@ LibWindow::~LibWindow()
     delete ui;
 }
 
-void LibWindow::_openLibTreeView(QString title, QString tooltip) {
-    LibTreeWidget* trLibItems = new LibTreeWidget(this);
-    trLibItems->setCore(m_pCore);
-    trLibItems->setLogger(m_pLogger);
-    trLibItems->setDbConn(title.toStdString());
+//void LibWindow::_openLibTreeView(QString title, QString tooltip) {
+//    LibTreeWidget* trLibItems = new LibTreeWidget(this);
+//    trLibItems->setCore(m_pCore);
+//    trLibItems->setLogger(m_pLogger);
+//    trLibItems->setDbConn(title.toStdString());
 
-    QDockWidget* dwLibItems = new QDockWidget(this);
-    dwLibItems->setFocusPolicy(Qt::StrongFocus);
-    dwLibItems->setWidget(trLibItems);
-    dwLibItems->setWindowTitle(title);
+//    QDockWidget* dwLibItems = new QDockWidget(this);
+//    dwLibItems->setFocusPolicy(Qt::StrongFocus);
+//    dwLibItems->setWidget(trLibItems);
+//    dwLibItems->setWindowTitle(title);
 
-    this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dwLibItems);
-}
+//    this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dwLibItems);
+//}
 
 void LibWindow::fileNewLib() {
     // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
@@ -122,7 +122,7 @@ void LibWindow::fileNewLib() {
 
     m_pLogger->log("LibWindow: file new lib");
     m_pCore->newLib(fullpath.toStdString());
-    _openLibTreeView(libname_extended, fullpath);
+    //_openLibTreeView(libname_extended, fullpath);
 
 }
 void LibWindow::fileOpenLib() {
@@ -132,7 +132,7 @@ void LibWindow::fileOpenLib() {
         ".", tr("Open Library"), tr("Any (*);;Library files (*.SchLib *.db)"));
     std::string filename(qfilename.toStdString());
     m_pCore->openLib(filename);
-    _openLibTreeView(QString::fromStdString(filename), QString::fromStdString(filename));
+    //_openLibTreeView(QString::fromStdString(filename), QString::fromStdString(filename));
     m_pCore->pushActiveDb(filename);
 }
 void LibWindow::fileSaveLib() {
@@ -145,7 +145,8 @@ void LibWindow::fileSaveLibAs() {
 }
 void LibWindow::fileCloseLib() {
     assert(m_pCore);
-    log("LibWindow: file close lib");
+    log("LibWindow: file close lib " + m_pCore->activeDb());
+    m_pCore->closeLib(m_pCore->activeDb());
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
