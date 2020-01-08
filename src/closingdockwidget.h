@@ -5,7 +5,7 @@
 #include <QCloseEvent>
 #include <QFocusEvent>
 
-// Captures close event
+// Captures close event and sends closing() signal
 
 class ClosingDockWidget : public QDockWidget
 {
@@ -15,7 +15,7 @@ public:
     void closeEvent(QCloseEvent *) override;
 
 signals:
-    void closing();
+    void *closing(ClosingDockWidget *) const;
 
 public slots:
 };

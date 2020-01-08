@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <optional>
 #include <initializer_list>
 
 
@@ -74,7 +75,7 @@ public:
     IUIManager *UIManager() const;
     void pushActiveDb(std::string);
     void popActiveDb(std::string);
-    const std::string & activeDb() const;
+    std::optional<std::string> activeDb() const;
     void newLib(std::string);
     void openLib(std::string);
     void saveLib(std::string);

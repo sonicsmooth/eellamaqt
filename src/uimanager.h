@@ -13,16 +13,17 @@
 #include <map>
 
 
-class UIManager : public IUIManager, public Coreable, public Loggable
+class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
 private:
     QMainWindow *m_parentMW;
     ClosingDockWidget *openLibTreeView(QString, QString);
-    std::map<std::string, QWidget *> m_openWidgets;
+    std::map<QWidget *, std::string> m_openWidgets;
 public:
-    UIManager();
+    UIManager(QObject * = nullptr);
     virtual std::any OpenUI(UITYPE, std::string) override;
     virtual void CloseUI(std::string) override;
+    void OnWidgetClose(QWidget *);
     void setParentMW(QMainWindow *);
     QMainWindow *parentMW() const;
 

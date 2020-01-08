@@ -27,7 +27,8 @@ LibWindow::LibWindow(QWidget *parent)
 
     QPushButton *pb = new QPushButton(this);
     pb->setText("Push me");
-    connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi", 1000);});
+    //connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi", 1000);});
+    connect(pb, &QPushButton::clicked,[=](){m_pCore->newShape();});
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
     
@@ -62,21 +63,19 @@ LibWindow::LibWindow(QWidget *parent)
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
         // The goal is to get to the LibTreeWidget which has the dbConn.
         // But the LibTreeWidget doesn't receive focus events; only the QTreeView
-        // and the LibDockWidget get focus events.  In the first case the
+        // and the ClosingDockWidget get focus events.  In the first case the
         // LibTreeWidget is the parent of the QTreeView.  In the second case the
-        // LibTreeWidget is the content widget of the LibDockWidget.  We don't
+        // LibTreeWidget is the content widget of the ClosingDockWidget.  We don't
         // know which one we get here unless we try to cast it.
         (void) old;
         QTreeView* qtv(dynamic_cast<QTreeView*>(now));
         LibTreeWidget* ltw(nullptr);
         if (qtv) {
-            log("LibTreeWidget focused");
             ltw = static_cast<LibTreeWidget*>(qtv->parentWidget());
         }
         else {
             ClosingDockWidget* ldw(dynamic_cast<ClosingDockWidget*>(now));
             if (ldw) {
-                log("LibDockWidget focused");
                 ltw = static_cast<LibTreeWidget*>(ldw->widget());
             }
         }
@@ -119,17 +118,15 @@ void LibWindow::fileNewLib() {
     }
     QString fullpath = currdir.filePath(libname_extended);
 
-    m_pLogger->log("LibWindow: file new lib");
+    log("LibWindow: file new lib");
     m_pCore->newLib(fullpath.toStdString());
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
-    assert(m_pLogger);
     QString qfilename = QFileDialog::getOpenFileName(this,
         ".", tr("Open Library"), tr("Any (*);;Library files (*.SchLib *.db)"));
     std::string filename(qfilename.toStdString());
     m_pCore->openLib(filename);
-    m_pCore->pushActiveDb(filename);
 }
 void LibWindow::fileSaveLib() {
     assert(m_pCore);
@@ -141,12 +138,14 @@ void LibWindow::fileSaveLibAs() {
 }
 void LibWindow::fileCloseLib() {
     assert(m_pCore);
-    log("LibWindow: file close lib " + m_pCore->activeDb());
-    m_pCore->closeLib(m_pCore->activeDb());
+    if (m_pCore->activeDb()) {
+        log("LibWindow: file close lib " + m_pCore->activeDb().value());
+        m_pCore->closeLib(m_pCore->activeDb().value());
+    }
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
-    log("LibWindow: file delete lib " + m_pCore->activeDb());
+    log("LibWindow: file delete lib " + m_pCore->activeDb().value());
 }
 void LibWindow::newShape() {
     assert(m_pCore);
@@ -227,7 +226,7 @@ void LibWindow::editPaste() {
 }
 void LibWindow::editDelete() {
     assert(m_pCore);
-    log("LibWindow: edit delete item from " + m_pCore->activeDb());
+    log("LibWindow: edit delete item from " + m_pCore->activeDb().value());
     m_pCore->deleteShape("Some shape");
     m_pCore->deleteSymbol("Some symbol");
 }
