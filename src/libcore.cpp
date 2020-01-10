@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <optional>
+#include <algorithm>
 
 
 #ifdef _WIN32
@@ -31,7 +32,13 @@ void LibCore::setUIManager(IUIManager *uim) {
 IUIManager *LibCore::UIManager() const {
     return m_pUIManager;
 }
-
+std::optional<std::string> LibCore::activeDb() const {
+    return m_activeDb.size() ? std::optional<std::string>{m_activeDb.front()} :
+                               std::nullopt;
+}
+bool LibCore::activeDb(std::string fullpath) const {
+    return std::find(m_activeDb.begin(), m_activeDb.end(), fullpath) != m_activeDb.end();
+}
 void LibCore::pushActiveDb(std::string adb) {
     // Ensure exactly one adb is in the list
     // and that it's at the front
@@ -40,52 +47,87 @@ void LibCore::pushActiveDb(std::string adb) {
     log("Active db set to " + activeDb().value());
 }
 void LibCore::popActiveDb(std::string adb) {
-    // Ensure exactly one adb is in the list
-    // and that it's at the front
-    m_activeDb.remove(adb);
-    if (m_activeDb.size())
-        log("Active db set to " + activeDb().value());
-    else
-        log("No active db to pop");
-}
-std::optional<std::string> LibCore::activeDb() const {
-    return m_activeDb.size() ? std::optional<std::string>{m_activeDb.front()} :
-                               std::nullopt;
+    // Remove adb from activeDb list;
+    // throw error if not in list
+    if (activeDb(adb)) {
+        log("LibCore::popActiveDb: Popping " + adb);
+        m_activeDb.remove(adb);
+        if (activeDb()) {
+            log("LibCore::popActiveDb: Active db set to " + activeDb().value());
+        }
+        else {
+            log("LibCore::popActiveDb: Active db now empty");
+        }
+    } else {
+        throw std::runtime_error("Library " + adb + " not in activeDb list");
+    }
 }
 void LibCore::newLib(std::string fullpath) {
     // LibCore assumes the caller has already verified the path and name
     // So we log whether it exsts, then override
     assert(m_pDbIf);
-    log("LibCore: Creating new Library " + fullpath);
-    DbIf()->createDatabase(fullpath);
+    log("LibCore::newLib Creating new Library " + fullpath);
+    // TODO: check for an existing lib with that name
+    m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
-    m_pUIManager->OpenUI(UITYPE::LIBVIEW, fullpath);
+    // TODO: somehow point UI to database
+    m_pUIManager->openUI(UITYPE::LIBVIEW, fullpath);
 }
 void LibCore::openLib(std::string fullpath) {
-    log("LibCore: Opening library " + fullpath);
-    pushActiveDb(fullpath);
-    m_pUIManager->OpenUI(UITYPE::LIBVIEW, fullpath);
+    log("LibCore::openLib Opening library " + fullpath);
+    if (activeDb(fullpath)) {
+        log("Library %s already open", fullpath.c_str());
+    } else {
+        m_pDbIf->openDatabase(fullpath);
+        pushActiveDb(fullpath);
+        m_pUIManager->openUI(UITYPE::LIBVIEW, fullpath);
+    }
 }
 void LibCore::saveLib(std::string fullpath) {
-    log("LibCore: Saving library " + fullpath);
+    log("LibCore::saveLib Saving library " + fullpath);
     pushActiveDb(fullpath);
 }
 void LibCore::closeLib(std::string fullpath) {
-    size_t sz = m_activeDb.size();
-    if (sz) {
-        log("LibCore: Closing library " + fullpath);
+    // Remove specified db from list and call UI to close related windows
+    // Call dbif to close lib
+    // Caller should know the proper name of lib; throws error otherwise
+   if (activeDb(fullpath)) {
+        log("LibCore::closeLib Closing library %s", fullpath.c_str());
         popActiveDb(fullpath);
-        // Should have no effect if call chain originated from UI
-        // Because when this fn is called from UI, it's because the
-        // final window referring to this lib has been closed
-        m_pUIManager->CloseUI(fullpath);
+        m_pDbIf->closeDatabase(fullpath);
+        m_pUIManager->closeUI(fullpath);
     } else {
-        log("LibCore: No active db to close");
+        throw std::logic_error("LibCore::closeLib: No active db named this to close: " + fullpath);
+    }
+}
+void LibCore::closeActiveLib() {
+    // Get active lib and foward to closeLib
+    if (activeDb()) {
+        closeLib(activeDb().value());
+    } else {
+        log("LibCore::closeActiveLib No active db to close");
     }
 }
 void LibCore::deleteLib(std::string fullpath) {
-    log("LibCore: Deleting library " + fullpath);
-    m_pUIManager->CloseUI(fullpath);
+    // Remove specified db from list and call UI to close related windows
+    // Call dbif to delete lib
+    // Caller should know the proper name of lib; throws error otherwise
+    if (activeDb(fullpath)) {
+        log("LibCore: Deleting library " + fullpath);
+        popActiveDb(fullpath); // this before closeUI
+        m_pDbIf->deleteDatabase(fullpath);
+        m_pUIManager->closeUI(fullpath);
+    } else {
+        throw std::logic_error("LibCore: No active db to close");
+    }
+}
+void LibCore::deleteActiveLib() {
+    // Get active lib and foward to deleteLib
+    if (activeDb()) {
+        deleteLib(activeDb().value());
+    } else {
+        log("LibCore: No active db to delete");
+    }
 }
 
 void LibCore::newShape() {

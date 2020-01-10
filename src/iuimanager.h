@@ -12,8 +12,8 @@ class IUIManager
 {
 public:
     virtual ~IUIManager() {}
-    virtual std::any OpenUI(UITYPE, std::string) = 0;
-    virtual void CloseUI(std::string) = 0;
+    virtual std::any openUI(UITYPE, std::string) = 0;
+    virtual void closeUI(std::string) = 0;
 
 };
 

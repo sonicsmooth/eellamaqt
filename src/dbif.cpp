@@ -3,19 +3,20 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <cstdio>
+#include <exception>
 
 
 QSQDbIf::QSQDbIf() {}
 
 void QSQDbIf::createDatabase(std::string fullpath) {
-
     // Creates and opens qSqlite3 connection and file name fullpath. What's
     // weird is that I don't have to maintain a list of anything anywhere.  The
     // QSqlDatabase object somehow lives for the entirety of the application and
     // keeps a list of available database connection, each of which points to a
     // file of the same name.
 
-log("DbiF: Creating QtSQL database %s", fullpath.c_str());
+    log("DbiF::createDatabase: Creating Sqlite database %s", fullpath.c_str());
 
 
     // database name is not the connection name
@@ -26,13 +27,42 @@ log("DbiF: Creating QtSQL database %s", fullpath.c_str());
     // take a name, which is presumably unique, which means we may as well
     // name the connection the same as the database name, which is the
     // sqlite3 database file name.
-    QString dbname = QString::fromStdString(fullpath);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", dbname);
+    QString dbname(QString::fromStdString(fullpath));
+    QSqlDatabase db(QSqlDatabase::addDatabase("QSQLITE", dbname));
     db.setDatabaseName(dbname); // specifies file
     bool ok = db.open();
     if (!ok) throw;
 
     QSqlQuery q(db);
     q.exec("CREATE TABLE firsttable (ID INTEGER PRIMARY KEY, NAME TEXT)");
+}
+void QSQDbIf::openDatabase(std::string fullpath) {
+    log("DbIf::openDatabase: Opening Sqlite database %s", fullpath.c_str());
+    QString dbname(QString::fromStdString(fullpath));
+    QFile qfile(dbname);
+    if (qfile.exists()) {
+        QSqlDatabase db(QSqlDatabase::addDatabase("QSQLITE", dbname));
+        db.setDatabaseName(dbname); // specifies file
+        if (db.open())
+            log("DbIf::openDatabase: %s opened", fullpath.c_str());
+        else
+            throw std::runtime_error("Cannot open " + fullpath);
+    } else {
+        log("Library '%s' not found", fullpath.c_str());
+    }
+}
+
+void QSQDbIf::closeDatabase(std::string fullpath) {
+    log("DbIf::closeDatabase: closing database " + fullpath);
+    QString dbname(QString::fromStdString(fullpath));
+    QSqlDatabase db(QSqlDatabase::database(dbname));
+    db.close();
+    QSqlDatabase::removeDatabase(dbname);
+
+}
+void QSQDbIf::deleteDatabase(std::string fullpath) {
+    log("DbIf::deleteDatabase: Deleting database " + fullpath);
+    closeDatabase(fullpath);
+    std::remove(fullpath.c_str());
 
 }

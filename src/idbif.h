@@ -10,6 +10,9 @@ class IDbIf
 public:
     virtual ~IDbIf() {}
     virtual void createDatabase(std::string) = 0;
+    virtual void openDatabase(std::string) = 0;
+    virtual void closeDatabase(std::string) = 0;
+    virtual void deleteDatabase(std::string) = 0;
 };
 
 #endif // DBIF_H

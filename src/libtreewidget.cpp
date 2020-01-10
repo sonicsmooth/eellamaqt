@@ -6,8 +6,6 @@
 #include <QVBoxLayout>
 #include <QTreeView>
 #include <QPushButton>
-#include <QTextEdit>
-#include <QEvent>
 
 LibTreeWidget::LibTreeWidget(QWidget *parent, Qt::WindowFlags flags) :
     QWidget(parent, flags)

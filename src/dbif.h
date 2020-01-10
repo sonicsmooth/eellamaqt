@@ -15,7 +15,11 @@ private:
     //QSqlDatabase* m_pQDb;
 public:
     QSQDbIf();
-    virtual void createDatabase(std::string) override;
+    void createDatabase(std::string) override;
+    void openDatabase(std::string) override;
+    void closeDatabase(std::string) override;
+    void deleteDatabase(std::string) override;
+
 };
 
 #endif // DBIF_H

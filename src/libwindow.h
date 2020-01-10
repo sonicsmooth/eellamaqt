@@ -50,6 +50,8 @@ public:
     void editCopy();
     void editPaste();
     void editDelete();
+    void viewLibTreeView();
+    void viewLibTableView();
     void helpAbout();
 
 

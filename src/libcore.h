@@ -63,7 +63,7 @@ class LibCore : public Loggable
 {
 private:
     IDbIf* m_pDbIf;
-    std::list<std::string> m_activeDb;
+    std::list<std::string> m_activeDb; // maybe move this to dbif??
     IUIManager *m_pUIManager;
 
 public:
@@ -73,14 +73,17 @@ public:
     IDbIf *DbIf() const;
     void setUIManager(IUIManager *);
     IUIManager *UIManager() const;
+    std::optional<std::string> activeDb() const; // returns top active Db or null_opt
+    bool activeDb(std::string) const; // returns string in activeDb list or null_opt
     void pushActiveDb(std::string);
     void popActiveDb(std::string);
-    std::optional<std::string> activeDb() const;
     void newLib(std::string);
     void openLib(std::string);
     void saveLib(std::string);
     void saveLibAs(std::string);
+    void closeActiveLib();
     void closeLib(std::string);
+    void deleteActiveLib();
     void deleteLib(std::string);
 
     // Symbols are created/deleted

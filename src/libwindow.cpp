@@ -140,12 +140,15 @@ void LibWindow::fileCloseLib() {
     assert(m_pCore);
     if (m_pCore->activeDb()) {
         log("LibWindow: file close lib " + m_pCore->activeDb().value());
-        m_pCore->closeLib(m_pCore->activeDb().value());
+        m_pCore->closeActiveLib();
     }
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
-    log("LibWindow: file delete lib " + m_pCore->activeDb().value());
+    if (m_pCore->activeDb()) {
+        log("LibWindow: file delete lib " + m_pCore->activeDb().value());
+        m_pCore->deleteActiveLib();
+    }
 }
 void LibWindow::newShape() {
     assert(m_pCore);
@@ -230,5 +233,14 @@ void LibWindow::editDelete() {
     m_pCore->deleteShape("Some shape");
     m_pCore->deleteSymbol("Some symbol");
 }
+void LibWindow::viewLibTreeView() {
+    assert(m_pCore);
+    log("LibWindow: view LibTreeView");
+
+}
+void LibWindow::viewLibTableView() {
+
+}
+
 void LibWindow::helpAbout() {}
 
