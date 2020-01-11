@@ -123,10 +123,25 @@ void LibWindow::fileNewLib() {
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
-    QString qfilename = QFileDialog::getOpenFileName(this,
-        ".", tr("Open Library"), tr("Any (*);;Library files (*.SchLib *.db)"));
-    std::string filename(qfilename.toStdString());
-    m_pCore->openLib(filename);
+//    QString qfilename = QFileDialog::getOpenFileName(this,
+//        tr("Open Library"), ".", tr("Any (*);;Library files (*.SchLib *.db)"));
+//    if (qfilename.size()) // Don't open an empty file
+//        m_pCore->openLib(qfilename.toStdString());
+
+
+
+    QFileDialog qfd(this);
+    qfd.setFileMode(QFileDialog::ExistingFiles);
+    qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
+    QStringList filenames;
+    if(qfd.exec()) {
+        filenames = qfd.selectedFiles();
+        for (auto f : filenames) {
+            m_pCore->openLib(f.toStdString());
+        }
+    }
+
+
 }
 void LibWindow::fileSaveLib() {
     assert(m_pCore);

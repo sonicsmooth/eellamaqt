@@ -35,6 +35,9 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onWidgetClose);
 
     parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget);
+    auto dws = parentMW()->findChildren<QDockWidget *>();
+    if (dws.length() > 2)
+        parentMW()->tabifyDockWidget(dws[1], libDockWidget);
     return libDockWidget;
 }
 

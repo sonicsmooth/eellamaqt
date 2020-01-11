@@ -55,8 +55,10 @@ void QSQDbIf::openDatabase(std::string fullpath) {
 void QSQDbIf::closeDatabase(std::string fullpath) {
     log("DbIf::closeDatabase: closing database " + fullpath);
     QString dbname(QString::fromStdString(fullpath));
-    QSqlDatabase db(QSqlDatabase::database(dbname));
-    db.close();
+    { // so db goes out of scope before removing from database
+        QSqlDatabase db(QSqlDatabase::database(dbname));
+        db.close(); // needed?
+    }
     QSqlDatabase::removeDatabase(dbname);
 
 }
