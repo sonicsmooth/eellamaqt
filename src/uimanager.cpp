@@ -34,9 +34,8 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
     libDockWidget->setWidget(libTreeWidget);
     libDockWidget->setWindowTitle(title);
 
-    // Send close signal somewhere; this catches when a dockwidget is closed
-    // If all dockwindows associated with a particular connection string
-    // are closed then this UIManager requests to the core to close the library.
+    // Send close signal somewhere. When all dockwindows with the same
+    // string are closed, UIManager calls core to close library.
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onWidgetClose);
 
     parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget, Qt::Orientation::Vertical);
@@ -48,12 +47,11 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
         libDockWidget->setVisible(true);
         libDockWidget->setFocus();
         libDockWidget->raise();
-        // TODO: Figure out how to resize this programatically; nothing seems to work.
     }
 
     // Create the lists needed for resizedocks
-    QList<QDockWidget *> qdws;
-    QList<int> qdww;
+    QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget
+    QList<int> qdww; // the widths for QDockWidget
     for (auto const & cdw : cdws) {
         qdww.push_back(50);
         qdws.push_back(static_cast<QDockWidget *>(cdw));
