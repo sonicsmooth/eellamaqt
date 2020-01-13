@@ -60,6 +60,11 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
 
     // Send close signal somewhere. When all dockwindows with the same
     // string are closed, UIManager calls core to close library.
+    // For some reason these connect calls are active *before* the raise() call above,
+    // so when raise is called, the onDockWidgetActive gets called.  The callback for this
+    // refers to m_openWidgets which has not yet been updated with the libDockWidget, so
+    // the assert fails.  Therefore the parentMW signals are blocked above so this
+    // callback doesn't get called.
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
     QObject::connect(parentMW(), &QMainWindow::tabifiedDockWidgetActivated, this, &UIManager::onDockWidgetActivate);
 
