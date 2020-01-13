@@ -70,15 +70,15 @@ LibWindow::LibWindow(QWidget *parent)
         // LibTreeWidget is the content widget of the ClosingDockWidget.  We don't
         // know which one we get here unless we try to cast it.
         (void) old;
-        QTreeView* qtv(dynamic_cast<QTreeView*>(now));
-        LibTreeWidget* ltw(nullptr);
+        QTreeView *qtv(dynamic_cast<QTreeView *>(now));
+        LibTreeWidget *ltw(nullptr);
         if (qtv) {
-            ltw = static_cast<LibTreeWidget*>(qtv->parentWidget());
+            ltw = static_cast<LibTreeWidget *>(qtv->parentWidget());
         }
         else {
-            ClosingDockWidget* ldw(dynamic_cast<ClosingDockWidget*>(now));
+            ClosingDockWidget *ldw(dynamic_cast<ClosingDockWidget *>(now));
             if (ldw) {
-                ltw = static_cast<LibTreeWidget*>(ldw->widget());
+                ltw = static_cast<LibTreeWidget *>(ldw->widget());
             }
         }
         if (ltw) {

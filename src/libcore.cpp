@@ -72,7 +72,7 @@ void LibCore::newLib(std::string fullpath) {
     m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
     // TODO: somehow point UI to database
-    m_pUIManager->openUI(UIType::LIBVIEW, fullpath);
+    m_pUIManager->openUI(UIType::LIBTREEVIEW, fullpath);
 }
 void LibCore::openLib(std::string fullpath) {
     log("LibCore::openLib Opening library " + fullpath);
@@ -80,7 +80,7 @@ void LibCore::openLib(std::string fullpath) {
         log("Library %s already open", fullpath.c_str());
     } else {
         m_pDbIf->openDatabase(fullpath);
-        m_pUIManager->openUI(UIType::LIBVIEW, fullpath);
+        m_pUIManager->openUI(UIType::LIBTREEVIEW, fullpath);
         pushActiveDb(fullpath);
     }
 }
@@ -105,7 +105,7 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         // Keep old one open, open new one too
         m_pDbIf->cloneDatabase(oldpath, newpath);
         m_pDbIf->openDatabase(newpath);
-        m_pUIManager->openUI(UIType::LIBVIEW, newpath);
+        m_pUIManager->openUI(UIType::LIBTREEVIEW, newpath);
         pushActiveDb(newpath);
         break;
     case DupOptions::QUIETLY:
@@ -120,8 +120,6 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         break;
     }
 }
-
-
 
 void LibCore::closeLib(std::string fullpath) {
     // Remove specified db from list and call UI to close related windows

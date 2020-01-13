@@ -6,7 +6,7 @@
 
 // These functions are called by the core to do bare minimal stuff to the UI.
 
-enum class UIType {LIBVIEW};
+enum class UIType {LIBTREEVIEW, LIBTABLEVIEW};
 
 class IUIManager
 {
