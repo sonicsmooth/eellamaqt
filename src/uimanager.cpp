@@ -37,17 +37,25 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
     // Make this dockwidget attach and show
     // TODO:: Filter for which ones are currently tabbed; remove from list those that are floating
     parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget, Qt::Orientation::Vertical);
-    const QList<ClosingDockWidget *> cdws(parentMW()->findChildren<ClosingDockWidget *>());
+    QList<ClosingDockWidget *> cdws0(parentMW()->findChildren<ClosingDockWidget *>());
+    QList<ClosingDockWidget *> cdws(cdws0); // working copy
+    for (auto const & cdw : cdws0) {
+        if (parentMW()->dockWidgetArea(cdw) != Qt::RightDockWidgetArea ||
+            cdw->isFloating()) {
+            cdws.removeOne(cdw);
+        }
+    }
     if (cdws.length() > 1) {
         log("Docking '%s' to '%s'", libDockWidget->windowTitle().toStdString().c_str(),
                                     cdws.first()->windowTitle().toStdString().c_str());
         parentMW()->tabifyDockWidget(cdws.first(), libDockWidget);
-        parentMW()->blockSignals(true);
-        libDockWidget->setVisible(true);
-        libDockWidget->setFocus();
-        libDockWidget->raise();
-        parentMW()->blockSignals(false);
     }
+
+    parentMW()->blockSignals(true);
+    libDockWidget->setVisible(true);
+    libDockWidget->setFocus();
+    libDockWidget->raise();
+    parentMW()->blockSignals(false);
 
     // Resize to fixed width; start with needed lists
     QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget
