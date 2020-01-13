@@ -37,6 +37,7 @@ std::optional<std::string> LibCore::activeDb() const {
                                std::nullopt;
 }
 bool LibCore::activeDb(std::string fullpath) const {
+    // Returns wheter fullpath is in active db
     return std::find(m_activeDb.begin(), m_activeDb.end(), fullpath) != m_activeDb.end();
 }
 void LibCore::pushActiveDb(std::string adb) {
@@ -71,7 +72,7 @@ void LibCore::newLib(std::string fullpath) {
     m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
     // TODO: somehow point UI to database
-    m_pUIManager->openUI(UITYPE::LIBVIEW, fullpath);
+    m_pUIManager->openUI(UIType::LIBVIEW, fullpath);
 }
 void LibCore::openLib(std::string fullpath) {
     log("LibCore::openLib Opening library " + fullpath);
@@ -79,14 +80,49 @@ void LibCore::openLib(std::string fullpath) {
         log("Library %s already open", fullpath.c_str());
     } else {
         m_pDbIf->openDatabase(fullpath);
+        m_pUIManager->openUI(UIType::LIBVIEW, fullpath);
         pushActiveDb(fullpath);
-        m_pUIManager->openUI(UITYPE::LIBVIEW, fullpath);
     }
 }
-void LibCore::saveLib(std::string fullpath) {
-    log("LibCore::saveLib Saving library " + fullpath);
-    pushActiveDb(fullpath);
+
+
+void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) {
+    // Should only be cassed with oldpath in activeDb list
+    assert(activeDb(oldpath));
+    log("LibCore::saveLib: Fake saving library from %s to %s with option %d ",
+        oldpath.c_str(), newpath.c_str(), opt);
+    switch(opt) {
+    case DupOptions::CLOSE_OLD:
+        // Use existing UI for new, close old one
+        m_pDbIf->cloneDatabase(oldpath, newpath);
+        m_pDbIf->closeDatabase(oldpath);
+        m_pDbIf->openDatabase(newpath);
+        m_pUIManager->retargetUI(oldpath, newpath);
+        popActiveDb(oldpath);
+        pushActiveDb(newpath);
+        break;
+    case DupOptions::OPEN_NEW:
+        // Keep old one open, open new one too
+        m_pDbIf->cloneDatabase(oldpath, newpath);
+        m_pDbIf->openDatabase(newpath);
+        m_pUIManager->openUI(UIType::LIBVIEW, newpath);
+        pushActiveDb(newpath);
+        break;
+    case DupOptions::QUIETLY:
+        m_pDbIf->cloneDatabase(oldpath, newpath);
+        break;
+    case DupOptions::RENAME:
+        m_pDbIf->closeDatabase(oldpath);
+        std::rename(oldpath.c_str(), newpath.c_str());
+        m_pDbIf->openDatabase(newpath);
+        popActiveDb(oldpath);
+        pushActiveDb(newpath);
+        break;
+    }
 }
+
+
+
 void LibCore::closeLib(std::string fullpath) {
     // Remove specified db from list and call UI to close related windows
     // Call dbif to close lib
@@ -152,10 +188,10 @@ void LibCore::renameSymbol(std::string name) {
     log("LibCore: Deleting shape " + name + " from " + activeDb().value());
 }
 
-// void LibCore::insertShape(std::string dbConn, std::string symbolName, Shape shape, 
+// void LibCore::insertShape(std::string dbConn, std::string symbolName, Shape shape,
 //     double x, double y) {
 //     assert(m_pLogger);
-//     m_pLogger->log("LibCore: insertShape %s into %s in %s",  
+//     m_pLogger->log("LibCore: insertShape %s into %s in %s",
 //         shape.name().c_str(), symbolName.c_str(), dbConn.c_str());
 // }
 // void LibCore::removeShape(std::string dbConn, std::string symbolName, std::string shapeName) {

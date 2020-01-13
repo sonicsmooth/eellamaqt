@@ -67,6 +67,9 @@ private:
     IUIManager *m_pUIManager;
 
 public:
+
+    enum class DupOptions {CLOSE_OLD, OPEN_NEW, QUIETLY, RENAME};
+
     LibCore();
     ~LibCore();
     void setDbIf(IDbIf*);
@@ -79,8 +82,7 @@ public:
     void popActiveDb(std::string);
     void newLib(std::string);
     void openLib(std::string);
-    void saveLib(std::string);
-    void saveLibAs(std::string);
+    void saveLib(std::string, std::string, DupOptions);
     void closeActiveLib();
     void closeLib(std::string);
     void deleteActiveLib();

@@ -5,6 +5,8 @@
 #include <QString>
 #include <typeinfo>
 #include <iterator>
+#include <list>
+#include <vector>
 
 UIManager::UIManager(QObject *parent) : QObject(parent)
 {
@@ -18,6 +20,7 @@ QMainWindow *UIManager::parentMW() const {
 }
 
 ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
+    assert(m_pCore);
     LibTreeWidget* libTreeWidget = new LibTreeWidget(parentMW());
     libTreeWidget->setCore(m_pCore);
     libTreeWidget->setLogger(m_pLogger);
@@ -40,19 +43,32 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
         parentMW()->tabifyDockWidget(dws[1], libDockWidget);
     return libDockWidget;
 }
-
-QWidget *findValue(std::map<QWidget *, std::string> m, std::string value) {
-    // finds key/val pair where val == value and returns key
-    for (auto it = m.begin(); it != m.end(); it++)
-        if (it->second == value)
-            return it->first;
+template<typename TMKEY, typename TMVAL, typename TVAL>
+//QWidget *findValue(std::map<QWidget *, std::string> m, std::string value) {
+QWidget *findValue(std::map<TMKEY, TMVAL> m, TVAL value) {
+    // Finds first key/val pair where val == value and returns key
+    for (auto const & [k,v] : m)
+        if (v == value)
+            return k;
     return nullptr;
 }
 
-std::any UIManager::openUI(UITYPE uit, std::string title) {
+template<typename TMKEY, typename TMVAL, typename TVAL>
+std::vector<QWidget *> findValues(std::map<TMKEY, TMVAL> m, TVAL value) {
+    // Finds all key/val pairs where val == value and returns keys
+    std::vector<TMKEY> ret;
+    for (auto const & [k, v]: m) {
+        if (v == value)
+            ret.push_back(k);
+    }
+    return ret;
+}
+
+std::any UIManager::openUI(UIType uit, std::string title) {
     // Ensures only one of any type of view/window is opened
     // Returns pointer if one already exists, otherwise creates new one
-    if(uit == UITYPE::LIBVIEW) {
+    assert(m_pCore);
+    if(uit == UIType::LIBVIEW) {
         QWidget *pw = findValue(m_openWidgets, title);
         if (!pw) {
             pw = openLibTreeView(QString::fromStdString(title), "sometooltip");
@@ -65,11 +81,22 @@ std::any UIManager::openUI(UITYPE uit, std::string title) {
     } else
         return nullptr;
 }
+void UIManager::retargetUI(std::string oldpath, std::string newpath) {
+    // Rename all open UIs which currently have oldpath to newpath
+    assert(m_pCore);
+    log("UIManager::retargetUI: retarget from %s to %s",
+        oldpath.c_str(), newpath.c_str());
+    for (auto pw : findValues(m_openWidgets, oldpath)) {
+        pw->setWindowTitle(QString::fromStdString(newpath));
+        m_openWidgets[pw] = newpath;
+    }
+}
 
 void UIManager::closeUI(std::string title) {
     // Intended to be called from Core, which is is not aware of UIs very much.
     // When called with a given string, this fn will close all UI windows
     // associated with that string
+    assert(m_pCore);
     int n = 0;
 
     // Can't use for loop because body modifies m_openWidgets
@@ -85,6 +112,7 @@ void UIManager::closeUI(std::string title) {
 void UIManager::onWidgetClose(QWidget *pw) {
     // Remove the widget from the open widgets map
     // If no more open widgets, then ask core to close lib
+    assert(m_pCore);
     assert(m_openWidgets.count(pw));
     std::string title(m_openWidgets[pw]);
     m_openWidgets.erase(pw);

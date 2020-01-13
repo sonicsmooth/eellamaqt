@@ -34,8 +34,10 @@ LibWindow::LibWindow(QWidget *parent)
     
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
-    connect(ui->actionFileSaveLib, &QAction::triggered, this, &LibWindow::fileSaveLib);
-    connect(ui->actionFileSaveLibAs, &QAction::triggered, this, &LibWindow::fileSaveLibAs);
+    connect(ui->actionFileSaveAsAndClose, &QAction::triggered, this, &LibWindow::fileSaveAsAndCloseOld);
+    connect(ui->actionFileSaveAsAndOpen, &QAction::triggered, this, &LibWindow::fileSaveAsAndOpenNew);
+    connect(ui->actionFileSaveAsQuietly, &QAction::triggered, this, &LibWindow::fileSaveAsQuietly);
+    connect(ui->actionFileRename, &QAction::triggered, this, &LibWindow::fileRename);
     connect(ui->actionFileCloseLib, &QAction::triggered, this, &LibWindow::fileCloseLib);
     connect(ui->actionFileDeleteLib, &QAction::triggered, this, &LibWindow::fileDeleteLib);
     connect(ui->actionNewShape, &QAction::triggered, this, &LibWindow::newShape);
@@ -123,13 +125,6 @@ void LibWindow::fileNewLib() {
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
-//    QString qfilename = QFileDialog::getOpenFileName(this,
-//        tr("Open Library"), ".", tr("Any (*);;Library files (*.SchLib *.db)"));
-//    if (qfilename.size()) // Don't open an empty file
-//        m_pCore->openLib(qfilename.toStdString());
-
-
-
     QFileDialog qfd(this);
     qfd.setFileMode(QFileDialog::ExistingFiles);
     qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
@@ -140,21 +135,52 @@ void LibWindow::fileOpenLib() {
             m_pCore->openLib(f.toStdString());
         }
     }
+}
+
+void LibWindow::_duplicateWithOptions(LibCore::DupOptions opt) {
+    // Execute save-as file dialog then call core with old and new names
+    assert(m_pCore) ;
+    log("LibWindow::_duplicateWithOptions");
+    if (m_pCore->activeDb()) {
+        QFileDialog qfd(this);
+        qfd.setFileMode(QFileDialog::AnyFile);
+        qfd.setAcceptMode(QFileDialog::AcceptSave);
+        qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
+        if (qfd.exec()) {
+            std::string name(qfd.selectedFiles()[0].toStdString());
+            assert(name != "");
+            m_pCore->saveLib(m_pCore->activeDb().value(),
+                             name, opt);
+        }
+    }
+}
+void LibWindow::fileSaveAsAndCloseOld() {
+    //  Duplicate and close -- copy file, close old one, open new one, 'Save As ond close existing'
+    log("LibWindow::fileSaveAsAndClose");
+    _duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
+}
+void LibWindow::fileSaveAsAndOpenNew() {
+    //  Duplicate and open -- copy file, keep old one open, open new one, 'Save As and open new'
+    log("LibWindow::fileSaveAsAndOpen");
+    _duplicateWithOptions(LibCore::DupOptions::OPEN_NEW);
+}
+void LibWindow::fileSaveAsQuietly() {
+    //  Duplicate quietly -- copy file, keep old one open only, like 'Save Copy As'
+    log("LibWindow::fileSaveAsQuietly");
+    _duplicateWithOptions(LibCore::DupOptions::QUIETLY);
+}
+void LibWindow::fileRename() {
+    // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
+    // or closing, renaming, then opening again
+    log("LibWindow::fileSaveAsQuietly");
+    _duplicateWithOptions(LibCore::DupOptions::RENAME);
+}
 
 
-}
-void LibWindow::fileSaveLib() {
-    assert(m_pCore);
-    log("LibWindow: file save lib");
-}
-void LibWindow::fileSaveLibAs() {
-    assert(m_pCore);
-    log("LibWindow: file save lib as");
-}
 void LibWindow::fileCloseLib() {
     assert(m_pCore);
     if (m_pCore->activeDb()) {
-        log("LibWindow: file close lib " + m_pCore->activeDb().value());
+        log("LibWindow::fileCloseLib: " + m_pCore->activeDb().value());
         m_pCore->closeActiveLib();
     }
 }

@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdio>
 #include <exception>
+#include <filesystem>
 
 
 QSQDbIf::QSQDbIf() {}
@@ -51,11 +52,21 @@ void QSQDbIf::openDatabase(std::string fullpath) {
         log("Library '%s' not found", fullpath.c_str());
     }
 }
+void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
+    // Just copy the thing, then add it to available databases
+    // We assume here that sqlite is done writing.
+    // If this is run on a separate thread then we should wait until
+    // everything is done, somehow
 
+    std::filesystem::copy(oldpath, newpath);
+    //QString qnewpath(QString::fromStdString(newpath));
+    //QSqlDatabase::addDatabase("QSQLITE", qnewpath);
+}
 void QSQDbIf::closeDatabase(std::string fullpath) {
     log("DbIf::closeDatabase: closing database " + fullpath);
     QString dbname(QString::fromStdString(fullpath));
     { // so db goes out of scope before removing from database
+
         QSqlDatabase db(QSqlDatabase::database(dbname));
         db.close(); // needed?
     }

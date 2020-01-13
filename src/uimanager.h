@@ -21,8 +21,9 @@ private:
     std::map<QWidget *, std::string> m_openWidgets;
 public:
     UIManager(QObject * = nullptr);
-    virtual std::any openUI(UITYPE, std::string) override;
-    virtual void closeUI(std::string) override;
+    std::any openUI(UIType, std::string) override;
+    void closeUI(std::string) override;
+    void retargetUI(std::string oldpath, std::string newpath) override;
     void onWidgetClose(QWidget *);
     void setParentMW(QMainWindow *);
     QMainWindow *parentMW() const;
