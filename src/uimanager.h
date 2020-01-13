@@ -24,7 +24,8 @@ public:
     std::any openUI(UIType, std::string) override;
     void closeUI(std::string) override;
     void retargetUI(std::string oldpath, std::string newpath) override;
-    void onWidgetClose(QWidget *);
+    void onDockWidgetClose(QWidget *);
+    void onDockWidgetActivate(QWidget *);
     void setParentMW(QMainWindow *);
     QMainWindow *parentMW() const;
 

@@ -43,9 +43,11 @@ bool LibCore::activeDb(std::string fullpath) const {
 void LibCore::pushActiveDb(std::string adb) {
     // Ensure exactly one adb is in the list
     // and that it's at the front
+    std::optional<std::string> oldFront(activeDb());
     m_activeDb.remove(adb);
     m_activeDb.push_front(adb);
-    log("Active db set to " + activeDb().value());
+    if (!oldFront || oldFront.value() != adb)
+        log("Active db set to " + activeDb().value());
 }
 void LibCore::popActiveDb(std::string adb) {
     // Remove adb from activeDb list;

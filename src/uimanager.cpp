@@ -34,22 +34,22 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
     libDockWidget->setWidget(libTreeWidget);
     libDockWidget->setWindowTitle(title);
 
-    // Send close signal somewhere. When all dockwindows with the same
-    // string are closed, UIManager calls core to close library.
-    QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onWidgetClose);
-
+    // Make this dockwidget attach and show
+    // TODO:: Filter for which ones are currently tabbed; remove from list those that are floating
     parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget, Qt::Orientation::Vertical);
     const QList<ClosingDockWidget *> cdws(parentMW()->findChildren<ClosingDockWidget *>());
     if (cdws.length() > 1) {
         log("Docking '%s' to '%s'", libDockWidget->windowTitle().toStdString().c_str(),
                                     cdws.first()->windowTitle().toStdString().c_str());
         parentMW()->tabifyDockWidget(cdws.first(), libDockWidget);
+        parentMW()->blockSignals(true);
         libDockWidget->setVisible(true);
         libDockWidget->setFocus();
         libDockWidget->raise();
+        parentMW()->blockSignals(false);
     }
 
-    // Create the lists needed for resizedocks
+    // Resize to fixed width; start with needed lists
     QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget
     QList<int> qdww; // the widths for QDockWidget
     for (auto const & cdw : cdws) {
@@ -57,6 +57,12 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
         qdws.push_back(static_cast<QDockWidget *>(cdw));
     }
     parentMW()->resizeDocks(qdws, qdww, Qt::Orientation::Horizontal);
+
+    // Send close signal somewhere. When all dockwindows with the same
+    // string are closed, UIManager calls core to close library.
+    QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
+    QObject::connect(parentMW(), &QMainWindow::tabifiedDockWidgetActivated, this, &UIManager::onDockWidgetActivate);
+
     return libDockWidget;
 }
 template<typename TMKEY, typename TMVAL, typename TVAL>
@@ -87,7 +93,7 @@ std::any UIManager::openUI(UIType uit, std::string title) {
         QWidget *pw = findMapValue(m_openWidgets, title);
         if (!pw) {
             pw = openLibTreeView(QString::fromStdString(title), "sometooltip");
-            m_openWidgets[pw] = title;
+            m_openWidgets[pw] = title; // needs to be added before openLibTreeView, which triggers onDockWidgetActivate
             log("UIManager::OpenUI: Opened LibView %s ", m_openWidgets[pw].c_str());
         } else {
             log("UIManager::OpenUI: LibView %s already open", m_openWidgets[pw].c_str());
@@ -98,7 +104,8 @@ std::any UIManager::openUI(UIType uit, std::string title) {
 }
 void UIManager::retargetUI(std::string oldpath, std::string newpath) {
     // Rename all open UIs which currently have oldpath to newpath
-    // Update each entry in m_openWidgets map
+    // Update each entry in m_openWidgets map.
+    // TODO: figure out how data model works and retarget this UI to new or renamed model
     assert(m_pCore);
     log("UIManager::retargetUI: retarget from %s to %s",
         oldpath.c_str(), newpath.c_str());
@@ -125,7 +132,7 @@ void UIManager::closeUI(std::string title) {
     log("UIManager::CloseUI: closed %d windows", n);
 }
 
-void UIManager::onWidgetClose(QWidget *pw) {
+void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the widget from the open widgets map
     // If no more open widgets, then ask core to close lib
     assert(m_pCore);
@@ -134,10 +141,20 @@ void UIManager::onWidgetClose(QWidget *pw) {
     m_openWidgets.erase(pw);
     size_t n = m_openWidgets.count(pw);
     if (n == 0) {
-        log("UIManager::OnWidgetClose: Last reference to %s closed", title.c_str());
+        log("UIManager::OnDockWidgetClose: Last reference to %s closed", title.c_str());
         if (m_pCore->activeDb(title))
             m_pCore->closeLib(title);
     } else {
-        log("UIManager::OnWidgetClose: %d references to %s", n, title.c_str());
+        log("UIManager::OnDockWidgetClose: %d references to %s", n, title.c_str());
     }
+}
+void UIManager::onDockWidgetActivate(QWidget *pw) {
+    // Remove the widget from the open widgets map
+    // If no more open widgets, then ask core to close lib
+    // For some reason this gets called twice with each tab is click
+    assert(m_pCore);
+    assert(m_openWidgets.count(pw)); // make sure pw is there
+    std::string title(m_openWidgets[pw]);
+    log("UIManager::OnDockWidgetActivate: activated %s", title.c_str());
+    m_pCore->pushActiveDb(title);
 }
