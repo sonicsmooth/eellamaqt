@@ -172,7 +172,7 @@ void LibWindow::fileSaveAsQuietly() {
 void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
-    log("LibWindow::fileSaveAsQuietly");
+    log("LibWindow::fileRename");
     _duplicateWithOptions(LibCore::DupOptions::RENAME);
 }
 

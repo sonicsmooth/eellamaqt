@@ -185,7 +185,7 @@
      <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
    </property>
    <property name="text">
-    <string>Save As</string>
+    <string>Save As, Replace</string>
    </property>
    <property name="toolTip">
     <string>Save a copy, open new, close existing</string>

@@ -33,29 +33,32 @@ ClosingDockWidget *UIManager::openLibTreeView(QString title, QString tooltip) {
     libDockWidget->setFocusPolicy(Qt::StrongFocus);
     libDockWidget->setWidget(libTreeWidget);
     libDockWidget->setWindowTitle(title);
+    parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget, Qt::Orientation::Horizontal);
 
-    // Make this dockwidget attach and show
-    // TODO:: Filter for which ones are currently tabbed; remove from list those that are floating
-    parentMW()->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, libDockWidget, Qt::Orientation::Vertical);
+    // Make this dockwidget stick to right and tabify if needed
+    // Get all ClosingDockWidgets and ignore those that are either floating or not in the
+    // right dock area, then tabify on top of the first one remaining
     QList<ClosingDockWidget *> cdws0(parentMW()->findChildren<ClosingDockWidget *>());
-    QList<ClosingDockWidget *> cdws(cdws0); // working copy
+    QList<ClosingDockWidget *> cdws; // working copy
     for (auto const & cdw : cdws0) {
-        if (parentMW()->dockWidgetArea(cdw) != Qt::RightDockWidgetArea ||
-            cdw->isFloating()) {
-            cdws.removeOne(cdw);
+        if (parentMW()->dockWidgetArea(cdw) == Qt::RightDockWidgetArea &&
+                !cdw->isFloating()) {
+            cdws.push_back(cdw);
         }
     }
+
+    // Add to existing right ClosingDockWidget and raise
     if (cdws.length() > 1) {
         log("Docking '%s' to '%s'", libDockWidget->windowTitle().toStdString().c_str(),
                                     cdws.first()->windowTitle().toStdString().c_str());
         parentMW()->tabifyDockWidget(cdws.first(), libDockWidget);
+        parentMW()->blockSignals(true);
+        libDockWidget->setVisible(true);
+        libDockWidget->setFocus();
+        libDockWidget->raise();
+        parentMW()->blockSignals(false);
     }
 
-    parentMW()->blockSignals(true);
-    libDockWidget->setVisible(true);
-    libDockWidget->setFocus();
-    libDockWidget->raise();
-    parentMW()->blockSignals(false);
 
     // Resize to fixed width; start with needed lists
     QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget

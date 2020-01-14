@@ -91,7 +91,7 @@ void LibCore::openLib(std::string fullpath) {
 void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) {
     // Should only be cassed with oldpath in activeDb list
     assert(activeDb(oldpath));
-    log("LibCore::saveLib: Fake saving library from %s to %s with option %d ",
+    log("LibCore::saveLib: Saving library from %s to %s with option %d ",
         oldpath.c_str(), newpath.c_str(), opt);
     switch(opt) {
     case DupOptions::CLOSE_OLD:
@@ -115,9 +115,10 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         break;
     case DupOptions::RENAME:
         m_pDbIf->closeDatabase(oldpath);
+        popActiveDb(oldpath);
         std::rename(oldpath.c_str(), newpath.c_str());
         m_pDbIf->openDatabase(newpath);
-        popActiveDb(oldpath);
+        m_pUIManager->retargetUI(oldpath, newpath);
         pushActiveDb(newpath);
         break;
     }
