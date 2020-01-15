@@ -52,6 +52,14 @@ int main(int argc, char *argv[])
     core.setUIManager(&uim);
     core.setLogger(&logger);
 
+//    std::map<std::string, std::list<int>> junk;
+//    junk["cat"].push_back(10);
+//    junk["cat"].push_back(20);
+//    junk["cat"].push_back(30);
+//    junk["dog"].push_back(50);
+//    junk["dog"].push_back(60);
+//    junk["dog"].push_back(70);
+
 
 
     // Go!

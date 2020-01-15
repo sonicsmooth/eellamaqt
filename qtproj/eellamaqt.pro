@@ -19,7 +19,7 @@ SOURCES += \
     ../src/closingdockwidget.cpp \
     ../src/dbif.cpp \
     ../src/libcore.cpp \
-    ../src/libtreewidget.cpp \
+    ../src/libviewwidget.cpp \
     ../src/libwindow.cpp \
     ../src/loggable.cpp \
     ../src/logger.cpp \
@@ -35,7 +35,7 @@ HEADERS += \
     ../src/ilogger.h \
     ../src/iuimanager.h \
     ../src/libcore.h \
-    ../src/libtreewidget.h \
+    ../src/libviewwidget.h \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \

@@ -99,8 +99,8 @@
     <property name="title">
      <string>Views</string>
     </property>
-    <addaction name="actionLib_Tree_View"/>
-    <addaction name="actionLib_Table_View"/>
+    <addaction name="actionLibTreeView"/>
+    <addaction name="actionLibTableView"/>
    </widget>
    <addaction name="menuLibrarian"/>
    <addaction name="menuSymbols"/>
@@ -458,14 +458,20 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionLib_Tree_View">
+  <action name="actionLibTreeView">
    <property name="text">
     <string>Lib Tree View</string>
    </property>
+   <property name="toolTip">
+    <string>Open tree view for current library</string>
+   </property>
   </action>
-  <action name="actionLib_Table_View">
+  <action name="actionLibTableView">
    <property name="text">
     <string>Lib Table View</string>
+   </property>
+   <property name="toolTip">
+    <string>Open table view for active library</string>
    </property>
   </action>
  </widget>

@@ -5,23 +5,28 @@
 #include "coreable.h"
 #include "loggable.h"
 #include "closingdockwidget.h"
-#include "libtreewidget.h"
+#include "libviewwidget.h"
 #include <QString>
 #include <QWidget>
 #include <QMainWindow>
+#include <QAbstractItemView>
 #include <string>
 #include <map>
+#include <vector>
+#include <any>
 
 
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
 private:
     QMainWindow *m_parentMW;
-    ClosingDockWidget *openLibTreeView(QString, QString);
-    std::map<QWidget *, std::string> m_openWidgets;
+    std::list<UIType> m_defaultUITypes;
+    ClosingDockWidget *openLibView(QAbstractItemView *, QString title, Qt::DockWidgetArea);
+    std::map<std::string, std::list<QDockWidget *>> m_openLibWidgets;
 public:
     UIManager(QObject * = nullptr);
-    std::any openUI(UIType, std::string) override;
+    void openUI(std::string) override; // opens default UI types
+    std::any openUI(std::string, UIType); // opens named UI type
     void closeUI(std::string) override;
     void retargetUI(std::string oldpath, std::string newpath) override;
     void onDockWidgetClose(QWidget *);

@@ -43,6 +43,11 @@ bool LibCore::activeDb(std::string fullpath) const {
 void LibCore::pushActiveDb(std::string adb) {
     // Ensure exactly one adb is in the list
     // and that it's at the front
+
+    if (adb.empty()) {
+        volatile int x = 5;
+    }
+
     std::optional<std::string> oldFront(activeDb());
     m_activeDb.remove(adb);
     m_activeDb.push_front(adb);
@@ -74,7 +79,7 @@ void LibCore::newLib(std::string fullpath) {
     m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
     // TODO: somehow point UI to database
-    m_pUIManager->openUI(UIType::LIBTREEVIEW, fullpath);
+    m_pUIManager->openUI(fullpath);
 }
 void LibCore::openLib(std::string fullpath) {
     log("LibCore::openLib Opening library " + fullpath);
@@ -82,8 +87,8 @@ void LibCore::openLib(std::string fullpath) {
         log("Library %s already open", fullpath.c_str());
     } else {
         m_pDbIf->openDatabase(fullpath);
-        m_pUIManager->openUI(UIType::LIBTREEVIEW, fullpath);
         pushActiveDb(fullpath);
+        m_pUIManager->openUI(fullpath);
     }
 }
 
@@ -107,7 +112,7 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         // Keep old one open, open new one too
         m_pDbIf->cloneDatabase(oldpath, newpath);
         m_pDbIf->openDatabase(newpath);
-        m_pUIManager->openUI(UIType::LIBTREEVIEW, newpath);
+        m_pUIManager->openUI(newpath);
         pushActiveDb(newpath);
         break;
     case DupOptions::QUIETLY:

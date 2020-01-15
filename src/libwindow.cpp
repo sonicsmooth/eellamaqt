@@ -1,7 +1,8 @@
 #include "libwindow.h"
-#include "libtreewidget.h"
+#include "libviewwidget.h"
 #include "ui_libwindow.h"
 #include "closingdockwidget.h"
+#include "uimanager.h"
 
 #include <iostream>
 #include <cstdio>
@@ -14,6 +15,9 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QDir>
+#include <QTreeView>
+#include <QTableView>
+#include <QTableWidget>
 //#include <QDockWidget>
 #include <QtSql>
 
@@ -59,6 +63,8 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
+    connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::viewLibTreeView);
+    connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::viewLibTableView);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
 
     // This handles focusing on the dockwidget and its content widget
@@ -69,23 +75,36 @@ LibWindow::LibWindow(QWidget *parent)
         // LibTreeWidget is the parent of the QTreeView.  In the second case the
         // LibTreeWidget is the content widget of the ClosingDockWidget.  We don't
         // know which one we get here unless we try to cast it.
-        (void) old;
-        QTreeView *qtv(dynamic_cast<QTreeView *>(now));
-        LibTreeWidget *ltw(nullptr);
-        if (qtv) {
-            ltw = static_cast<LibTreeWidget *>(qtv->parentWidget());
-        }
-        else {
-            ClosingDockWidget *ldw(dynamic_cast<ClosingDockWidget *>(now));
-            if (ldw) {
-                ltw = static_cast<LibTreeWidget *>(ldw->widget());
-            }
-        }
-        if (ltw) {
-            m_pCore->pushActiveDb(ltw->DbConn());
-        }
-    });
 
+        // ClosingDockWidget
+        // --- LibViewWidget (dbConn)
+        // ------ QTreeView
+
+        // ClosingDockWidget
+        // --- LibViewWidget (no data)
+        // ------ QTableView
+
+
+        (void) old;
+        QDockWidget *cdw(dynamic_cast<QDockWidget *>(now));
+        LibViewWidget *lvw(nullptr);
+        QTreeView *qtreev(dynamic_cast<QTreeView *>(now));
+        QTableView *qtablev(dynamic_cast<QTableView *>(now));
+
+        if (cdw) {
+            lvw = static_cast<LibViewWidget *>(cdw->widget());
+        } else if (qtreev) {
+            lvw = static_cast<LibViewWidget *>(qtreev->parentWidget());
+        } else if (qtablev) {
+            lvw = static_cast<LibViewWidget *>(qtablev->parentWidget());
+        }
+
+        if (lvw) {
+            m_pCore->pushActiveDb(lvw->DbConn());
+        }
+
+        // Might not assign lvw since there are other things getting focus
+    });
 }
 
 
@@ -175,7 +194,6 @@ void LibWindow::fileRename() {
     log("LibWindow::fileRename");
     _duplicateWithOptions(LibCore::DupOptions::RENAME);
 }
-
 
 void LibWindow::fileCloseLib() {
     assert(m_pCore);
@@ -277,9 +295,19 @@ void LibWindow::editDelete() {
 void LibWindow::viewLibTreeView() {
     assert(m_pCore);
     log("LibWindow: view LibTreeView");
+    if (m_pCore->activeDb()) {
+        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
+        mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
+    }
 
 }
 void LibWindow::viewLibTableView() {
+    assert(m_pCore);
+    log("LibWindow: view LibTableView");
+    if (m_pCore->activeDb()) {
+        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
+        mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
+    }
 
 }
 
