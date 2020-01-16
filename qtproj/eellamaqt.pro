@@ -24,7 +24,8 @@ SOURCES += \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
-    ../src/uimanager.cpp
+    ../src/uimanager.cpp \
+    filesaveas.cpp
 
 
 HEADERS += \
@@ -39,7 +40,8 @@ HEADERS += \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \
-    ../src/uimanager.h
+    ../src/uimanager.h \
+    filesaveas.h
 
 
 FORMS += \

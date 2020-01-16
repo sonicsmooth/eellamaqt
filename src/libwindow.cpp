@@ -3,6 +3,7 @@
 #include "ui_libwindow.h"
 #include "closingdockwidget.h"
 #include "uimanager.h"
+#include "filesaveas.h"
 
 #include <iostream>
 #include <cstdio>
@@ -20,6 +21,7 @@
 #include <QTableWidget>
 //#include <QDockWidget>
 #include <QtSql>
+#include <QInputDialog>
 
 LibWindow::LibWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -38,9 +40,10 @@ LibWindow::LibWindow(QWidget *parent)
     
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
-    connect(ui->actionFileSaveAsAndClose, &QAction::triggered, this, &LibWindow::fileSaveAsAndCloseOld);
-    connect(ui->actionFileSaveAsAndOpen, &QAction::triggered, this, &LibWindow::fileSaveAsAndOpenNew);
-    connect(ui->actionFileSaveAsQuietly, &QAction::triggered, this, &LibWindow::fileSaveAsQuietly);
+    connect(ui->actionFileSaveAs, &QAction::triggered, this, &LibWindow::fileSaveAs);
+//    connect(ui->actionFileSaveAsAndClose, &QAction::triggered, this, &LibWindow::fileSaveAsAndCloseOld);
+//    connect(ui->actionFileSaveAsAndOpen, &QAction::triggered, this, &LibWindow::fileSaveAsAndOpenNew);
+//    connect(ui->actionFileSaveAsQuietly, &QAction::triggered, this, &LibWindow::fileSaveAsQuietly);
     connect(ui->actionFileRename, &QAction::triggered, this, &LibWindow::fileRename);
     connect(ui->actionFileCloseLib, &QAction::triggered, this, &LibWindow::fileCloseLib);
     connect(ui->actionFileDeleteLib, &QAction::triggered, this, &LibWindow::fileDeleteLib);
@@ -113,6 +116,36 @@ LibWindow::~LibWindow()
     delete ui;
 }
 
+void LibWindow::updateActions() {
+    assert(m_pCore);
+    bool en(m_pCore->activeDb());
+    ui->actionFileRename->setEnabled(en);
+    ui->actionFileSaveAs->setEnabled(en);
+    ui->actionFileCloseLib->setEnabled(en);
+    ui->actionFileDeleteLib->setEnabled(en);
+    ui->actionEditCut->setEnabled(en);
+    ui->actionEditCopy->setEnabled(en);
+    ui->actionEditPaste->setEnabled(en);
+    ui->actionEditMove->setEnabled(en);
+    ui->actionEditRedo->setEnabled(en);
+    ui->actionEditUndo->setEnabled(en);
+    ui->actionEditDelete->setEnabled(en);
+    ui->actionEditRotate->setEnabled(en);
+    ui->actionNewPin->setEnabled(en);
+    ui->actionNewLine->setEnabled(en);
+    ui->actionNewText->setEnabled(en);
+    ui->actionNewArrow->setEnabled(en);
+    ui->actionNewShape->setEnabled(en);
+    ui->actionInsertShape->setEnabled(en);
+    ui->actionNewCircle->setEnabled(en);
+    ui->actionNewSymbol->setEnabled(en);
+    ui->actionNewPolygon->setEnabled(en);
+    ui->actionNewPolyline->setEnabled(en);
+    ui->actionNewRectangle->setEnabled(en);
+    ui->actionLibTreeView->setEnabled(en);
+    ui->actionLibTableView->setEnabled(en);
+}
+
 void LibWindow::fileNewLib() {
     // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
     assert(m_pCore);
@@ -141,6 +174,7 @@ void LibWindow::fileNewLib() {
 
     log("LibWindow: file new lib");
     m_pCore->newLib(fullpath.toStdString());
+    updateActions();
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
@@ -154,6 +188,7 @@ void LibWindow::fileOpenLib() {
             m_pCore->openLib(f.toStdString());
         }
     }
+    updateActions();
 }
 
 void LibWindow::_duplicateWithOptions(LibCore::DupOptions opt) {
@@ -172,27 +207,46 @@ void LibWindow::_duplicateWithOptions(LibCore::DupOptions opt) {
                              name, opt);
         }
     }
+    updateActions();
 }
-void LibWindow::fileSaveAsAndCloseOld() {
-    //  Duplicate and close -- copy file, close old one, open new one, 'Save As ond close existing'
+void LibWindow::fileSaveAs() {
+    //  Choose options, then call core
+    assert(m_pCore->activeDb());
+
     log("LibWindow::fileSaveAsAndClose");
-    _duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
+    FileSaveAs fsa(this, m_pCore->activeDb().value());
+    fsa.exec();
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                         tr("User name:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    if (ok && !text.isEmpty())
+        log("Text:" + text.toStdString());
+    //_duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
+    updateActions();
 }
-void LibWindow::fileSaveAsAndOpenNew() {
-    //  Duplicate and open -- copy file, keep old one open, open new one, 'Save As and open new'
-    log("LibWindow::fileSaveAsAndOpen");
-    _duplicateWithOptions(LibCore::DupOptions::OPEN_NEW);
-}
-void LibWindow::fileSaveAsQuietly() {
-    //  Duplicate quietly -- copy file, keep old one open only, like 'Save Copy As'
-    log("LibWindow::fileSaveAsQuietly");
-    _duplicateWithOptions(LibCore::DupOptions::QUIETLY);
-}
+//void LibWindow::fileSaveAsAndCloseOld() {
+//    //  Duplicate and close -- copy file, close old one, open new one, 'Save As ond close existing'
+//    log("LibWindow::fileSaveAsAndClose");
+//    _duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
+//}
+//void LibWindow::fileSaveAsAndOpenNew() {
+//    //  Duplicate and open -- copy file, keep old one open, open new one, 'Save As and open new'
+//    log("LibWindow::fileSaveAsAndOpen");
+//    _duplicateWithOptions(LibCore::DupOptions::OPEN_NEW);
+//}
+//void LibWindow::fileSaveAsQuietly() {
+//    //  Duplicate quietly -- copy file, keep old one open only, like 'Save Copy As'
+//    log("LibWindow::fileSaveAsQuietly");
+//    _duplicateWithOptions(LibCore::DupOptions::QUIETLY);
+//}
 void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
     log("LibWindow::fileRename");
     _duplicateWithOptions(LibCore::DupOptions::RENAME);
+    updateActions();
 }
 
 void LibWindow::fileCloseLib() {
@@ -201,6 +255,7 @@ void LibWindow::fileCloseLib() {
         log("LibWindow::fileCloseLib: " + m_pCore->activeDb().value());
         m_pCore->closeActiveLib();
     }
+    updateActions();
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
@@ -208,6 +263,7 @@ void LibWindow::fileDeleteLib() {
         log("LibWindow: file delete lib " + m_pCore->activeDb().value());
         m_pCore->deleteActiveLib();
     }
+    updateActions();
 }
 void LibWindow::newShape() {
     assert(m_pCore);

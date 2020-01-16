@@ -20,7 +20,7 @@ private:
     std::string m_DbConn;
 
 public:
-    LibViewWidget(QAbstractItemView * = nullptr, QWidget * = nullptr, Qt::WindowFlags = 0);
+    LibViewWidget(QAbstractItemView * = nullptr, QWidget * = nullptr, Qt::WindowFlags = Qt::WindowFlags());
     void setDbConn(std::string);
     void setView(QAbstractItemView *);
     QAbstractItemView *view() const;

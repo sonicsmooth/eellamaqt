@@ -1,6 +1,7 @@
 
 #include "uimanager.h"
 #include "closingdockwidget.h"
+#include "libwindow.h"
 #include <QObject>
 #include <QString>
 #include <QDockWidget>
@@ -112,26 +113,6 @@ QDockWidget *findByType(std::list<QDockWidget *> wlst) {
     return nullptr;
 }
 
-//template<typename TMKEY, typename TMVAL, typename TVAL>
-//QWidget *findMapValue(std::map<TMKEY, TMVAL> m, TVAL value) {
-//    // Finds first key/val pair where val == value and returns key
-//    for (auto const & [k,v] : m)
-//        if (v == value)
-//            return k;
-//    return nullptr;
-//}
-
-//template<typename TKEY, typename TVAL, typename TCMP>
-//std::vector<QWidget *> findMapValues(std::map<TKEY, TVAL> m, TCMP value) {
-//    // Finds all key/val pairs where val == value and returns keys
-//    std::vector<TKEY> ret;
-//    for (auto const & [k, v]: m) {
-//        if (v == value)
-//            ret.push_back(k);
-//    }
-//    return ret;
-//}`
-
 void *getWidget(ClosingDockWidget *p) {
     return p->widget();
 }
@@ -204,7 +185,7 @@ void UIManager::closeUI(std::string title) {
     while (!m_openLibWidgets[title].empty()) {
         pw = m_openLibWidgets[title].back();
         log("UIManager::CloseUI: closing window %s @ 0x%x", title.c_str(), pw);
-        pw->close();
+        pw->close();  // triggers onDockWidgetClose
         n++;
     }
     log("UIManager::CloseUI: closed %d windows", n);
@@ -213,6 +194,7 @@ void UIManager::closeUI(std::string title) {
 void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the widget from the open widgets map
     // If no more open widgets, then ask core to close lib
+    // And ask parent to update menu enables
     assert(m_pCore);
     QDockWidget *qdw(dynamic_cast<QDockWidget *>(pw));
     assert(qdw);
@@ -223,8 +205,10 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     m_parentMW->removeDockWidget(qdw);
     if (lst.empty()) {
         log("UIManager::OnDockWidgetClose: Last reference to %s closed", title.c_str());
-        if (m_pCore->activeDb(title))
+        if (m_pCore->activeDb(title)) {
             m_pCore->closeLib(title);
+            dynamic_cast<LibWindow *>(m_parentMW)->updateActions();
+           }
     } else {
         log("UIManager::OnDockWidgetClose: %d references to %s", lst.size(), title.c_str());
     }

@@ -46,9 +46,7 @@
     </property>
     <addaction name="actionFileNewLib"/>
     <addaction name="actionFileOpenLib"/>
-    <addaction name="actionFileSaveAsAndClose"/>
-    <addaction name="actionFileSaveAsAndOpen"/>
-    <addaction name="actionFileSaveAsQuietly"/>
+    <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileRename"/>
     <addaction name="actionFileCloseLib"/>
     <addaction name="separator"/>
@@ -179,6 +177,21 @@
     <string>Open library</string>
    </property>
   </action>
+  <action name="actionFileSaveAs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save a copy, open new, close existing</string>
+   </property>
+  </action>
   <action name="actionFileSaveAsAndClose">
    <property name="icon">
     <iconset resource="../application.qrc">
@@ -216,6 +229,9 @@
    </property>
   </action>
   <action name="actionFileRename">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
@@ -228,6 +244,9 @@
    </property>
   </action>
   <action name="actionFileCloseLib">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/project-development-close.png</normaloff>:/actions/project-development-close.png</iconset>
@@ -240,6 +259,9 @@
    </property>
   </action>
   <action name="actionFileDeleteLib">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-delete.png</normaloff>:/actions/edit-delete.png</iconset>
@@ -252,6 +274,9 @@
    </property>
   </action>
   <action name="actionNewShape">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/shapes.png</normaloff>:/actions/shapes.png</iconset>
@@ -264,6 +289,9 @@
    </property>
   </action>
   <action name="actionInsertShape">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/shapes.png</normaloff>:/actions/shapes.png</iconset>
@@ -276,6 +304,9 @@
    </property>
   </action>
   <action name="actionNewSymbol">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/devices/cpu.png</normaloff>:/devices/cpu.png</iconset>
@@ -288,6 +319,9 @@
    </property>
   </action>
   <action name="actionNewRectangle">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/draw-rectangle.png</normaloff>:/actions/draw-rectangle.png</iconset>
@@ -297,6 +331,9 @@
    </property>
   </action>
   <action name="actionNewLine">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/insert-horizontal-rule.png</normaloff>:/actions/insert-horizontal-rule.png</iconset>
@@ -306,6 +343,9 @@
    </property>
   </action>
   <action name="actionNewText">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/draw-text.png</normaloff>:/actions/draw-text.png</iconset>
@@ -315,6 +355,9 @@
    </property>
   </action>
   <action name="actionNewCircle">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/draw-circle.png</normaloff>:/actions/draw-circle.png</iconset>
@@ -324,6 +367,9 @@
    </property>
   </action>
   <action name="actionNewArrow">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/draw-arrow-forward.png</normaloff>:/actions/draw-arrow-forward.png</iconset>
@@ -333,6 +379,9 @@
    </property>
   </action>
   <action name="actionNewPolygon">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/draw-polygon.png</normaloff>:/actions/draw-polygon.png</iconset>
@@ -342,6 +391,9 @@
    </property>
   </action>
   <action name="actionNewPolyline">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/draw-polyline.png</normaloff>:/actions/draw-polyline.png</iconset>
@@ -351,6 +403,9 @@
    </property>
   </action>
   <action name="actionNewPin">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-clear-locationbar-rtl.png</normaloff>:/actions/edit-clear-locationbar-rtl.png</iconset>
@@ -360,6 +415,9 @@
    </property>
   </action>
   <action name="actionEditUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-undo.png</normaloff>:/actions/edit-undo.png</iconset>
@@ -372,7 +430,10 @@
    </property>
   </action>
   <action name="actionEditRedo">
-   <property name="icon">
+    <property name="enabled">
+    <bool>false</bool>
+   </property>
+ <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-redo.png</normaloff>:/actions/edit-redo.png</iconset>
    </property>
@@ -384,6 +445,9 @@
    </property>
   </action>
   <action name="actionEditMove">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/transform-move.png</normaloff>:/actions/transform-move.png</iconset>
@@ -393,6 +457,9 @@
    </property>
   </action>
   <action name="actionEditRotate">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/transform-rotate.png</normaloff>:/actions/transform-rotate.png</iconset>
@@ -402,6 +469,10 @@
    </property>
   </action>
   <action name="actionEditCut">
+     <property name="enabled">
+    <bool>false</bool>
+   </property>
+
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-cut.png</normaloff>:/actions/edit-cut.png</iconset>
@@ -414,6 +485,10 @@
    </property>
   </action>
   <action name="actionEditCopy">
+     <property name="enabled">
+    <bool>false</bool>
+   </property>
+
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-copy.png</normaloff>:/actions/edit-copy.png</iconset>
@@ -426,6 +501,10 @@
    </property>
   </action>
   <action name="actionEditPaste">
+     <property name="enabled">
+    <bool>false</bool>
+   </property>
+
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-paste.png</normaloff>:/actions/edit-paste.png</iconset>
@@ -438,6 +517,10 @@
    </property>
   </action>
   <action name="actionEditDelete">
+     <property name="enabled">
+    <bool>false</bool>
+   </property>
+
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-delete.png</normaloff>:/actions/edit-delete.png</iconset>
@@ -459,6 +542,10 @@
    </property>
   </action>
   <action name="actionLibTreeView">
+     <property name="enabled">
+    <bool>false</bool>
+   </property>
+
    <property name="text">
     <string>Lib Tree View</string>
    </property>
@@ -467,6 +554,10 @@
    </property>
   </action>
   <action name="actionLibTableView">
+     <property name="enabled">
+    <bool>false</bool>
+   </property>
+
    <property name="text">
     <string>Lib Table View</string>
    </property>

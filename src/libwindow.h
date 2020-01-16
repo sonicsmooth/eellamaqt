@@ -25,11 +25,13 @@ private:
 public:
     LibWindow(QWidget *parent = nullptr);
     ~LibWindow() override;
+    void updateActions();
     void fileNewLib();
     void fileOpenLib();
-    void fileSaveAsAndCloseOld();
-    void fileSaveAsAndOpenNew();
-    void fileSaveAsQuietly();
+    void fileSaveAs();
+//    void fileSaveAsAndCloseOld();
+//    void fileSaveAsAndOpenNew();
+//    void fileSaveAsQuietly();
     void fileRename();
     void fileCloseLib();
     void fileDeleteLib();
