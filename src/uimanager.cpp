@@ -27,7 +27,7 @@ QMainWindow *UIManager::parentMW() const {
     return m_parentMW;
 }
 
-ClosingDockWidget *UIManager::openLibView(QAbstractItemView *qaiv, QString title, Qt::DockWidgetArea area) {
+ClosingDockWidget *UIManager::makeLibView(QAbstractItemView *qaiv, QString title) {
     assert(m_pCore);
     LibViewWidget* libViewWidget = new LibViewWidget(qaiv, m_parentMW);
     libViewWidget->setCore(m_pCore);
@@ -41,6 +41,12 @@ ClosingDockWidget *UIManager::openLibView(QAbstractItemView *qaiv, QString title
     libDockWidget->setFocusPolicy(Qt::StrongFocus);
     libDockWidget->setWidget(libViewWidget);
     libDockWidget->setWindowTitle(title);
+    return libDockWidget;
+
+}
+
+void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea area) {
+    // Stick argument to right or left (or wherever), tabifying as necessary
     m_parentMW->addDockWidget(area, libDockWidget, Qt::Orientation::Horizontal);
 
     // Make this dockwidget stick to right and tabify if needed
@@ -83,15 +89,9 @@ ClosingDockWidget *UIManager::openLibView(QAbstractItemView *qaiv, QString title
     QObject::connect(m_parentMW, &QMainWindow::tabifiedDockWidgetActivated, this, &UIManager::onDockWidgetActivate);
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
 
-    m_openLibWidgets[title.toStdString()].push_back(libDockWidget);
-    return libDockWidget;
-}
+    m_openLibWidgets[libDockWidget->windowTitle().toStdString()].push_back(libDockWidget);
 
-//template <typename TWIDG>
-//TWIDG *findWidget(std::map<std::string, std::list<QWidget *>> m, QWidget *pw) {
-//    // Finds first key/val pair in m where pw exists in list;
-//    // Returns
-//}
+}
 
 template <class T>
 QDockWidget *findByType(std::list<QDockWidget *> wlst) {
@@ -132,7 +132,8 @@ std::any UIManager::openUI(std::string title, UIType uit) {
     if(uit == UIType::LIBTREEVIEW) {
         // usually findByType will return nullptr, asy any caller will probably check beforehand
         if (!(qdw = findByType<QTreeView>(m_openLibWidgets[title]))) {
-            qdw = openLibView(new QTreeView, qtitle, Qt::DockWidgetArea::RightDockWidgetArea);
+            qdw = static_cast<QDockWidget *>(makeLibView(new QTreeView, qtitle));
+            dockLibView(static_cast<ClosingDockWidget *>(qdw), Qt::DockWidgetArea::RightDockWidgetArea);
             log("UIManager::OpenUI Opened LibTreeView %s ", title.c_str());
         } else {
             log("UIManager::OpenUI: LibTreeView %s already open", title.c_str());
@@ -142,7 +143,8 @@ std::any UIManager::openUI(std::string title, UIType uit) {
             QTableWidget *qtw = new QTableWidget(m_parentMW);
             qtw->setColumnCount(3);
             qtw->setRowCount(10);
-            qdw = openLibView(qtw, qtitle, Qt::DockWidgetArea::LeftDockWidgetArea);
+            qdw = static_cast<QDockWidget *>(makeLibView(new QTableView, qtitle));
+            dockLibView(static_cast<ClosingDockWidget *>(qdw), Qt::DockWidgetArea::LeftDockWidgetArea);
             log("UIManager::OpenUI: Opened LibTableView %s", title.c_str());
         } else {
             log("UIManager::OpenUI: LibTableView %s already open", title.c_str());
@@ -208,7 +210,7 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
         if (m_pCore->activeDb(title)) {
             m_pCore->closeLib(title);
             dynamic_cast<LibWindow *>(m_parentMW)->updateActions();
-           }
+        }
     } else {
         log("UIManager::OnDockWidgetClose: %d references to %s", lst.size(), title.c_str());
     }

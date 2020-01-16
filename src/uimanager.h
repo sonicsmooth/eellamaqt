@@ -21,8 +21,10 @@ class UIManager : public QObject, public IUIManager, public Coreable, public Log
 private:
     QMainWindow *m_parentMW;
     std::list<UIType> m_defaultUITypes;
-    ClosingDockWidget *openLibView(QAbstractItemView *, QString title, Qt::DockWidgetArea);
     std::map<std::string, std::list<QDockWidget *>> m_openLibWidgets;
+
+    ClosingDockWidget *makeLibView(QAbstractItemView *, QString title);
+    void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
 public:
     UIManager(QObject * = nullptr);
     void openUI(std::string) override; // opens default UI types
