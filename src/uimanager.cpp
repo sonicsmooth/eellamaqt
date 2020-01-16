@@ -42,7 +42,6 @@ ClosingDockWidget *UIManager::makeLibView(QAbstractItemView *qaiv, QString title
     libDockWidget->setWidget(libViewWidget);
     libDockWidget->setWindowTitle(title);
     return libDockWidget;
-
 }
 
 void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea area) {
