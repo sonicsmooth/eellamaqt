@@ -172,7 +172,7 @@ void LibWindow::fileNewLib() {
     }
     QString fullpath = currdir.filePath(libname_extended);
 
-    log("LibWindow: file new lib");
+    log("LibWindow::fileNewLib");
     m_pCore->newLib(fullpath.toStdString());
     updateActions();
 }
@@ -215,14 +215,18 @@ void LibWindow::fileSaveAs() {
 
     log("LibWindow::fileSaveAsAndClose");
     FileSaveAs fsa(this, m_pCore->activeDb().value());
-    fsa.exec();
+    std::string fname;
+    if(fsa.exec()) {
+        fname = fsa.selectedFileName().toStdString();
+        log(fname);
+    }
 
-    bool ok;
-    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-                                         tr("User name:"), QLineEdit::Normal,
-                                         QDir::home().dirName(), &ok);
-    if (ok && !text.isEmpty())
-        log("Text:" + text.toStdString());
+//    bool ok;
+//    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+//                                         tr("User name:"), QLineEdit::Normal,
+//                                         QDir::home().dirName(), &ok);
+//    if (ok && !text.isEmpty())
+//        log("Text:" + text.toStdString());
     //_duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
     updateActions();
 }

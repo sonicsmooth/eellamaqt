@@ -2,6 +2,7 @@
 #define FILESAVEAS_H
 
 #include <QDialog>
+#include <QLineEdit>
 
 // Starts up little dialog to choose file save
 // Line edit with browse button
@@ -9,8 +10,16 @@
 
 class FileSaveAs : public QDialog
 {
+private:
+    QLineEdit *m_pLineEdit;
+    QString m_selectedFileName;
 public:
     FileSaveAs(QWidget * = nullptr, std::string = "");
+    QString selectedFileName() const;
+
+public slots:
+//    void accept() override;
+//    void reject() override;
 };
 
 #endif // FILESAVEAS_H
