@@ -11,6 +11,7 @@
 #include <optional>
 #include <initializer_list>
 
+extern const QString GLibDir;
 
 class Shape {
 private:

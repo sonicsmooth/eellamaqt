@@ -1,4 +1,5 @@
 #include "filesaveas.h"
+#include "libcore.h"
 
 #include <QLineEdit>
 #include <QPushButton>
@@ -45,22 +46,72 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     hb2->addWidget(cbOpenNew);
     hb2->addWidget(cbCloseExisting);
 
-    QDir currdir = QDir::home();
-    QString dirname = "EE LLama Libraries";
-    if (currdir.exists(dirname))
-        currdir.cd(dirname);
+    // Set current directory that of existingName
+    // If for some reason that fails, then set to EELLama Libraries,
+    // and if that doesn't work, then home
+    QFileInfo existingFile(QString::fromStdString(existingName));
+    QDir currdir(existingFile.absoluteDir());
+
+    QString xx1 = currdir.dirName();
+    QString xx2 = currdir.path();
+    QString xx3 = currdir.filePath("somejunk1");
+    QString xx4 = currdir.absoluteFilePath("somejunk2");
+    QDir testdir("hello/there");
+    xx1 = testdir.dirName();
+    xx2 = testdir.path();
+    xx3 = testdir.filePath("somejunk1");
+    xx4 = testdir.absoluteFilePath("somejunk2");
+
+    QFileInfo finf("c:/what/there/somelib.SchLib");
+    QString f1 = finf.dir().path();
+    QString f2 = finf.absoluteDir().path();
+    QString f3 = finf.fileName();
+    QString f4 = finf.filePath();
+    QString f5 = finf.absoluteFilePath();
+
+    finf = QFileInfo("/what/there/somelib.SchLib");
+    f1 = finf.dir().path();
+    f2 = finf.absoluteDir().path();
+    f3 = finf.fileName();
+    f4 = finf.filePath();
+    f5 = finf.absoluteFilePath();
+
+    finf = QFileInfo("what/there/somelib.SchLib");
+    f1 = finf.dir().path();
+    f2 = finf.absoluteDir().path();
+    f3 = finf.fileName();
+    f4 = finf.filePath();
+    f5 = finf.absoluteFilePath();
+
+    if (!currdir.exists()) {
+        if (currdir.exists(GLibDir))
+            currdir.setPath(QDir::home().filePath(GLibDir));
+        else
+            currdir.setPath(QDir::home().path());
+    }
 
     auto vb = new QVBoxLayout;
     auto labExistHdr = new QLabel("Existing library name");
     auto labExistTxt = new QLabel(QString::fromStdString(existingName));
     auto labNewHdr = new QLabel("New library name");
-    auto labNewTxt = new QLabel(currdir.absolutePath());
+    auto labNewTxt = new QLabel(existingFile.absoluteDir().path());
     QObject::connect(m_pLineEdit, &QLineEdit::textChanged, [=](const QString & str) {
-
-        QFileInfo qfi(dirname + "/" + str);
-        QString fulltxt = qfi.filePath();
-        labNewTxt->setText(fulltxt);
-        m_selectedFileName = fulltxt;
+        QFileInfo userfi(str);
+        QString basename = userfi.completeBaseName();
+        QString suffix = userfi.completeSuffix();
+        QDir dir(userfi.absoluteDir());
+        QString libsuffix = "SchLib";
+        QString finalPath;
+        if (suffix.length() == 0)
+            suffix = libsuffix;
+        if (userfi.isAbsolute()) {
+            finalPath = QFileInfo(str).absoluteFilePath() + "." + suffix;
+            //finalPath = dir.absoluteFilePath(basename);
+        } else {
+            finalPath = QDir::cleanPath(existingFile.absoluteDir().absoluteFilePath(str)) + "." + suffix;
+        }
+        labNewTxt->setText(finalPath);
+        m_selectedFileName = finalPath;
     });
 
     auto qdbb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -68,8 +119,6 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     QObject::connect(qdbb, &QDialogButtonBox::rejected, this, &QDialog::reject);
     labExistHdr->setStyleSheet("font-weight: bold;");
     labNewHdr->setStyleSheet("font-weight: bold;");
-
-
 
     vb->addWidget(labExistHdr);
     vb->addWidget(labExistTxt);

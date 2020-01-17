@@ -14,6 +14,9 @@ const char kPathSeparator = '\\';
 const char kPathseparator =  '/';
 #endif
 
+const QString GLibDir("EELLama Libraries");
+
+
 namespace fs = std::filesystem;
 
 LibCore::LibCore() {}

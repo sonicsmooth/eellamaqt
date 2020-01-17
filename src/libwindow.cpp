@@ -4,6 +4,7 @@
 #include "closingdockwidget.h"
 #include "uimanager.h"
 #include "filesaveas.h"
+#include "libcore.h"
 
 #include <iostream>
 #include <cstdio>
@@ -19,9 +20,12 @@
 #include <QTreeView>
 #include <QTableView>
 #include <QTableWidget>
-//#include <QDockWidget>
+#include <QDockWidget>
 #include <QtSql>
 #include <QInputDialog>
+
+
+
 
 LibWindow::LibWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -152,11 +156,12 @@ void LibWindow::fileNewLib() {
     assert(m_pLogger);
 
     // Ensure directory exists ~/EELlama Libraries
-    QDir currdir = QDir::home();
-    QString dirname = "EE LLama Libraries";
-    if (!currdir.exists(dirname))
-        currdir.mkdir(dirname);
-    currdir.cd(dirname);
+    QDir currdir;
+    QDir home(QDir::home());
+    if (!home.exists(GLibDir))
+        home.mkdir(GLibDir);
+    currdir.setPath(home.filePath(GLibDir));
+    assert(currdir.exists());
 
     // Keep trying until we find a non-existing filename
     const char base[] = "NewLibrary";
@@ -178,16 +183,16 @@ void LibWindow::fileNewLib() {
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
+    QDir home(QDir::home());
     QFileDialog qfd(this);
+    // Set to /home/eellama libraries if it exists else home
+    qfd.setDirectory(home.exists(GLibDir) ? home.filePath(GLibDir) : home);
     qfd.setFileMode(QFileDialog::ExistingFiles);
     qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
-    QStringList filenames;
-    if(qfd.exec()) {
-        filenames = qfd.selectedFiles();
-        for (auto f : filenames) {
+
+    if(qfd.exec())
+        for (auto f : qfd.selectedFiles())
             m_pCore->openLib(f.toStdString());
-        }
-    }
     updateActions();
 }
 
