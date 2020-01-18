@@ -1,6 +1,8 @@
 #ifndef FILESAVEAS_H
 #define FILESAVEAS_H
 
+#include "loggable.h"
+
 #include <QDialog>
 #include <QLineEdit>
 
@@ -8,7 +10,7 @@
 // Line edit with browse button
 // Keep open, close old, quiet radio buttons
 
-class FileSaveAs : public QDialog
+class FileSaveAs : public QDialog, public Loggable
 {
 private:
     QLineEdit *m_pLineEdit;

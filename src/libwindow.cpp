@@ -220,6 +220,7 @@ void LibWindow::fileSaveAs() {
 
     log("LibWindow::fileSaveAsAndClose");
     FileSaveAs fsa(this, m_pCore->activeDb().value());
+    fsa.setLogger(m_pLogger);
     std::string fname;
     if(fsa.exec()) {
         fname = fsa.selectedFileName().toStdString();

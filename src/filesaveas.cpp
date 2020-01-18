@@ -94,26 +94,38 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     auto labExistHdr = new QLabel("Existing library name");
     auto labExistTxt = new QLabel(QString::fromStdString(existingName));
     auto labNewHdr = new QLabel("New library name");
-    auto labNewTxt = new QLabel(existingFile.absoluteDir().path());
-    QObject::connect(m_pLineEdit, &QLineEdit::textChanged, [=](const QString & str) {
+    auto labNewTxt = new QLabel;
+    auto updateText = [=](const QString & str) {
         QFileInfo userfi(str);
-        QString basename = userfi.completeBaseName();
-        QString suffix = userfi.completeSuffix();
-        QDir dir(userfi.absoluteDir());
+        QDir userdir = userfi.dir();
+        QDir userabsdir = userfi.absoluteDir();
+        QString userbase = userfi.completeBaseName();
+        QString suffix = userfi.suffix();
+        QDir exdir(existingFile.dir());
+
         QString libsuffix = "SchLib";
-        QString finalPath;
         if (suffix.length() == 0)
             suffix = libsuffix;
+
+        QString finalPath;
         if (userfi.isAbsolute()) {
-            finalPath = QFileInfo(str).absoluteFilePath() + "." + suffix;
-            //finalPath = dir.absoluteFilePath(basename);
+            if (userbase.length() == 0 || userbase[0] == '.') // eg .tmp
+                finalPath = userabsdir.path();
+            else
+                finalPath = userabsdir.filePath(userbase) + "." + suffix;
         } else {
-            finalPath = QDir::cleanPath(existingFile.absoluteDir().absoluteFilePath(str)) + "." + suffix;
+            finalPath = exdir.filePath(userdir.path());
+            if (userbase.length()) {
+                finalPath = QDir::cleanPath(finalPath);
+                finalPath = QDir(finalPath).filePath(userbase) + "." + suffix;
+            }
         }
         labNewTxt->setText(finalPath);
         m_selectedFileName = finalPath;
-    });
+    };
 
+    updateText(""); // fills in label
+    QObject::connect(m_pLineEdit, &QLineEdit::textChanged, updateText);
     auto qdbb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     QObject::connect(qdbb, &QDialogButtonBox::accepted, this, &QDialog::accept);
     QObject::connect(qdbb, &QDialogButtonBox::rejected, this, &QDialog::reject);
