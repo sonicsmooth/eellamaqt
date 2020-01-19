@@ -2,6 +2,7 @@
 #define FILESAVEAS_H
 
 #include "loggable.h"
+#include "libcore.h"
 
 #include <QDialog>
 #include <QLineEdit>
@@ -14,10 +15,12 @@ class FileSaveAs : public QDialog, public Loggable
 {
 private:
     QLineEdit *m_pLineEdit;
-    QString m_selectedFileName;
+    QString m_fileName;
+    LibCore::DupOptions m_option;
 public:
     FileSaveAs(QWidget * = nullptr, std::string = "");
-    QString selectedFileName() const;
+    QString fileName() const;
+    LibCore::DupOptions option() const;
 
 public slots:
 //    void accept() override;

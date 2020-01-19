@@ -1,6 +1,7 @@
 #include "filesaveas.h"
 #include "libcore.h"
 
+#include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
@@ -41,6 +42,11 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     auto cbCloseExisting = new QCheckBox("Close existing library");
     cbOpenNew->setChecked(true);
     cbCloseExisting->setChecked(true);
+    QObject::connect(cbOpenNew, &QPushButton::clicked, [=](bool c) {
+        cbCloseExisting->setEnabled(c);
+        if (!c)
+            cbCloseExisting->setChecked(false);
+    });
 
     auto hb2 = new QVBoxLayout;
     hb2->addWidget(cbOpenNew);
@@ -52,37 +58,6 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     QFileInfo existingFile(QString::fromStdString(existingName));
     QDir currdir(existingFile.absoluteDir());
 
-    QString xx1 = currdir.dirName();
-    QString xx2 = currdir.path();
-    QString xx3 = currdir.filePath("somejunk1");
-    QString xx4 = currdir.absoluteFilePath("somejunk2");
-    QDir testdir("hello/there");
-    xx1 = testdir.dirName();
-    xx2 = testdir.path();
-    xx3 = testdir.filePath("somejunk1");
-    xx4 = testdir.absoluteFilePath("somejunk2");
-
-    QFileInfo finf("c:/what/there/somelib.SchLib");
-    QString f1 = finf.dir().path();
-    QString f2 = finf.absoluteDir().path();
-    QString f3 = finf.fileName();
-    QString f4 = finf.filePath();
-    QString f5 = finf.absoluteFilePath();
-
-    finf = QFileInfo("/what/there/somelib.SchLib");
-    f1 = finf.dir().path();
-    f2 = finf.absoluteDir().path();
-    f3 = finf.fileName();
-    f4 = finf.filePath();
-    f5 = finf.absoluteFilePath();
-
-    finf = QFileInfo("what/there/somelib.SchLib");
-    f1 = finf.dir().path();
-    f2 = finf.absoluteDir().path();
-    f3 = finf.fileName();
-    f4 = finf.filePath();
-    f5 = finf.absoluteFilePath();
-
     if (!currdir.exists()) {
         if (currdir.exists(GLibDir))
             currdir.setPath(QDir::home().filePath(GLibDir));
@@ -91,6 +66,15 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     }
 
     auto vb = new QVBoxLayout;
+    auto te = new QLabel("Save copy of existing library.  You can open the new library or keep it closed, and you can keep the existing library open or close it.");
+    te->setStyleSheet("* {/*background-color: white;*/"
+                      "   font: 13pt;}");
+    te->resize(0, 100);
+    te->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    te->setWordWrap(true);
+    //te->setReadOnly(true);
+
+
     auto labExistHdr = new QLabel("Existing library name");
     auto labExistTxt = new QLabel(QString::fromStdString(existingName));
     auto labNewHdr = new QLabel("New library name");
@@ -121,7 +105,18 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
             }
         }
         labNewTxt->setText(finalPath);
-        m_selectedFileName = finalPath;
+        m_fileName = finalPath;
+
+        cbOpenNew->setChecked(true);
+        cbCloseExisting->setChecked(true);
+//        LibCore::DupOptions::RENAME, QUIETLY, OPEN_NEW, CLOSE_OLD
+
+//        // openNew      closeExisting       option
+//        // false        false               QUIETLY
+//        // false        true                N/A
+//        // true         false               OPEN_NEW
+//        // true         true                CLOSE_OLD
+
     };
 
     updateText(""); // fills in label
@@ -132,6 +127,8 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     labExistHdr->setStyleSheet("font-weight: bold;");
     labNewHdr->setStyleSheet("font-weight: bold;");
 
+    vb->addWidget(te);
+    vb->addItem(new QSpacerItem(1, 15, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
     vb->addWidget(labExistHdr);
     vb->addWidget(labExistTxt);
     vb->addItem(new QSpacerItem(1, 15, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
@@ -147,10 +144,14 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     setLayout(vb);
     setSizeGripEnabled(true);
     setMaximumHeight(500);
+    resize(640,300);
 }
 
-QString FileSaveAs::selectedFileName() const {
-    return m_selectedFileName;
+QString FileSaveAs::fileName() const {
+    return m_fileName;
+}
+LibCore::DupOptions FileSaveAs::option() const {
+    return m_option;
 }
 //void FileSaveAs::accept() {
 //    m_selectedFileName = m_pLineEdit->text();
