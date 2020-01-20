@@ -2,7 +2,9 @@
 #define FILESAVEAS_H
 
 #include "loggable.h"
+#include "logger.h"
 #include "libcore.h"
+
 
 #include <QDialog>
 #include <QLineEdit>
@@ -18,7 +20,7 @@ private:
     QString m_fileName;
     LibCore::DupOptions m_option;
 public:
-    FileSaveAs(QWidget * = nullptr, std::string = "");
+    FileSaveAs(QWidget * = nullptr, std::string = "", Logger * = nullptr);
     QString fileName() const;
     LibCore::DupOptions option() const;
 

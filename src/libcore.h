@@ -13,6 +13,7 @@
 
 extern const QString GLibDir;
 
+
 class Shape {
 private:
     std::string m_name;

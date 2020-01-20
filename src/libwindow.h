@@ -20,7 +20,7 @@ class LibWindow : public QMainWindow, public Coreable, public Loggable
     Q_OBJECT
 private:
     Ui::LibWindow *ui;
-    void _duplicateWithOptions(LibCore::DupOptions);
+//    void _duplicateWithOptions(LibCore::DupOptions);
 
 public:
     LibWindow(QWidget *parent = nullptr);

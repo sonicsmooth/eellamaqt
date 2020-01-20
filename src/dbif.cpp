@@ -58,9 +58,14 @@ void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
     // If this is run on a separate thread then we should wait until
     // everything is done, somehow
 
-    std::filesystem::copy(oldpath, newpath);
-    //QString qnewpath(QString::fromStdString(newpath));
-    //QSqlDatabase::addDatabase("QSQLITE", qnewpath);
+    std::error_code ec;
+    try {
+        std::filesystem::copy(oldpath, newpath);//, std::filesystem::copy_options::recursive, ec);
+    }
+    catch (std::filesystem::filesystem_error err) {
+        log("QSQDbIf::cloneDatabase: %s", err.what());
+        throw err;
+    }
 }
 void QSQDbIf::closeDatabase(std::string fullpath) {
     log("DbIf::closeDatabase: closing database " + fullpath);

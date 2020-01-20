@@ -15,7 +15,9 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
+FileSaveAs::FileSaveAs(QWidget *parent,
+                       std::string existingName,
+                       Logger *pLogger) :
     QDialog(parent, Qt::WindowFlags()) {
     // Create little dialog box which allows user to type in new filename,
     // or to browse using system dialog box to specify filename.  In either case,
@@ -23,6 +25,7 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     // before user clicks ok.
     // TODO:  examine whether this can or should be modeless
 
+    m_pLogger = pLogger;
     m_pLineEdit = new QLineEdit("");
     m_pLineEdit->setPlaceholderText("Type new library name");
     auto pbBrowse = new QPushButton("Browse");
@@ -40,6 +43,16 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     hb1->addWidget(pbBrowse);
     auto cbOpenNew = new QCheckBox("Open new library");
     auto cbCloseExisting = new QCheckBox("Close existing library");
+    auto updateOptions = [=]() {
+        m_option = !cbOpenNew->isChecked()       ? LibCore::DupOptions::QUIETLY   :
+                    cbCloseExisting->isChecked() ? LibCore::DupOptions::CLOSE_OLD :
+                                                   LibCore::DupOptions::OPEN_NEW;
+//        // openNew      closeExisting       option
+//        // false        false               QUIETLY
+//        // false        true                N/A
+//        // true         false               OPEN_NEW
+//        // true         true                CLOSE_OLD
+    };
     cbOpenNew->setChecked(true);
     cbCloseExisting->setChecked(true);
     QObject::connect(cbOpenNew, &QPushButton::clicked, [=](bool c) {
@@ -47,6 +60,8 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
         if (!c)
             cbCloseExisting->setChecked(false);
     });
+    QObject::connect(cbOpenNew, &QPushButton::clicked, updateOptions);
+    QObject::connect(cbCloseExisting, &QPushButton::clicked, updateOptions);
 
     auto hb2 = new QVBoxLayout;
     hb2->addWidget(cbOpenNew);
@@ -66,14 +81,14 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
     }
 
     auto vb = new QVBoxLayout;
-    auto te = new QLabel("Save copy of existing library.  You can open the new library or keep it closed, and you can keep the existing library open or close it.");
-    te->setStyleSheet("* {/*background-color: white;*/"
-                      "   font: 13pt;}");
-    te->resize(0, 100);
-    te->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    te->setWordWrap(true);
-    //te->setReadOnly(true);
+    auto te = new QLabel("Save copy of existing library");
 
+    QFile style(":/ui/llamastyle.css");
+    style.open(QIODevice::ReadOnly);
+    //te->setAccessibleName("DialogLabel");
+    te->setObjectName("DialogLabel");
+    te->setStyleSheet(style.readAll());
+    te->setWordWrap(true);
 
     auto labExistHdr = new QLabel("Existing library name");
     auto labExistTxt = new QLabel(QString::fromStdString(existingName));
@@ -92,34 +107,22 @@ FileSaveAs::FileSaveAs(QWidget *parent, std::string existingName) :
             suffix = libsuffix;
 
         QString finalPath;
-        if (userfi.isAbsolute()) {
-            if (userbase.length() == 0 || userbase[0] == '.') // eg .tmp
-                finalPath = userabsdir.path();
-            else
+        if (userbase.length()) {
+            if (userfi.isAbsolute() && userbase[0] != '.') { // eg .tmp
                 finalPath = userabsdir.filePath(userbase) + "." + suffix;
-        } else {
-            finalPath = exdir.filePath(userdir.path());
-            if (userbase.length()) {
+            } else {
+                finalPath = exdir.filePath(userdir.path());
                 finalPath = QDir::cleanPath(finalPath);
                 finalPath = QDir(finalPath).filePath(userbase) + "." + suffix;
             }
         }
         labNewTxt->setText(finalPath);
         m_fileName = finalPath;
-
-        cbOpenNew->setChecked(true);
-        cbCloseExisting->setChecked(true);
-//        LibCore::DupOptions::RENAME, QUIETLY, OPEN_NEW, CLOSE_OLD
-
-//        // openNew      closeExisting       option
-//        // false        false               QUIETLY
-//        // false        true                N/A
-//        // true         false               OPEN_NEW
-//        // true         true                CLOSE_OLD
-
+        updateOptions();
     };
 
     updateText(""); // fills in label
+    updateOptions(); // redundant if updateText is called with no changes
     QObject::connect(m_pLineEdit, &QLineEdit::textChanged, updateText);
     auto qdbb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     QObject::connect(qdbb, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -153,12 +156,3 @@ QString FileSaveAs::fileName() const {
 LibCore::DupOptions FileSaveAs::option() const {
     return m_option;
 }
-//void FileSaveAs::accept() {
-//    m_selectedFileName = m_pLineEdit->text();
-//    // Not sure why we don't emit accepted.
-//    emit QDialog::accept();
-//}
-//void FileSaveAs::reject() {
-//    m_selectedFileName.clear();
-//    emit QDialog::reject();
-//}

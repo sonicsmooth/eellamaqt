@@ -196,69 +196,46 @@ void LibWindow::fileOpenLib() {
     updateActions();
 }
 
-void LibWindow::_duplicateWithOptions(LibCore::DupOptions opt) {
-    // Execute save-as file dialog then call core with old and new names
-    assert(m_pCore) ;
-    log("LibWindow::_duplicateWithOptions");
-    if (m_pCore->activeDb()) {
-        QFileDialog qfd(this);
-        qfd.setFileMode(QFileDialog::AnyFile);
-        qfd.setAcceptMode(QFileDialog::AcceptSave);
-        qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
-        if (qfd.exec()) {
-            std::string name(qfd.selectedFiles()[0].toStdString());
-            assert(name != "");
-            m_pCore->saveLib(m_pCore->activeDb().value(),
-                             name, opt);
-        }
-    }
-    updateActions();
-}
+//void LibWindow::_duplicateWithOptions(LibCore::DupOptions opt) {
+//    // Execute save-as file dialog then call core with old and new names
+//    assert(m_pCore) ;
+//    log("LibWindow::_duplicateWithOptions");
+//    if (m_pCore->activeDb()) {
+//        QFileDialog qfd(this);
+//        qfd.setFileMode(QFileDialog::AnyFile);
+//        qfd.setAcceptMode(QFileDialog::AcceptSave);
+//        qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
+//        if (qfd.exec()) {
+//            std::string name(qfd.selectedFiles()[0].toStdString());
+//            assert(name != "");
+//            m_pCore->saveLib(m_pCore->activeDb().value(),
+//                             name, opt);
+//        }
+//    }
+//    updateActions();
+//}
+
 void LibWindow::fileSaveAs() {
     //  Choose options, then call core
     assert(m_pCore->activeDb());
-
-    log("LibWindow::fileSaveAsAndClose");
+    log("LibWindow::fileSaveAs");
     FileSaveAs fsa(this, m_pCore->activeDb().value());
-    LibCore::DupOptions option;
-    fsa.setLogger(m_pLogger);
-    std::string fname;
     if(fsa.exec()) {
-        fname = fsa.fileName().toStdString();
-        option = fsa.option();
-
-        log(fname);
+        std::string fname(fsa.fileName().toStdString());
+        if (fname.length()) {
+            m_pCore->saveLib(m_pCore->activeDb().value(), fname, fsa.option());
+        }
+    } else {
+        log("Canceled");
     }
-
-//    bool ok;
-//    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-//                                         tr("User name:"), QLineEdit::Normal,
-//                                         QDir::home().dirName(), &ok);
-//    if (ok && !text.isEmpty())
-//        log("Text:" + text.toStdString());
-    //_duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
     updateActions();
 }
-//void LibWindow::fileSaveAsAndCloseOld() {
-//    //  Duplicate and close -- copy file, close old one, open new one, 'Save As ond close existing'
-//    log("LibWindow::fileSaveAsAndClose");
-//    _duplicateWithOptions(LibCore::DupOptions::CLOSE_OLD);
-//}
-//void LibWindow::fileSaveAsAndOpenNew() {
-//    //  Duplicate and open -- copy file, keep old one open, open new one, 'Save As and open new'
-//    log("LibWindow::fileSaveAsAndOpen");
-//    _duplicateWithOptions(LibCore::DupOptions::OPEN_NEW);
-//}
-//void LibWindow::fileSaveAsQuietly() {
-//    //  Duplicate quietly -- copy file, keep old one open only, like 'Save Copy As'
-//    log("LibWindow::fileSaveAsQuietly");
-//    _duplicateWithOptions(LibCore::DupOptions::QUIETLY);
-//}
+
 void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
     log("LibWindow::fileRename");
-    _duplicateWithOptions(LibCore::DupOptions::RENAME);
+//    _duplicateWithOptions(LibCore::DupOptions::RENAME);
     updateActions();
 }
 

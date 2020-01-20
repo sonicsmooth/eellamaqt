@@ -7,6 +7,8 @@
 
 #include <QtSql>
 
+//#include <optional>
+
 // This is the interface between the core and the Qt database
 
 class QSQDbIf : public IDbIf, public Coreable, public Loggable
