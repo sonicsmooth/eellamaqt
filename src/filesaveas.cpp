@@ -32,7 +32,12 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     QObject::connect(pbBrowse, &QPushButton::clicked, [=]() {
         QFileDialog qfd(this);
         qfd.setFileMode(QFileDialog::AnyFile);
-        qfd.setAcceptMode(QFileDialog::AcceptSave);
+        // Comment this out because otherwise, saving-as an existing filename
+        // would cause Windows file dialog to prompt the user to confirm overwrite
+        // but I want 'this' custom FileSaveAs dialog to deal with overwriting,
+        // as it would be entirely possible to type an existing filename manually.
+        //qfd.setAcceptMode(QFileDialog::AcceptSave);
+        qfd.setWindowTitle("Save Library As...");
         qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
         if (qfd.exec()) {
             m_pLineEdit->setText(qfd.selectedFiles()[0]);
@@ -60,6 +65,8 @@ FileSaveAs::FileSaveAs(QWidget *parent,
         if (!c)
             cbCloseExisting->setChecked(false);
     });
+    // If we don't do these connections, then the checkboxes will
+    // only be relevant when the user types something.
     QObject::connect(cbOpenNew, &QPushButton::clicked, updateOptions);
     QObject::connect(cbCloseExisting, &QPushButton::clicked, updateOptions);
 

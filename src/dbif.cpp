@@ -1,11 +1,15 @@
 #include "dbif.h"
+#include "utils.h"
 #include <QtSql>
+#include <QFileInfo>
+#include <QDir>
 #include <iostream>
 #include <fstream>
 #include <cassert>
 #include <cstdio>
 #include <exception>
 #include <filesystem>
+#include <system_error>
 
 
 QSQDbIf::QSQDbIf() {}
@@ -60,9 +64,15 @@ void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
 
     std::error_code ec;
     try {
-        std::filesystem::copy(oldpath, newpath);//, std::filesystem::copy_options::recursive, ec);
+        QFileInfo fi(QString::fromStdString(newpath));
+        QDir d(fi.absoluteDir());
+        if (!d.mkpath(d.path())) {
+            throw std::filesystem::filesystem_error("Could not create path", newpath,
+                                                    std::make_error_code(std::errc::io_error));
+        }
+        std::filesystem::copy(oldpath, newpath, std::filesystem::copy_options::recursive);//, ec);
     }
-    catch (std::filesystem::filesystem_error err) {
+    catch (std::filesystem::filesystem_error & err) {
         log("QSQDbIf::cloneDatabase: %s", err.what());
         throw err;
     }

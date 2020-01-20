@@ -25,7 +25,8 @@ SOURCES += \
     ../src/logger.cpp \
     ../src/main.cpp \
     ../src/uimanager.cpp \
-    ../src/filesaveas.cpp
+    ../src/filesaveas.cpp \
+    ../src/utils.cpp
 
 
 HEADERS += \

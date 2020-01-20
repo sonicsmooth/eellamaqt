@@ -133,9 +133,9 @@ std::any UIManager::openUI(std::string title, UIType uit) {
         if (!(qdw = findByType<QTreeView>(m_openLibWidgets[title]))) {
             qdw = static_cast<QDockWidget *>(makeLibView(new QTreeView, qtitle));
             dockLibView(static_cast<ClosingDockWidget *>(qdw), Qt::DockWidgetArea::RightDockWidgetArea);
-            log("UIManager::OpenUI Opened LibTreeView %s ", title.c_str());
+            //log("UIManager::OpenUI Opened LibTreeView %s ", title.c_str());
         } else {
-            log("UIManager::OpenUI: LibTreeView %s already open", title.c_str());
+            //log("UIManager::OpenUI: LibTreeView %s already open", title.c_str());
         }
     } else if (uit == UIType::LIBTABLEVIEW) {
         if (!(qdw = findByType<QTableWidget>(m_openLibWidgets[title]))) {
@@ -144,9 +144,9 @@ std::any UIManager::openUI(std::string title, UIType uit) {
             qtw->setRowCount(10);
             qdw = static_cast<QDockWidget *>(makeLibView(new QTableView, qtitle));
             dockLibView(static_cast<ClosingDockWidget *>(qdw), Qt::DockWidgetArea::LeftDockWidgetArea);
-            log("UIManager::OpenUI: Opened LibTableView %s", title.c_str());
+            //log("UIManager::OpenUI: Opened LibTableView %s", title.c_str());
         } else {
-            log("UIManager::OpenUI: LibTableView %s already open", title.c_str());
+            //log("UIManager::OpenUI: LibTableView %s already open", title.c_str());
         }
     }
     return qdw;
@@ -158,8 +158,8 @@ void UIManager::retargetUI(std::string oldpath, std::string newpath) {
     // TODO: figure out how data model works and retarget this UI to new or renamed model
     assert(m_pCore);
     assert(m_openLibWidgets.find(oldpath) != m_openLibWidgets.end());
-    log("UIManager::retargetUI: retarget from %s to %s",
-        oldpath.c_str(), newpath.c_str());
+    //log("UIManager::retargetUI: retarget from %s to %s",
+    //    oldpath.c_str(), newpath.c_str());
 
     // Change the title in the map, aka the key
     // https://en.cppreference.com/w/cpp/container/map/extract
@@ -185,11 +185,11 @@ void UIManager::closeUI(std::string title) {
     QWidget *pw(nullptr);
     while (!m_openLibWidgets[title].empty()) {
         pw = m_openLibWidgets[title].back();
-        log("UIManager::CloseUI: closing window %s @ 0x%x", title.c_str(), pw);
+        //log("UIManager::CloseUI: closing window %s @ 0x%x", title.c_str(), pw);
         pw->close();  // triggers onDockWidgetClose
         n++;
     }
-    log("UIManager::CloseUI: closed %d windows", n);
+    //log("UIManager::CloseUI: closed %d windows", n);
 }
 
 void UIManager::onDockWidgetClose(QWidget *pw) {
@@ -205,13 +205,13 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     lst.remove(qdw);
     m_parentMW->removeDockWidget(qdw);
     if (lst.empty()) {
-        log("UIManager::OnDockWidgetClose: Last reference to %s closed", title.c_str());
+        //log("UIManager::OnDockWidgetClose: Last reference to %s closed", title.c_str());
         if (m_pCore->activeDb(title)) {
             m_pCore->closeLib(title);
             dynamic_cast<LibWindow *>(m_parentMW)->updateActions();
         }
     } else {
-        log("UIManager::OnDockWidgetClose: %d references to %s", lst.size(), title.c_str());
+        //log("UIManager::OnDockWidgetClose: %d references to %s", lst.size(), title.c_str());
     }
 }
 void UIManager::onDockWidgetActivate(QWidget *pw) {
@@ -220,6 +220,6 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     QDockWidget *qdw(dynamic_cast<QDockWidget *>(pw));
     assert(qdw);
     std::string title(qdw->windowTitle().toStdString());
-    log("UIManager::OnDockWidgetActivate: activated %s", title.c_str());
+    //log("UIManager::OnDockWidgetActivate: activated %s", title.c_str());
     m_pCore->pushActiveDb(title);
 }

@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "dbif.h"
 #include "uimanager.h"
+#include "utils.h"
 
 
 #include <QApplication>
@@ -52,13 +53,17 @@ int main(int argc, char *argv[])
     core.setUIManager(&uim);
     core.setLogger(&logger);
 
-//    std::map<std::string, std::list<int>> junk;
-//    junk["cat"].push_back(10);
-//    junk["cat"].push_back(20);
-//    junk["cat"].push_back(30);
-//    junk["dog"].push_back(50);
-//    junk["dog"].push_back(60);
-//    junk["dog"].push_back(70);
+    Utils::ensurePathExists("c:/my/deep/cfile.txt");
+    Utils::ensurePathExists("c:/my/deep/cfile_no_ext");
+    Utils::ensurePathExists("c:/deep/mycdir/");
+    Utils::ensurePathExists("/my/deep/rootfile.txt");
+    Utils::ensurePathExists("/my/deep/rootfile_no_ext");
+    Utils::ensurePathExists("/my/deep/rootdir/");
+    Utils::ensurePathExists("my/deep/relfile.txt");
+    Utils::ensurePathExists("my/deep/relfile_no_ext");
+    Utils::ensurePathExists("my/deep/reldir/");
+    std::cerr << std::endl;
+    std::cerr << std::endl;
 
 
 

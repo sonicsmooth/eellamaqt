@@ -46,29 +46,24 @@ bool LibCore::activeDb(std::string fullpath) const {
 void LibCore::pushActiveDb(std::string adb) {
     // Ensure exactly one adb is in the list
     // and that it's at the front
-
-    if (adb.empty()) {
-        volatile int x = 5;
-    }
-
     std::optional<std::string> oldFront(activeDb());
     m_activeDb.remove(adb);
     m_activeDb.push_front(adb);
-    if (!oldFront || oldFront.value() != adb)
-        log("Active db set to " + activeDb().value());
+//    if (!oldFront || oldFront.value() != adb)
+//        log("Active db set to " + activeDb().value());
 }
 void LibCore::popActiveDb(std::string adb) {
     // Remove adb from activeDb list;
     // throw error if not in list
     if (activeDb(adb)) {
-        log("LibCore::popActiveDb: Popping " + adb);
+//        log("LibCore::popActiveDb: Popping " + adb);
         m_activeDb.remove(adb);
-        if (activeDb()) {
-            log("LibCore::popActiveDb: Active db set to " + activeDb().value());
-        }
-        else {
-            log("LibCore::popActiveDb: Active db now empty");
-        }
+//        if (activeDb()) {
+//            log("LibCore::popActiveDb: Active db set to " + activeDb().value());
+//        }
+//        else {
+//            log("LibCore::popActiveDb: Active db now empty");
+//        }
     } else {
         throw std::runtime_error("Library " + adb + " not in activeDb list");
     }
@@ -77,7 +72,7 @@ void LibCore::newLib(std::string fullpath) {
     // LibCore assumes the caller has already verified the path and name
     // So we log whether it exsts, then override
     assert(m_pDbIf);
-    log("LibCore::newLib Creating new Library " + fullpath);
+//    log("LibCore::newLib Creating new Library " + fullpath);
     // TODO: check for an existing lib with that name
     m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
@@ -96,8 +91,9 @@ void LibCore::openLib(std::string fullpath) {
 }
 
 
+
 void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) {
-    // Should only be cassed with oldpath in activeDb list
+    // Should only be called with oldpath in activeDb list.
     assert(activeDb(oldpath));
     std::string optstr = opt == DupOptions::QUIETLY ? "QUIETLY" :
                           opt == DupOptions::CLOSE_OLD ? "CLOSE_OLD" :
@@ -138,9 +134,8 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         }
     }
     catch (std::filesystem::filesystem_error err) {
-        log("LibCore::saveLib: Could not save file as");
+        log("LibCore::saveLib: Failed to save library");
     }
-
 }
 
 void LibCore::closeLib(std::string fullpath) {
