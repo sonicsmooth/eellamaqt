@@ -16,8 +16,8 @@
 class FileSaveAs : public QDialog, public Loggable
 {
 private:
-    QLineEdit *m_pLineEdit;
     QString m_fileName;
+    bool m_overwrite;
     LibCore::DupOptions m_option;
 public:
     FileSaveAs(QWidget * = nullptr, std::string = "", Logger * = nullptr);

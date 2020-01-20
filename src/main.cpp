@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QDockWidget>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
@@ -52,19 +53,6 @@ int main(int argc, char *argv[])
     core.setDbIf(&dbif);
     core.setUIManager(&uim);
     core.setLogger(&logger);
-
-    Utils::ensurePathExists("c:/my/deep/cfile.txt");
-    Utils::ensurePathExists("c:/my/deep/cfile_no_ext");
-    Utils::ensurePathExists("c:/deep/mycdir/");
-    Utils::ensurePathExists("/my/deep/rootfile.txt");
-    Utils::ensurePathExists("/my/deep/rootfile_no_ext");
-    Utils::ensurePathExists("/my/deep/rootdir/");
-    Utils::ensurePathExists("my/deep/relfile.txt");
-    Utils::ensurePathExists("my/deep/relfile_no_ext");
-    Utils::ensurePathExists("my/deep/reldir/");
-    std::cerr << std::endl;
-    std::cerr << std::endl;
-
 
 
     // Go!

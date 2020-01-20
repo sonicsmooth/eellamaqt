@@ -64,6 +64,7 @@ void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
 
     std::error_code ec;
     try {
+        // Recursively create parent paths
         QFileInfo fi(QString::fromStdString(newpath));
         QDir d(fi.absoluteDir());
         if (!d.mkpath(d.path())) {
