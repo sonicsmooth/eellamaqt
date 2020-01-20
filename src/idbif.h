@@ -13,6 +13,7 @@ public:
     virtual void createDatabase(std::string) = 0;
     virtual void openDatabase(std::string) = 0;
     virtual void cloneDatabase(std::string, std::string) = 0;
+    virtual void renameDatabase(std::string, std::string) = 0;
     virtual void closeDatabase(std::string) = 0;
     virtual void deleteDatabase(std::string) = 0;
 };

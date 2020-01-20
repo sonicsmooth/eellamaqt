@@ -95,12 +95,7 @@ void LibCore::openLib(std::string fullpath) {
 void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) {
     // Should only be called with oldpath in activeDb list.
     assert(activeDb(oldpath));
-    std::string optstr = opt == DupOptions::QUIETLY ? "QUIETLY" :
-                          opt == DupOptions::CLOSE_OLD ? "CLOSE_OLD" :
-                          opt == DupOptions::OPEN_NEW ? "OPEN_NEW" :
-                                            "ERROR";
-    log("LibCore::saveLib: Saving library from %s to %s with option %d (%s)",
-        oldpath.c_str(), newpath.c_str(), opt, optstr.c_str());
+    log("LibCore::saveLib: Saving library " + newpath);
     try {
         switch(opt) {
         case DupOptions::CLOSE_OLD:
@@ -111,7 +106,6 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
             m_pUIManager->retargetUI(oldpath, newpath);
             popActiveDb(oldpath);
             pushActiveDb(newpath);
-
             break;
         case DupOptions::OPEN_NEW:
             // Keep old one open, open new one too
@@ -121,12 +115,13 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
             pushActiveDb(newpath);
             break;
         case DupOptions::QUIETLY:
+            // Neither open new one nor close old one
             m_pDbIf->cloneDatabase(oldpath, newpath);
             break;
         case DupOptions::RENAME:
             m_pDbIf->closeDatabase(oldpath);
             popActiveDb(oldpath);
-            std::rename(oldpath.c_str(), newpath.c_str());
+            m_pDbIf->renameDatabase(oldpath, newpath);
             m_pDbIf->openDatabase(newpath);
             m_pUIManager->retargetUI(oldpath, newpath);
             pushActiveDb(newpath);
@@ -143,7 +138,7 @@ void LibCore::closeLib(std::string fullpath) {
     // Call dbif to close lib
     // Caller should know the proper name of lib; throws error otherwise
    if (activeDb(fullpath)) {
-        log("LibCore::closeLib Closing library %s", fullpath.c_str());
+        //log("LibCore::closeLib Closing library %s", fullpath.c_str());
         popActiveDb(fullpath);
         m_pDbIf->closeDatabase(fullpath);
         m_pUIManager->closeUI(fullpath);

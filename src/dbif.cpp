@@ -49,7 +49,7 @@ void QSQDbIf::openDatabase(std::string fullpath) {
         QSqlDatabase db(QSqlDatabase::addDatabase("QSQLITE", dbname));
         db.setDatabaseName(dbname); // specifies file
         if (db.open())
-            log("DbIf::openDatabase: %s opened", fullpath.c_str());
+            ;//log("DbIf::openDatabase: %s opened", fullpath.c_str());
         else
             throw std::runtime_error("Cannot open " + fullpath);
     } else {
@@ -61,7 +61,7 @@ void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
     // We assume here that sqlite is done writing.
     // If this is run on a separate thread then we should wait until
     // everything is done, somehow
-
+    log("QSQDbIf::closeDatabase: Cloning database");
     std::error_code ec;
     try {
         // Recursively create parent paths
@@ -71,15 +71,37 @@ void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
             throw std::filesystem::filesystem_error("Could not create path", newpath,
                                                     std::make_error_code(std::errc::io_error));
         }
-        std::filesystem::copy(oldpath, newpath, std::filesystem::copy_options::recursive);//, ec);
+        std::filesystem::copy_file(oldpath, newpath, std::filesystem::copy_options::overwrite_existing);
     }
     catch (std::filesystem::filesystem_error & err) {
         log("QSQDbIf::cloneDatabase: %s", err.what());
         throw err;
     }
 }
+void QSQDbIf::renameDatabase(std::string oldpath, std::string newpath) {
+    // Just copy the thing, then add it to available databases
+    // We assume here that sqlite is done writing.
+    // If this is run on a separate thread then we should wait until
+    // everything is done, somehow
+    log("QSQDbIf::closeDatabase: renaming database");
+    std::error_code ec;
+    try {
+        // Recursively create parent paths
+        QFileInfo fi(QString::fromStdString(newpath));
+        QDir d(fi.absoluteDir());
+        if (!d.mkpath(d.path())) {
+            throw std::filesystem::filesystem_error("Could not create path", newpath,
+                                                    std::make_error_code(std::errc::io_error));
+        }
+        std::filesystem::rename(oldpath, newpath);
+    }
+    catch (std::filesystem::filesystem_error & err) {
+        log("QSQDbIf::renameDatabase: %s", err.what());
+        throw err;
+    }
+}
 void QSQDbIf::closeDatabase(std::string fullpath) {
-    log("DbIf::closeDatabase: closing database " + fullpath);
+    log("QSQDbIf::closeDatabase: Closing database " + fullpath);
     QString dbname(QString::fromStdString(fullpath));
     { // so db goes out of scope before removing from database
 

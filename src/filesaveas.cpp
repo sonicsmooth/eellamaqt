@@ -18,8 +18,10 @@
 
 FileSaveAs::FileSaveAs(QWidget *parent,
                        std::string existingName,
-                       Logger *pLogger) :
-    QDialog(parent, Qt::WindowFlags()) {
+                       Logger *pLogger,
+                       Mode mode) :
+    QDialog(parent, Qt::WindowFlags()),
+    m_mode(mode) {
     // Create little dialog box which allows user to type in new filename,
     // or to browse using system dialog box to specify filename.  In either case,
     // user can specify whole path.  In either case, the full path is shown
@@ -27,6 +29,7 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     // TODO:  examine whether this can or should be modeless
 
     m_pLogger = pLogger;
+    QString windowTitle = mode == Mode::SAVEAS ? "Save Library As..." : "Rename Library As...";
     auto qle = new QLineEdit("");
     qle->setPlaceholderText("Type new library name");
     auto labWarn = new QLabel("Exists aready!");
@@ -38,7 +41,7 @@ FileSaveAs::FileSaveAs(QWidget *parent,
         qfd.setFileMode(QFileDialog::AnyFile);
         qfd.setAcceptMode(QFileDialog::AcceptSave);
         qfd.setOption(QFileDialog::DontConfirmOverwrite, true);
-        qfd.setWindowTitle("Save Library As...");
+        qfd.setWindowTitle(windowTitle);
         qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
         if (qfd.exec()) {
             qle->setText(qfd.selectedFiles()[0]);
@@ -48,27 +51,32 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     auto cbCloseExisting = new QCheckBox("Close original library");
     auto cbOverwrite = new QCheckBox("Overwrite without prompt");
     auto updateOptions = [=]() {
+        if (mode == Mode::SAVEAS) {
         m_option = !cbOpenNew->isChecked()       ? LibCore::DupOptions::QUIETLY   :
                     cbCloseExisting->isChecked() ? LibCore::DupOptions::CLOSE_OLD :
                                                    LibCore::DupOptions::OPEN_NEW;
+        } else if (mode == Mode::RENAME) {
+            m_option = LibCore::DupOptions::RENAME;
+        } else {
+            throw std::invalid_argument ("Wrong mode argument");
+        }
         m_overwrite = cbOverwrite->isChecked();
-//        // openNew      closeExisting       option
-//        // false        false               QUIETLY
-//        // false        true                N/A
-//        // true         false               OPEN_NEW
-//        // true         true                CLOSE_OLD
     };
-    cbOpenNew->setChecked(true);
-    cbCloseExisting->setChecked(true);
-    QObject::connect(cbOpenNew, &QPushButton::clicked, [=](bool c) {
-        cbCloseExisting->setEnabled(c);
-        if (!c)
-            cbCloseExisting->setChecked(false);
-    });
+    if (mode == Mode::SAVEAS) {
+        cbOpenNew->setChecked(true);
+        cbCloseExisting->setChecked(true);
+        QObject::connect(cbOpenNew, &QPushButton::clicked, [=](bool c) {
+            cbCloseExisting->setEnabled(c);
+            if (!c)
+                cbCloseExisting->setChecked(false);
+        });
+    }
     // If we don't do these connections, then the checkboxes will
     // only be relevant when the user types something.
-    QObject::connect(cbOpenNew, &QPushButton::clicked, updateOptions);
-    QObject::connect(cbCloseExisting, &QPushButton::clicked, updateOptions);
+    if (mode == Mode::SAVEAS) {
+        QObject::connect(cbOpenNew, &QPushButton::clicked, updateOptions);
+        QObject::connect(cbCloseExisting, &QPushButton::clicked, updateOptions);
+    }
     QObject::connect(cbOverwrite, &QPushButton::clicked, updateOptions);
 
 
@@ -85,10 +93,11 @@ FileSaveAs::FileSaveAs(QWidget *parent,
             currdir.setPath(QDir::home().path());
     }
 
-    auto te = new QLabel("Save copy of existing library");
+    auto te = new QLabel( mode == Mode::SAVEAS ? "Save Copy of Existing Library" :
+                                                 "Rename Existing Library");
     QFile style(":/ui/llamastyle.css");
     style.open(QIODevice::ReadOnly);
-    te->setObjectName("DialogLabel");
+    te->setObjectName("DialogTitleBlock");
     te->setStyleSheet(style.readAll());
 
     auto labExistHdr = new QLabel("Existing library name");
@@ -137,10 +146,11 @@ FileSaveAs::FileSaveAs(QWidget *parent,
         if (!qfi.exists() | m_overwrite)
             QDialog::accept();
         else {
-            QMessageBox qmb;
+            QMessageBox qmb(this);
             qmb.setText("File exists!");
-            qmb.setInformativeText("Ovewrite existing file?");
+            qmb.setInformativeText("Overwrite existing file?");
             qmb.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            qmb.setStyleSheet("QLabel {min-width: 200px;}"); // hack to force width of dialog box
             int dcode = qmb.exec();
             if (dcode == QMessageBox::Yes)
                 QDialog::accept();
@@ -156,29 +166,31 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     hb1->addWidget(qle);
     hb1->addWidget(pbBrowse);
     hb2->addWidget(labNewTxt);
-    hb2->addItem(new QSpacerItem(100,1, QSizePolicy::MinimumExpanding, QSizePolicy::Expanding));
+    hb2->addItem(new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Fixed));
     hb2->addWidget(labWarn);
-    vb1->addWidget(cbOpenNew);
-    vb1->addWidget(cbCloseExisting);
+    if (mode == Mode::SAVEAS) {
+        vb1->addWidget(cbOpenNew);
+        vb1->addWidget(cbCloseExisting);
+    }
     vb1->addWidget(cbOverwrite);
     vb2->addWidget(te);
-    vb2->addItem(new QSpacerItem(1, 15, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+    vb2->addItem(new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
     vb2->addWidget(labExistHdr);
     vb2->addWidget(labExistTxt);
-    vb2->addItem(new QSpacerItem(1, 15, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+    vb2->addItem(new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
     vb2->addWidget(labNewHdr);
     vb2->addItem(hb2);
     vb2->addItem(hb1);
-    vb2->addItem(new QSpacerItem(1, 15, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+    vb2->addItem(new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
     vb2->addItem(vb1);
-    vb2->addItem(new QSpacerItem(1, 15, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+    vb2->addItem(new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
     vb2->addWidget(qdbb);
 
-    setWindowTitle("File Save As...");
+    setWindowTitle(windowTitle);
     setLayout(vb2);
     setSizeGripEnabled(true);
-    setMaximumHeight(500);
-    resize(640,300);
+    setObjectName("FileSaveAsDialog");
+    resize(400,0);
 }
 
 QString FileSaveAs::fileName() const {
@@ -187,5 +199,10 @@ QString FileSaveAs::fileName() const {
 LibCore::DupOptions FileSaveAs::option() const {
     return m_option;
 }
-//void FileSaveAs::accept() {
-//}
+
+void FileSaveAs::setMode(FileSaveAs::Mode m) {
+    m_mode = m;
+}
+FileSaveAs::Mode FileSaveAs::mode() const {
+    return m_mode;
+}

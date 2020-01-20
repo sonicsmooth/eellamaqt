@@ -15,12 +15,18 @@
 
 class FileSaveAs : public QDialog, public Loggable
 {
+public:
+    enum class Mode {SAVEAS, RENAME};
+
 private:
     QString m_fileName;
     bool m_overwrite;
     LibCore::DupOptions m_option;
+    Mode m_mode;
 public:
-    FileSaveAs(QWidget * = nullptr, std::string = "", Logger * = nullptr);
+    FileSaveAs(QWidget * = nullptr, std::string = "", Logger * = nullptr, Mode = Mode::SAVEAS);
+    void setMode(Mode);
+    Mode mode() const;
     QString fileName() const;
     LibCore::DupOptions option() const;
 

@@ -45,9 +45,6 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
     connect(ui->actionFileSaveAs, &QAction::triggered, this, &LibWindow::fileSaveAs);
-//    connect(ui->actionFileSaveAsAndClose, &QAction::triggered, this, &LibWindow::fileSaveAsAndCloseOld);
-//    connect(ui->actionFileSaveAsAndOpen, &QAction::triggered, this, &LibWindow::fileSaveAsAndOpenNew);
-//    connect(ui->actionFileSaveAsQuietly, &QAction::triggered, this, &LibWindow::fileSaveAsQuietly);
     connect(ui->actionFileRename, &QAction::triggered, this, &LibWindow::fileRename);
     connect(ui->actionFileCloseLib, &QAction::triggered, this, &LibWindow::fileCloseLib);
     connect(ui->actionFileDeleteLib, &QAction::triggered, this, &LibWindow::fileDeleteLib);
@@ -219,7 +216,7 @@ void LibWindow::fileSaveAs() {
     //  Choose options, then call core
     assert(m_pCore->activeDb());
     log("LibWindow::fileSaveAs");
-    FileSaveAs fsa(this, m_pCore->activeDb().value());
+    FileSaveAs fsa(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::SAVEAS);
     if(fsa.exec()) {
         std::string fname(fsa.fileName().toStdString());
         if (fname.length()) {
@@ -235,7 +232,16 @@ void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
     log("LibWindow::fileRename");
-//    _duplicateWithOptions(LibCore::DupOptions::RENAME);
+    FileSaveAs frn(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
+    if(frn.exec()) {
+        std::string fname(frn.fileName().toStdString());
+        if (fname.length()) {
+            auto option = frn.option();
+            m_pCore->saveLib(m_pCore->activeDb().value(), fname, option);
+        }
+    } else {
+        log("Canceled");
+    }
     updateActions();
 }
 

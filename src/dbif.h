@@ -20,6 +20,7 @@ public:
     void createDatabase(std::string) override;
     void openDatabase(std::string) override;
     void cloneDatabase(std::string, std::string) override;
+    void renameDatabase(std::string, std::string) override;
     void closeDatabase(std::string) override;
     void deleteDatabase(std::string) override;
 
