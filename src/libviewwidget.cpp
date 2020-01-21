@@ -7,6 +7,8 @@
 #include <QTreeView>
 #include <QPushButton>
 
+#include <exception>
+
 LibViewWidget::LibViewWidget(QAbstractItemView *qaiv, QWidget *parent, Qt::WindowFlags flags) :
     QWidget(parent, flags)
 {
@@ -39,8 +41,13 @@ LibViewWidget::LibViewWidget(QAbstractItemView *qaiv, QWidget *parent, Qt::Windo
     setLayout(vb);
 }
 
-void LibViewWidget::setDbConn(std::string s) {m_DbConn = s;}
-std::string LibViewWidget::DbConn() const {return m_DbConn;}
+//void LibViewWidget::setDbConn(std::string s) {
+//    m_DbConn = s;
+//}
+
+//const std::string LibViewWidget::dbConn() const {
+//    return m_DbConn;
+//}
 
 void LibViewWidget::setView(QAbstractItemView *vw = nullptr) {
     m_pQView = vw;

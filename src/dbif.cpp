@@ -21,7 +21,7 @@ void QSQDbIf::createDatabase(std::string fullpath) {
     // keeps a list of available database connection, each of which points to a
     // file of the same name.
 
-    log("DbiF::createDatabase: Creating Sqlite database %s", fullpath.c_str());
+//    log("DbiF::createDatabase: Creating Sqlite database %s", fullpath.c_str());
 
 
     // database name is not the connection name
@@ -42,7 +42,7 @@ void QSQDbIf::createDatabase(std::string fullpath) {
     q.exec("CREATE TABLE firsttable (ID INTEGER PRIMARY KEY, NAME TEXT)");
 }
 void QSQDbIf::openDatabase(std::string fullpath) {
-    log("DbIf::openDatabase: Opening Sqlite database %s", fullpath.c_str());
+//    log("DbIf::openDatabase: Opening Sqlite database %s", fullpath.c_str());
     QString dbname(QString::fromStdString(fullpath));
     QFile qfile(dbname);
     if (qfile.exists()) {
@@ -61,7 +61,7 @@ void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
     // We assume here that sqlite is done writing.
     // If this is run on a separate thread then we should wait until
     // everything is done, somehow
-    log("QSQDbIf::closeDatabase: Cloning database");
+//    log("QSQDbIf::closeDatabase: Cloning database");
     std::error_code ec;
     try {
         // Recursively create parent paths
@@ -83,7 +83,7 @@ void QSQDbIf::renameDatabase(std::string oldpath, std::string newpath) {
     // We assume here that sqlite is done writing.
     // If this is run on a separate thread then we should wait until
     // everything is done, somehow
-    log("QSQDbIf::closeDatabase: renaming database");
+//    log("QSQDbIf::closeDatabase: renaming database");
     std::error_code ec;
     try {
         // Recursively create parent paths
@@ -101,7 +101,7 @@ void QSQDbIf::renameDatabase(std::string oldpath, std::string newpath) {
     }
 }
 void QSQDbIf::closeDatabase(std::string fullpath) {
-    log("QSQDbIf::closeDatabase: Closing database " + fullpath);
+//    log("QSQDbIf::closeDatabase: Closing database " + fullpath);
     QString dbname(QString::fromStdString(fullpath));
     { // so db goes out of scope before removing from database
 
@@ -112,7 +112,7 @@ void QSQDbIf::closeDatabase(std::string fullpath) {
 
 }
 void QSQDbIf::deleteDatabase(std::string fullpath) {
-    log("DbIf::deleteDatabase: Deleting database " + fullpath);
+//    log("DbIf::deleteDatabase: Deleting database " + fullpath);
     closeDatabase(fullpath);
     std::remove(fullpath.c_str());
 

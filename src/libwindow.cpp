@@ -90,13 +90,13 @@ LibWindow::LibWindow(QWidget *parent)
 
 
         (void) old;
-        QDockWidget *cdw(dynamic_cast<QDockWidget *>(now));
+        QDockWidget *qdw(dynamic_cast<QDockWidget *>(now));
         LibViewWidget *lvw(nullptr);
         QTreeView *qtreev(dynamic_cast<QTreeView *>(now));
         QTableView *qtablev(dynamic_cast<QTableView *>(now));
 
-        if (cdw) {
-            lvw = static_cast<LibViewWidget *>(cdw->widget());
+        if (qdw) {
+            lvw = static_cast<LibViewWidget *>(qdw->widget());
         } else if (qtreev) {
             lvw = static_cast<LibViewWidget *>(qtreev->parentWidget());
         } else if (qtablev) {
@@ -104,7 +104,7 @@ LibWindow::LibWindow(QWidget *parent)
         }
 
         if (lvw) {
-            m_pCore->pushActiveDb(lvw->DbConn());
+            m_pCore->pushActiveDb(lvw->dbConn());
         }
 
         // Might not assign lvw since there are other things getting focus
@@ -174,7 +174,7 @@ void LibWindow::fileNewLib() {
     }
     QString fullpath = currdir.filePath(libname_extended);
 
-    log("LibWindow::fileNewLib");
+    //log("LibWindow::fileNewLib");
     m_pCore->newLib(fullpath.toStdString());
     updateActions();
 }
@@ -193,29 +193,10 @@ void LibWindow::fileOpenLib() {
     updateActions();
 }
 
-//void LibWindow::_duplicateWithOptions(LibCore::DupOptions opt) {
-//    // Execute save-as file dialog then call core with old and new names
-//    assert(m_pCore) ;
-//    log("LibWindow::_duplicateWithOptions");
-//    if (m_pCore->activeDb()) {
-//        QFileDialog qfd(this);
-//        qfd.setFileMode(QFileDialog::AnyFile);
-//        qfd.setAcceptMode(QFileDialog::AcceptSave);
-//        qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
-//        if (qfd.exec()) {
-//            std::string name(qfd.selectedFiles()[0].toStdString());
-//            assert(name != "");
-//            m_pCore->saveLib(m_pCore->activeDb().value(),
-//                             name, opt);
-//        }
-//    }
-//    updateActions();
-//}
-
 void LibWindow::fileSaveAs() {
     //  Choose options, then call core
     assert(m_pCore->activeDb());
-    log("LibWindow::fileSaveAs");
+    //log("LibWindow::fileSaveAs");
     FileSaveAs fsa(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::SAVEAS);
     if(fsa.exec()) {
         std::string fname(fsa.fileName().toStdString());
@@ -223,7 +204,7 @@ void LibWindow::fileSaveAs() {
             m_pCore->saveLib(m_pCore->activeDb().value(), fname, fsa.option());
         }
     } else {
-        log("Canceled");
+        log("LibWindow::fileSaveAs: Canceled");
     }
     updateActions();
 }
@@ -231,7 +212,7 @@ void LibWindow::fileSaveAs() {
 void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
-    log("LibWindow::fileRename");
+    //log("LibWindow::fileRename");
     FileSaveAs frn(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
     if(frn.exec()) {
         std::string fname(frn.fileName().toStdString());
@@ -240,7 +221,7 @@ void LibWindow::fileRename() {
             m_pCore->saveLib(m_pCore->activeDb().value(), fname, option);
         }
     } else {
-        log("Canceled");
+        log("LibWindow::fileRename: Canceled");
     }
     updateActions();
 }
@@ -248,7 +229,7 @@ void LibWindow::fileRename() {
 void LibWindow::fileCloseLib() {
     assert(m_pCore);
     if (m_pCore->activeDb()) {
-        log("LibWindow::fileCloseLib: " + m_pCore->activeDb().value());
+        //log("LibWindow::fileCloseLib: " + m_pCore->activeDb().value());
         m_pCore->closeActiveLib();
     }
     updateActions();
@@ -256,7 +237,7 @@ void LibWindow::fileCloseLib() {
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
     if (m_pCore->activeDb()) {
-        log("LibWindow: file delete lib " + m_pCore->activeDb().value());
+        //log("LibWindow: file delete lib " + m_pCore->activeDb().value());
         m_pCore->deleteActiveLib();
     }
     updateActions();

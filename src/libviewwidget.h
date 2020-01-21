@@ -3,6 +3,7 @@
 
 #include "coreable.h"
 #include "loggable.h"
+#include "connable.h"
 
 #include <QDockWidget>
 #include <QAbstractItemView>
@@ -13,18 +14,15 @@
 // Inherits coreable functions setCore(), core()
 // Adds db connection
 
-class LibViewWidget : public QWidget, public Coreable, public Loggable
+class LibViewWidget : public QWidget, public Coreable, public Loggable, public Connable
 {
 private:
     QAbstractItemView* m_pQView;
-    std::string m_DbConn;
 
 public:
     LibViewWidget(QAbstractItemView * = nullptr, QWidget * = nullptr, Qt::WindowFlags = Qt::WindowFlags());
-    void setDbConn(std::string);
     void setView(QAbstractItemView *);
     QAbstractItemView *view() const;
-    std::string DbConn() const;
 };
 
 #endif // LIBVIEWWIDGET_H

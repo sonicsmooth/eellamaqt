@@ -21,7 +21,8 @@ class UIManager : public QObject, public IUIManager, public Coreable, public Log
 private:
     QMainWindow *m_parentMW;
     std::list<UIType> m_defaultUITypes;
-    std::map<std::string, std::list<QDockWidget *>> m_openLibWidgets;
+    std::map<std::string, std::list<ClosingDockWidget *>> m_openLibWidgets;
+    std::map<std::string, std::list<Connable *>> m_openConnWidgets;
 
     ClosingDockWidget *makeLibView(QAbstractItemView *, QString title);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);

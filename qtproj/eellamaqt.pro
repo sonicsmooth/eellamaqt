@@ -31,6 +31,7 @@ SOURCES += \
 
 HEADERS += \
     ../src/closingdockwidget.h \
+    ../src/connable.h \
     ../src/coreable.h \
     ../src/dbif.h \
     ../src/idbif.h \
