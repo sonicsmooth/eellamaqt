@@ -623,7 +623,8 @@
     <qresource prefix="/mimetypes"/>
     <qresource prefix="/places"/>
     <qresource prefix="/status"/>
-    <qresource>
-        <file>ui/llamastyle.css</file>
+    <qresource prefix="/">
+    <file>ui/llamastyle.css</file>
+    <file>ui/darkstyle.css</file>
     </qresource>
 </RCC>

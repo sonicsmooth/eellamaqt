@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     // Set up style
     QFile style(":/ui/llamastyle.css");
+    //QFile style(":/ui/darkstyle.css");
     style.open(QIODevice::ReadOnly);
     app.setStyleSheet(style.readAll());
 

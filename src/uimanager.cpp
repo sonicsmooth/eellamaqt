@@ -218,9 +218,6 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
             dynamic_cast<LibWindow *>(m_parentMW)->updateActions();
         }
     }
-//    else {
-//        //log("UIManager::OnDockWidgetClose: %d references to %s", lst.size(), title.c_str());
-//    }
 }
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is click

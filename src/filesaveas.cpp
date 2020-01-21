@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QIcon>
 
 FileSaveAs::FileSaveAs(QWidget *parent,
                        std::string existingName,
@@ -93,12 +94,17 @@ FileSaveAs::FileSaveAs(QWidget *parent,
             currdir.setPath(QDir::home().path());
     }
 
-    auto te = new QLabel( mode == Mode::SAVEAS ? "Save Copy of Existing Library" :
-                                                 "Rename Existing Library");
-    QFile style(":/ui/llamastyle.css");
-    style.open(QIODevice::ReadOnly);
-    te->setObjectName("DialogTitleBlock");
-    te->setStyleSheet(style.readAll());
+    auto dtbw = new QWidget();
+    dtbw->setObjectName("DialogTitleBlock");
+    auto dtb = new QLabel(mode == Mode::SAVEAS ?
+        "Save Copy of Existing Library" :
+        "Rename Existing Library", dtbw);
+    auto dticon = new QLabel(dtbw);
+    dticon->setPixmap(QPixmap(":/actions/document-save-as.png"));
+    auto dthb = new QHBoxLayout(dtbw);
+    dthb->addWidget(dtb);
+    dthb->addItem(new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Fixed));
+    dthb->addWidget(dticon);
 
     auto labExistHdr = new QLabel("Existing library name");
     auto labExistTxt = new QLabel(QString::fromStdString(existingName));
@@ -173,7 +179,7 @@ FileSaveAs::FileSaveAs(QWidget *parent,
         vb1->addWidget(cbCloseExisting);
     }
     vb1->addWidget(cbOverwrite);
-    vb2->addWidget(te);
+    vb2->addWidget(dtbw);
     vb2->addItem(new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
     vb2->addWidget(labExistHdr);
     vb2->addWidget(labExistTxt);

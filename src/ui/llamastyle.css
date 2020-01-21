@@ -3,15 +3,18 @@
     font-size: 11pt;
 }
 
-QLabel#DialogTitleBlock {
+QWidget#DialogTitleBlock {
     background:
         qlineargradient(x1:0 y1:0, x2:0 y2:1,
                         stop:0 rgba(250, 250, 255, 255),
                         stop:1 rgba(240, 248, 255, 255));
-    color: blue;
     font: 14pt bold;
     border: 1px solid lightgray;
     padding: 8px;
+}
+QWidget#DialogTitleBlock > QLabel {
+    color: blue;
+    font: 14pt bold;
 }
 
 QDialog#FileSaveAsDialog {
