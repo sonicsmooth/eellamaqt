@@ -70,6 +70,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::viewLibTreeView);
     connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::viewLibTableView);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
+    connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
 
     // This handles focusing on the dockwidget and its content widget
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
@@ -345,4 +346,21 @@ void LibWindow::viewLibTableView() {
 }
 
 void LibWindow::helpAbout() {}
+void LibWindow::reloadStyle() {
+    // Set up style
+    //QFile style(":/ui/p4Default.qss");
+    QFile styleFile(":/ui/llamastyle.css");
+    //QFile styleFile(":/ui/darkstyle.css");
+    styleFile.open(QIODevice::ReadOnly);
+    QApplication *qapp(dynamic_cast<QApplication *>(QApplication::instance()));
+    qapp->setStyleSheet(styleFile.readAll());
+    centralWidget()->style()->unpolish(qapp);
+    centralWidget()->style()->polish(qapp);
+    centralWidget()->update();
+
+
+
+
+
+}
 

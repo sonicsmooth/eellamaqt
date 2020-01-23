@@ -1,0 +1,619 @@
+
+FilterWidget {
+    qproperty-bgColor: #ffffff;
+    qproperty-labelColor: #02323c;
+}
+
+LightweightTextView {
+    background-color: #ffffff;
+}
+
+TFilterView::branch:selected {
+    background-color: #0088CC;
+}
+
+TFilterView::branch:selected:hover {
+    background-color: #0085C7;
+}
+
+TFilterView::item:selected {
+    background-color: #0088CC;
+}
+
+TFilterView::item:selected:hover {
+    background-color: #0085C7;
+}
+
+UIPreferencesDialog QTreeWidget::branch:selected {
+    background-color: #0088CC;
+}
+
+UIPreferencesDialog QTreeWidget::branch:selected:hover {
+    background-color: #0085C7;
+}
+
+UIPreferencesDialog QTreeWidget::item:selected {
+    background-color: #0088CC;
+}
+
+UIPreferencesDialog QTreeWidget::item:selected:hover {
+    background-color: #0085C7;
+}
+
+
+QTreeView::branch:selected:active {
+    background-color: #0088CC;
+}
+
+QTreeView::branch:selected:!active {
+     background-color: #AAAAAA;
+}
+
+QTreeView::item:selected:active {
+    background-color: #0088CC;
+}
+
+QTreeView::item:selected:!active {
+    background-color: #AAAAAA;
+    color: #000000;
+}
+
+QTreeView::item:selected:hover {
+    background-color: #d1d3d6;
+}
+
+QTreeView::branch:selected:active:hover {
+    background-color: #0085C7;
+}
+
+QTreeView::item:selected:active:hover {
+    background-color: #0085C7;
+}
+
+QTreeView::branch:selected:!active:hover {
+    background-color: #999999;
+}
+
+QTreeView::item:selected:!active:hover {
+    background-color: #999999;
+}
+
+
+QTableWidget::item:selected {
+    background-color: #0088CC;
+}
+
+QTableWidget:item:selected:hover {
+    background-color: #0085C7;
+}
+
+ConnectionPane::item:selected {
+    background-color: #0088CC;
+}
+
+ConnectionPane:item:selected:hover {
+    background-color: #0085C7;
+}
+
+QAbstractItemView::item:hover {
+    background: #F8F8F8;
+}
+
+QAbstractItemView::branch:hover {
+    background: #F8F8F8;
+}
+
+QAbstractItemView::branch:has-children:!has-siblings:closed,
+QAbstractItemView::branch:closed:has-children:has-siblings {
+    border-image: none;
+    image: url(:/directory_collapsed.png);
+}
+
+QAbstractItemView::branch:open:has-children:!has-siblings,
+QAbstractItemView::branch:open:has-children:has-siblings  {
+    border-image: none;
+    image: url(:/directory_expanded.png);
+}
+
+
+QCheckBox {
+    color: #000000;
+}
+
+
+
+QComboBox
+{
+    selection-background-color: #5091bc;
+    background-color: #ffffff;
+}
+
+QComboBox:hover
+{
+    background-color: #ffffff;
+}
+
+
+QComboBox:on
+{
+    background-color: #777777;
+    selection-background-color: #777777;
+}
+
+QComboBox QAbstractItemView
+{
+    background-color: #ffffff;
+}
+
+
+QHeaderView::section {
+    background-color: #e2edf5;
+    color: #5e707d;
+    border-right: 0.062em solid #c2cfd8;
+}
+
+
+QLineEdit {
+    selection-background-color: #9ABFD9;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+
+MostRecentCombo {
+    color: #000000;
+}
+
+QComboBox {
+    color: #000000;
+}
+
+
+QLineEdit[readOnly="true"]
+{
+    color: #000000;
+    background: transparent;
+}
+
+
+QMainWindow::separator {
+    width: 0.062em;
+    height: 0.062em;;
+}
+
+QMenuBar {
+    background-color: #f0f0f0;
+    selection-background-color: #9ABFD9;
+    color: #000000;
+}
+
+
+QMenu {
+    background-color: #ffffff; /* sets background of the menu */
+    border: 0.062em solid #999999;
+    padding-top: 0.31em;
+}
+
+QMenu::item {
+  /* sets background of menu item. set this to something non-transparent
+      if you want menu color and menu item color to be different */
+    background-color: transparent;
+}
+
+QMenu::item:selected {
+    color: #ffffff;
+    background-color: #5091bc;
+}
+
+
+QProgressBar
+{
+    border: 0.062em solid #dddddd;
+    border-radius: 0em;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: #0088cc;
+    width: 0.62em;
+    margin: 0.062em;
+}
+
+
+QPushButton {
+    background-color: #f0f0f0;
+    color: black;
+}
+
+
+QScrollBar:horizontal {
+    border-top: 0.062em solid #dddddd;
+    background-color: #eeeeee;
+    height: 0.75em;
+    margin: 0em 0.75em 0 0.75em;
+}
+
+
+QScrollBar::handle:horizontal
+{
+    background-color: #cccccc;
+    min-height: 1.1em;
+}
+
+QScrollBar::add-line:horizontal {
+    border-top: 0.062em solid #dddddd;
+    border-radius: 0em;
+    background-color: #eeeeee;
+    width: 0.75em;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+    border-top: 0.062em solid #dddddd;
+    border-radius: 0em;
+    background-color: #eeeeee;
+    width: 0.75em;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::left-arrow
+{
+    height: 0.75em;
+    width: 0.75em;
+    image: url(:/scroll_left_arrow.png);
+}
+
+QScrollBar::right-arrow
+{
+    height: 0.75em;
+    width: 0.75em;
+    image: url(:/scroll_right_arrow.png);
+}
+
+QScrollBar:vertical
+{
+    background-color: #eeeeee;
+    width: 0.75em;
+    margin: 0.75em 0 0.75em 0;
+    border-left: 0.062em solid #dddddd;
+}
+
+QScrollBar::handle:vertical
+{
+    background-color: #cccccc;
+    min-height: 1.1em;
+    border-radius: 0em;
+}
+
+QScrollBar::add-line:vertical
+{
+    border-left: 0.062em; solid #dddddd;
+    border-radius: 0em;
+    background-color: #eeeeee;
+    height: 0.75em;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical
+{
+    border-left: 0.062em solid #dddddd;
+    border-radius: 0em;
+    background-color: #eeeeee;
+    height: 0.75em;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow
+{
+    height: 0.75em;
+    width: 0.75em;
+    image: url(:/scroll_up_arrow.png);
+}
+
+QScrollBar::down-arrow
+{
+    height: 0.75em;
+    width: 0.75em;
+    image: url(:/scroll_down_arrow.png);
+}
+
+QSplitter {
+    background-color: transparent;
+    width: 0.4em;
+    height: 0.4em;
+}
+
+/* Main horizontal above log pane only*/
+QSplitter#centralSplitter::handle {
+    height: 0.4em;
+    width: 0.25em;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #a7a7a7, stop: 0.17 #a7a7a7,
+                                      stop: 0.18 transparent, stop: 0.83 transparent,
+                                      stop: 0.84 #a7a7a7, stop: 1.0 #a7a7a7);
+}
+
+QSplitter::handle:horizontal {
+    height: 0.25em;
+    width: 0.25em;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                                      stop: 0 #a7a7a7, stop: 0.17 #a7a7a7,
+                                      stop: 0.18 transparent, stop: 1.0 transparent);
+    image: url(:/splitter_handle_horizontal.png);
+}
+
+QSplitter::handle:vertical {
+    height: 0.25em;
+    width: 0.25em;
+    background-color: transparent;
+    image: url(:/splitter_handle_vertical.png);
+}
+
+QSplitter#P4MergeSplitter::handle:vertical {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #a7a7a7, stop: 0.17 #a7a7a7,
+                                      stop: 0.18 transparent, stop: 0.83 transparent,
+                                      stop: 0.84 #a7a7a7, stop: 1.0 #a7a7a7);
+}
+
+P4mSplitter {
+    width: 3.12em;
+}
+
+
+QSplitterHandle {
+    background-color: #f0f0f0;
+}
+
+QTabBar::tab {
+    color: #888888;
+    background-color: #ededed;
+    border-left: none;
+    border-right: 0.062em solid #dddddd;
+    min-width: 0.5em;
+    padding: 0.32em;
+    margin-bottom: 0.13em;
+}
+
+QTabBar::tab:hover {
+    color: #444444;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #fdfdfd, stop: 0.89 #fdfdfd,
+                                stop: 0.9 #a7a7a7, stop: 1.0 #a7a7a7);
+    margin-bottom: 0.13em;
+}
+
+QTabBar::tab:selected {
+    color: #444444;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #fdfdfd, stop: 0.89 #fdfdfd,
+                                stop: 0.9 #0088cc, stop: 1.0 #0088cc);
+    border-top-left-radius: 0em;
+    border-top-right-radius: 0em;
+    margin-bottom: 0.13em;
+}
+
+QTabBar::tab:!selected { /* make non-selected tabs look smaller */
+    margin-top: 0em;
+}
+
+QTabBar::tab:first:selected { /* the first selected tab has nothing to overlap with on the left */
+    margin-left: 0;
+}
+
+QTabBar::tab:last:selected { /* the last selected tab has nothing to overlap with on the right */
+    margin-right: 0;
+}
+
+QTabBar::tab:only-one { /* if there is only one tab, we don't want overlapping margins */
+    margin: 0;
+}
+
+QTabBar {
+    background-color: #f0f0f0;
+}
+
+
+QTabWidget::tab-bar {
+    background-color: #ededed;
+    left: 0em;
+}
+
+
+QTextEdit[readOnly="true"]
+{
+    color: #000000;
+    padding: 0em;
+    background-color: transparent;
+    border: 0.06em solid rgba(0,0,0,10);
+}
+
+QTextEdit[readOnly="false"]
+{
+    color: #000000;
+    background-color: #ffffff;
+}
+
+QDialog {
+    background-color: #f0f0f0;
+}
+
+
+QToolBar {
+    background-color: #ededed;
+    padding: 0.25em;
+}
+
+QStackedWidget {
+    background-color: #f0f0f0;
+}
+QWidget#centralWidget {
+    background-color: #f0f0f0;
+}
+
+
+UISpecList {
+    background-color: #f0f0f0;
+}
+
+
+UIWorkspace2 QToolBar {
+    background-color: #ededed;
+    spacing: 0.94em;
+}
+
+
+QToolBar#P4VToolBar::separator:horizontal {
+    height: 6.25em;
+    width: 0.125em;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                                      stop: 0 #d8d8d8, stop: 0.5 #d8d8d8,
+                                      stop: 0.6 #ffffff, stop: 1.0 #ffffff);
+}
+
+QToolBar#P4VToolBar::separator:vertical {
+    height: 0.125em;
+    width: 6.25em;
+    color: #FFFFFF;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #d8d8d8, stop: 0.5 #d8d8d8,
+                                      stop: 0.6 #ffffff, stop: 1.0 #ffffff);
+}
+
+QToolBar#AddressBar {
+    background-color: #ededed;
+}
+
+
+QToolBar#P4VToolBar QToolButton {
+    color: #333333;
+}
+
+QScrollArea#filterScrollArea QWidget#filterScrollWidget {
+    background-color: #f0f0f0;
+}
+QScrollArea#filterScrollArea QToolButton {
+    background-color: #f0f0f0;
+}
+UIFilterWidget {
+    background-color: #f0f0f0;
+}
+
+
+WorkspaceStatusBar {
+    background-color: #f0f0f0;
+    color: #000000;
+}
+
+QFrame#ExtendedTabWidget-mCornerWidget {
+    background-color: #f0f0f0;
+}
+
+UIWorkspaceWidget {
+    background-color: #f0f0f0;
+}
+
+
+
+
+QToolBar#P4VToolBar QToolButton:hover {
+    background-color: #ededed;
+    color: #333333;
+}
+
+QToolBar#P4VToolBar QToolButton:disabled {
+    color: #cccccc;
+}
+
+QToolTip {
+    border: 0.062em solid #e5d36c;
+    background-color: #fdfdc9;
+    color: #000000;
+    border-radius: 0em;
+    opacity: 250;
+}
+
+
+QWidget#UIChangeWindow_QWidget {
+    background-color: #fafafa;
+}
+
+QWidget#InnerWidget_for_QScrollArea {
+    background-color: transparent;
+}
+
+RevDetails {
+    background-color: #ededed;
+}
+
+RevDetails QLabel {
+    color: #777777;
+}
+
+
+Gui--DirectoryTreeView {
+    background-color: #f1f4f9;
+}
+
+Gui--DirectoryTreeView::item:hover {
+    background-color: #E5E8ED;
+}
+
+Gui--DirectoryTreeView::branch:hover {
+    background-color: #E5E8ED;
+}
+
+UIBrowseUsersDialog {
+    background-color: #f0f0f0;
+}
+
+Gui--PasswordDialog {
+    background-color: #f0f0f0;
+}
+
+QDialogButtonBox {
+    background-color: transparent;
+}
+
+UISpecPicker {
+    background-color: #f0f0f0;
+}
+
+
+UIClearableComboBox QPushButton {
+    min-width:0em;
+    background-color:transparent;
+}
+
+UIConfigurationDialog {
+    background-color: #f0f0f0;
+    color: #888888;
+}
+
+UITabTitleWidget QStackedWidget#qt_tabwidget_stackedwidget {
+    background-color: #f1f4f9;
+}
+
+QStatusBar {
+    max-height: 1.3em;
+}
+
+Gui--FormWidget {
+    background-color: transparent;
+}
+
+UISpecWindow {
+    background-color: #fafafa;
+}
+
+UISpecWindow QLabel {
+    color: #666666;
+}
+
+QLabel {
+    color: #000000;
+}

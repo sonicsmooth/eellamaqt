@@ -58,6 +58,7 @@ public:
     void viewLibTreeView();
     void viewLibTableView();
     void helpAbout();
+    void reloadStyle();
 
 
 

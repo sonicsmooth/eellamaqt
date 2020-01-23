@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../src/allicons.cpp \
     ../src/closingdockwidget.cpp \
     ../src/dbif.cpp \
     ../src/libcore.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 
 
 HEADERS += \
+    ../src/allicons.h \
     ../src/closingdockwidget.h \
     ../src/connable.h \
     ../src/coreable.h \

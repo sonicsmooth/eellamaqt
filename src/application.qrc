@@ -624,7 +624,8 @@
     <qresource prefix="/places"/>
     <qresource prefix="/status"/>
     <qresource prefix="/">
-    <file>ui/llamastyle.css</file>
-    <file>ui/darkstyle.css</file>
+        <file>ui/llamastyle.css</file>
+        <file>ui/darkstyle.css</file>
+        <file>ui/p4Default.qss</file>
     </qresource>
 </RCC>

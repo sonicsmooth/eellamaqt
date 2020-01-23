@@ -169,6 +169,9 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     auto hb2 = new QHBoxLayout;
     auto vb1 = new QVBoxLayout;
     auto vb2 = new QVBoxLayout;
+    auto vb3 = new QVBoxLayout;
+    vb2->setMargin(10);
+    vb3->setMargin(0);
     hb1->addWidget(qle);
     hb1->addWidget(pbBrowse);
     hb2->addWidget(labNewTxt);
@@ -179,7 +182,8 @@ FileSaveAs::FileSaveAs(QWidget *parent,
         vb1->addWidget(cbCloseExisting);
     }
     vb1->addWidget(cbOverwrite);
-    vb2->addWidget(dtbw);
+    vb3->addWidget(dtbw);
+    vb3->addItem(vb2);
     vb2->addItem(new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
     vb2->addWidget(labExistHdr);
     vb2->addWidget(labExistTxt);
@@ -193,7 +197,7 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     vb2->addWidget(qdbb);
 
     setWindowTitle(windowTitle);
-    setLayout(vb2);
+    setLayout(vb3);
     setSizeGripEnabled(true);
     setObjectName("FileSaveAsDialog");
     resize(400,0);

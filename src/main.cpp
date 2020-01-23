@@ -4,6 +4,7 @@
 #include "dbif.h"
 #include "uimanager.h"
 #include "utils.h"
+#include "allicons.h"
 
 
 #include <QApplication>
@@ -19,16 +20,20 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Set up style
-    QFile style(":/ui/llamastyle.css");
+    //QFile style(":/ui/p4Default.qss");
+    //QFile style(":/ui/llamastyle.css");
     //QFile style(":/ui/darkstyle.css");
-    style.open(QIODevice::ReadOnly);
-    app.setStyleSheet(style.readAll());
+    //style.open(QIODevice::ReadOnly);
+    //app.setStyleSheet(style.readAll());
 
     LibCore core;
     LibWindow libwin;
     QSQDbIf dbif;
     UIManager uim;
+    //AllIcons ai;
 
+    // Set up style
+    libwin.reloadStyle();
 
     // Set up logger and its log window
     Logger logger(new QTextEdit);
@@ -55,6 +60,7 @@ int main(int argc, char *argv[])
     core.setUIManager(&uim);
     core.setLogger(&logger);
 
+    //ai.show();
 
     // Go!
      return app.exec();

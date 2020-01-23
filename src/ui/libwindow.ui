@@ -37,7 +37,7 @@
      <x>0</x>
      <y>0</y>
      <width>706</width>
-     <height>38</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">
@@ -151,6 +151,7 @@
    <addaction name="actionNewPin"/>
    <addaction name="separator"/>
    <addaction name="actionHelpAbout"/>
+   <addaction name="actionReloadStyle"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionFileNewLib">
@@ -430,10 +431,10 @@
    </property>
   </action>
   <action name="actionEditRedo">
-    <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
- <property name="icon">
+   <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-redo.png</normaloff>:/actions/edit-redo.png</iconset>
    </property>
@@ -469,10 +470,9 @@
    </property>
   </action>
   <action name="actionEditCut">
-     <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-cut.png</normaloff>:/actions/edit-cut.png</iconset>
@@ -485,10 +485,9 @@
    </property>
   </action>
   <action name="actionEditCopy">
-     <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-copy.png</normaloff>:/actions/edit-copy.png</iconset>
@@ -501,10 +500,9 @@
    </property>
   </action>
   <action name="actionEditPaste">
-     <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-paste.png</normaloff>:/actions/edit-paste.png</iconset>
@@ -517,10 +515,9 @@
    </property>
   </action>
   <action name="actionEditDelete">
-     <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-
    <property name="icon">
     <iconset resource="../application.qrc">
      <normaloff>:/actions/edit-delete.png</normaloff>:/actions/edit-delete.png</iconset>
@@ -542,10 +539,9 @@
    </property>
   </action>
   <action name="actionLibTreeView">
-     <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-
    <property name="text">
     <string>Lib Tree View</string>
    </property>
@@ -554,15 +550,23 @@
    </property>
   </action>
   <action name="actionLibTableView">
-     <property name="enabled">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-
    <property name="text">
     <string>Lib Table View</string>
    </property>
    <property name="toolTip">
     <string>Open table view for active library</string>
+   </property>
+  </action>
+  <action name="actionReloadStyle">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/format-stroke-color.png</normaloff>:/actions/format-stroke-color.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reload Style</string>
    </property>
   </action>
  </widget>
