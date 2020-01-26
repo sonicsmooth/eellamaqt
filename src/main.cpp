@@ -18,19 +18,14 @@ int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
-
-    // Set up style
-    //QFile style(":/ui/p4Default.qss");
-    //QFile style(":/ui/llamastyle.css");
-    //QFile style(":/ui/darkstyle.css");
-    //style.open(QIODevice::ReadOnly);
-    //app.setStyleSheet(style.readAll());
-
     LibCore core;
     LibWindow libwin;
     QSQDbIf dbif;
     UIManager uim;
+
+    // Show all default icons
     //AllIcons ai;
+    //ai.show();
 
     // Set up style
     libwin.reloadStyle();
@@ -60,7 +55,6 @@ int main(int argc, char *argv[])
     core.setUIManager(&uim);
     core.setLogger(&logger);
 
-    //ai.show();
 
     // Go!
      return app.exec();

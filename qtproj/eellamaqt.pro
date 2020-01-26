@@ -27,7 +27,8 @@ SOURCES += \
     ../src/main.cpp \
     ../src/uimanager.cpp \
     ../src/filesaveas.cpp \
-    ../src/utils.cpp
+    ../src/utils.cpp \
+    ../src/mymodel.cpp
 
 
 HEADERS += \
@@ -45,7 +46,8 @@ HEADERS += \
     ../src/loggable.h \
     ../src/logger.h \
     ../src/uimanager.h \
-    ../src/filesaveas.h
+    ../src/filesaveas.h \
+    ../src/mymodel.h
 
 
 FORMS += \

@@ -40,6 +40,7 @@ void QSQDbIf::createDatabase(std::string fullpath) {
 
     QSqlQuery q(db);
     q.exec("CREATE TABLE firsttable (ID INTEGER PRIMARY KEY, NAME TEXT)");
+    q.exec("INSERT INTO firsttable (ID, NAME) VALUES (10, 'Mikey'), (20, 'Masha')");
 }
 void QSQDbIf::openDatabase(std::string fullpath) {
 //    log("DbIf::openDatabase: Opening Sqlite database %s", fullpath.c_str());

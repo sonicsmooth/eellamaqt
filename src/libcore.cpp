@@ -91,6 +91,7 @@ void LibCore::openLib(std::string fullpath) {
         m_pDbIf->openDatabase(fullpath);
         pushActiveDb(fullpath);
         m_pUIManager->openUI(fullpath);
+
     }
 }
 
@@ -99,41 +100,63 @@ void LibCore::openLib(std::string fullpath) {
 void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) {
     // Should only be called with oldpath in activeDb list.
     assert(activeDb(oldpath));
-    log("LibCore::saveLib: Saving library " + newpath);
-    try {
-        switch(opt) {
-        case DupOptions::CLOSE_OLD:
-            // Use existing UI for new, close old one
+    switch(opt) {
+    case DupOptions::CLOSE_OLD:
+        // Use existing UI for new, close old one
+        log("LibCore::saveLib: Saving library CLOSE_OLD " + newpath);
+        try {
             m_pDbIf->cloneDatabase(oldpath, newpath);
             m_pDbIf->closeDatabase(oldpath);
             popActiveDb(oldpath);
             m_pDbIf->openDatabase(newpath);
             m_pUIManager->retargetUI(oldpath, newpath);
             pushActiveDb(newpath);
-            break;
-        case DupOptions::OPEN_NEW:
-            // Keep old one open, open new one too
+        }
+        catch (std::filesystem::filesystem_error err) {
+            log("LibCore::saveLib: Failed to save library");
+        }
+        break;
+    case DupOptions::OPEN_NEW:
+        // Keep old one open, open new one too
+        log("LibCore::saveLib: Saving library OPEN_NEW " + newpath);
+        try {
             m_pDbIf->cloneDatabase(oldpath, newpath);
             m_pDbIf->openDatabase(newpath);
             m_pUIManager->openUI(newpath);
             pushActiveDb(newpath);
-            break;
-        case DupOptions::QUIETLY:
-            // Neither open new one nor close old one
+        }
+        catch (std::filesystem::filesystem_error err) {
+            log("LibCore::saveLib: Failed to save library");
+        }
+        break;
+    case DupOptions::QUIETLY:
+        // Neither open new one nor close old one
+        log("LibCore::saveLib: Saving library QUIETLY " + newpath);
+        try {
             m_pDbIf->cloneDatabase(oldpath, newpath);
-            break;
-        case DupOptions::RENAME:
+        }
+        catch (std::filesystem::filesystem_error err) {
+            log("LibCore::saveLib: Failed to save library");
+        }
+        break;
+    case DupOptions::RENAME:
+        log("LibCore::saveLib: Saving library RENAME " + newpath);
+        try {
             m_pDbIf->closeDatabase(oldpath);
             popActiveDb(oldpath);
             m_pDbIf->renameDatabase(oldpath, newpath);
             m_pDbIf->openDatabase(newpath);
             m_pUIManager->retargetUI(oldpath, newpath);
             pushActiveDb(newpath);
-            break;
         }
-    }
-    catch (std::filesystem::filesystem_error err) {
-        log("LibCore::saveLib: Failed to save library");
+        catch (std::filesystem::filesystem_error err) {
+            log("LibCore::saveLib: Failed to rename library");
+            // restore previous
+            m_pDbIf->openDatabase(oldpath);
+            pushActiveDb(oldpath);
+            //m_pUIManager->retargetUI(oldpath,oldpath);// need to retarget?
+        }
+        break;
     }
 }
 

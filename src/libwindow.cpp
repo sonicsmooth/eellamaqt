@@ -23,6 +23,8 @@
 #include <QDockWidget>
 #include <QtSql>
 #include <QInputDialog>
+#include <QObjectList>
+#include <QCommonStyle>
 
 
 
@@ -333,7 +335,6 @@ void LibWindow::viewLibTreeView() {
         UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
         mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
     }
-
 }
 void LibWindow::viewLibTableView() {
     assert(m_pCore);
@@ -342,21 +343,42 @@ void LibWindow::viewLibTableView() {
         UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
         mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
     }
-
 }
 
-void LibWindow::helpAbout() {}
+void LibWindow::helpAbout() {
+
+}
 void LibWindow::reloadStyle() {
-    // Set up style
-    //QFile style(":/ui/p4Default.qss");
+    // Set up style -- this only works at startup, not after!!
     QFile styleFile(":/ui/llamastyle.css");
-    //QFile styleFile(":/ui/darkstyle.css");
     styleFile.open(QIODevice::ReadOnly);
+    QString fileContents = styleFile.readAll();
+
     QApplication *qapp(dynamic_cast<QApplication *>(QApplication::instance()));
-    qapp->setStyleSheet(styleFile.readAll());
-    centralWidget()->style()->unpolish(qapp);
-    centralWidget()->style()->polish(qapp);
-    centralWidget()->update();
+    QApplication::setStyle("WindowsVista");
+    qapp->setStyleSheet(fileContents);
+
+
+
+    // Nothing after this point works to update stylesheets after initialization
+//    this->setStyleSheet(fileContents);
+//    this->style()->unpolish(this);
+//    this->style()->polish(this);
+//    this->update();
+
+//    auto ch = findChildren<QWidget *>();
+//     //QApplication *app = dynamic_cast<QApplication *>(QApplication::instance());
+//     //QCommonStyle *style = dynamic_cast<QCommonStyle *>(app->style());
+//     for (QWidget *child : ch) {
+//        // child->style()->unpolish(child);
+//        child->setStyleSheet(fileContents);
+//        child->style()->unpolish(child);
+//        child->style()->polish(child);
+//        child->update();
+//     }
+
+
+
 
 
 

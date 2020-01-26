@@ -10,6 +10,7 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QAbstractItemView>
+#include <QAbstractItemModel>
 #include <string>
 #include <map>
 #include <vector>

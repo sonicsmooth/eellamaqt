@@ -1,5 +1,7 @@
 #include "allicons.h"
 
+#include <QApplication>
+#include <QGuiApplication>
 #include <QStringList>
 #include <QGridLayout>
 #include <QPushButton>
@@ -83,9 +85,10 @@ AllIcons::AllIcons(QWidget *parent) : QWidget(parent)
     auto layout = new QGridLayout;
     int columns = 6;
     int count = 0;
+    auto style = dynamic_cast<QApplication *>(QApplication::instance())->style();
     for (auto const & iname : icons) {
         auto button = new QPushButton(iname);
-        button->setIcon(button->style()->standardIcon(QStyle::StandardPixmap(count)));
+        button->setIcon(style->standardIcon(QStyle::StandardPixmap(count)));
         layout->addWidget(button, count / columns, count % columns);
         count++;
     }

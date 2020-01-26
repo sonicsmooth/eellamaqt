@@ -3,6 +3,7 @@
 #include "closingdockwidget.h"
 #include "libwindow.h"
 #include "connable.h"
+#include "mymodel.h"
 #include <QObject>
 #include <QString>
 #include <QDockWidget>
@@ -10,6 +11,8 @@
 #include <QTableWidget>
 #include <QTreeView>
 #include <QTreeWidget>
+#include <QAbstractItemView>
+#include <QAbstractItemModel>
 #include <typeinfo>
 #include <iterator>
 #include <list>
@@ -138,10 +141,12 @@ std::any UIManager::openUI(std::string title, UIType uit) {
         }
     } else if (uit == UIType::LIBTABLEVIEW) {
         if (!(cdw = findByType<QTableWidget>(m_openLibWidgets[title]))) {
-            QTableWidget *qtw = new QTableWidget(m_parentMW);
-            qtw->setColumnCount(3);
-            qtw->setRowCount(10);
-            cdw = makeLibView(new QTableView, qtitle);
+            //QTableWidget *qtw = new QTableWidget(m_parentMW);
+            QTableView *qtv = new QTableView(m_parentMW);
+            //qtw->setColumnCount(3);
+            //qtw->setRowCount(10);
+            qtv->setModel(new MyModel);
+            cdw = makeLibView(qtv, qtitle);
             dockLibView(cdw, Qt::DockWidgetArea::LeftDockWidgetArea);
         }
     }
@@ -166,12 +171,21 @@ void UIManager::retargetUI(std::string oldpath, std::string newpath) {
     m_openConnWidgets.insert(std::move(t2));
 
     // Set title in each ClosingDockWidget
-    for (QDockWidget *pw : m_openLibWidgets[newpath])
+    int counta = 0;
+    int countb = 0;
+    for (QDockWidget *pw : m_openLibWidgets[newpath]) {
         pw->setWindowTitle(QString::fromStdString(newpath));
+        counta++;
+    }
 
     // Set the connection in each Connection-holding widget
-    for (Connable *cw : m_openConnWidgets[newpath])
+    for (Connable *cw : m_openConnWidgets[newpath]) {
         cw->setDbConn(newpath);
+        countb++;
+    }
+    log("UIManager::retargetui: from %s to %s", oldpath.c_str(), newpath.c_str());
+    log("UIManager::retargetUI: retargeted %d dockwidgets", counta);
+    log("UIManager::retargetUI: retargeted %d connwidgets", countb);
 }
 
 void UIManager::closeUI(std::string title) {
