@@ -99,11 +99,11 @@ LibWindow::LibWindow(QWidget *parent)
         QTableView *qtablev(dynamic_cast<QTableView *>(now));
 
         if (qdw) {
-            lvw = static_cast<LibViewWidget *>(qdw->widget());
+            lvw = dynamic_cast<LibViewWidget *>(qdw->widget());
         } else if (qtreev) {
-            lvw = static_cast<LibViewWidget *>(qtreev->parentWidget());
+            lvw = dynamic_cast<LibViewWidget *>(qtreev->parentWidget());
         } else if (qtablev) {
-            lvw = static_cast<LibViewWidget *>(qtablev->parentWidget());
+            lvw = dynamic_cast<LibViewWidget *>(qtablev->parentWidget());
         }
 
         if (lvw) {

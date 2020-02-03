@@ -10,7 +10,7 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QAbstractItemView>
-#include <QAbstractItemModel>
+#include <QStandardItemModel>
 #include <string>
 #include <map>
 #include <vector>
@@ -24,6 +24,7 @@ private:
     std::list<UIType> m_defaultUITypes;
     std::map<std::string, std::list<ClosingDockWidget *>> m_openLibWidgets;
     std::map<std::string, std::list<Connable *>> m_openConnWidgets;
+    QStandardItemModel *m_siModel;
 
     ClosingDockWidget *makeLibView(QAbstractItemView *, QString title);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
@@ -38,6 +39,8 @@ public:
     void setParentMW(QMainWindow *);
     QMainWindow *parentMW() const;
 
+public slots:
+    //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);
 
 };
 

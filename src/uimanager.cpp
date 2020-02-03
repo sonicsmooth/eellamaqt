@@ -12,7 +12,10 @@
 #include <QTreeView>
 #include <QTreeWidget>
 #include <QAbstractItemView>
-#include <QAbstractItemModel>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QItemSelectionModel>
+#include <QItemSelection>
 #include <typeinfo>
 #include <iterator>
 #include <list>
@@ -20,10 +23,34 @@
 #include <any>
 #include <exception>
 
-UIManager::UIManager(QObject *parent) : QObject(parent)
+UIManager::UIManager(QObject *parent) :
+    QObject(parent),
+    m_siModel(new QStandardItemModel)
 {
     m_defaultUITypes.push_back(UIType::LIBTREEVIEW);
     m_defaultUITypes.push_back(UIType::LIBTABLEVIEW);
+    auto root = m_siModel->invisibleRootItem();
+    root->appendRow(new QStandardItem("Americas"));
+    root->child(0)->appendRow(new QStandardItem("Canada"));
+    root->child(0)->child(0)->appendRow(new QStandardItem("Calgary"));
+    root->child(0)->child(0)->appendRow(new QStandardItem("Montreal"));
+    root->child(0)->appendRow(new QStandardItem("USA"));
+    root->child(0)->child(1)->appendRow(new QStandardItem("Boston"));
+    root->child(0)->child(1)->appendRow(new QStandardItem("Seattle"));
+    root->appendRow(new QStandardItem("Europe"));
+    root->child(1)->appendRow(new QStandardItem("Italy"));
+    root->child(1)->child(0)->appendRow(new QStandardItem("Rome"));
+    root->child(1)->child(0)->appendRow(new QStandardItem("Verona"));
+    root->child(1)->appendRow(new QStandardItem("Germany"));
+    root->child(1)->child(1)->appendRow(new QStandardItem("Berlin"));
+    root->child(1)->child(1)->appendRow(new QStandardItem("Stuttgart"));
+    root->child(1)->appendRow(new QStandardItem("France"));
+    root->child(1)->child(2)->appendRow(new QStandardItem("Paris"));
+    root->child(1)->child(2)->appendRow(new QStandardItem("Marseilles"));
+    root->child(1)->appendRow(new QStandardItem("Netherlands"));
+    root->child(1)->child(3)->appendRow(new QStandardItem("Amtsterdam"));
+    root->child(1)->child(3)->appendRow(new QStandardItem("Coffee shop"));
+
 }
 void UIManager::setParentMW(QMainWindow *p) {
     m_parentMW = p;
@@ -136,15 +163,33 @@ std::any UIManager::openUI(std::string title, UIType uit) {
     if(uit == UIType::LIBTREEVIEW) {
         // usually findByType will return nullptr, as any caller will probably check beforehand
         if (!(cdw = findByType<QTreeView>(m_openLibWidgets[title]))) {
-            cdw = makeLibView(new QTreeView, qtitle);
+            QTreeView *qtv = new QTreeView(m_parentMW);
+            qtv->setModel(m_siModel);
+            qtv->expandAll();
+            cdw = makeLibView(qtv, qtitle);
             dockLibView(cdw, Qt::DockWidgetArea::RightDockWidgetArea);
+            connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
+                [=](const QItemSelection & /*newSelection*/, const QItemSelection & /*oldSelection*/) {
+                    const QModelIndex index = qtv->selectionModel()->currentIndex();
+                    QString selectedText = index.data(Qt::DisplayRole).toString();
+                    int hierarchy = 1;
+                    QModelIndex seekRoot = index;
+                    while (seekRoot.parent() != QModelIndex()) {
+                        seekRoot = seekRoot.parent();
+                        hierarchy ++;
+                    }
+                    QString showString = QString("%1, level %2").arg(selectedText).arg(hierarchy);
+                    qDebug(showString.toUtf8());
+                    log("%p",cdw);
+                    cdw->setWindowTitle(showString);
+                });
+//            QObject::connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
+//                    [=](const QItemSelection & /*s*/, const QItemSelection & /*os*/) {log("selection changed");});
+
         }
     } else if (uit == UIType::LIBTABLEVIEW) {
         if (!(cdw = findByType<QTableWidget>(m_openLibWidgets[title]))) {
-            //QTableWidget *qtw = new QTableWidget(m_parentMW);
             QTableView *qtv = new QTableView(m_parentMW);
-            //qtw->setColumnCount(3);
-            //qtw->setRowCount(10);
             qtv->setModel(new MyModel);
             cdw = makeLibView(qtv, qtitle);
             dockLibView(cdw, Qt::DockWidgetArea::LeftDockWidgetArea);
@@ -242,3 +287,7 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     log("UIManager::OnDockWidgetActivate: activated %s", title.c_str());
     m_pCore->pushActiveDb(title);
 }
+
+//void UIManager::treeSelectionChangeSlot(const QItemSelection & newItem, const QItemSelection & oldItem) {
+
+//}
