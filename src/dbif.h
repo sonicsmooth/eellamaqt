@@ -7,14 +7,13 @@
 
 #include <QtSql>
 
-//#include <optional>
+#include <any>
 
 // This is the interface between the core and the Qt database
 
 class QSQDbIf : public IDbIf, public Coreable, public Loggable
 {
 private:
-    //QSqlDatabase* m_pQDb;
 public:
     QSQDbIf();
     void createDatabase(std::string) override;
@@ -23,6 +22,7 @@ public:
     void renameDatabase(std::string, std::string) override;
     void closeDatabase(std::string) override;
     void deleteDatabase(std::string) override;
+    std::any database(std::string) override;
 
 };
 

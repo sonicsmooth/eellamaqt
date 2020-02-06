@@ -15,6 +15,8 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QItemSelectionModel>
+#include <QSqlTableModel>
+#include <QSqlDatabase>
 #include <QItemSelection>
 #include <typeinfo>
 #include <iterator>
@@ -26,6 +28,7 @@
 UIManager::UIManager(QObject *parent) :
     QObject(parent),
     m_siModel(new QStandardItemModel)
+
 {
     m_defaultUITypes.push_back(UIType::LIBTREEVIEW);
     m_defaultUITypes.push_back(UIType::LIBTABLEVIEW);
@@ -50,6 +53,7 @@ UIManager::UIManager(QObject *parent) :
     root->child(1)->appendRow(new QStandardItem("Netherlands"));
     root->child(1)->child(3)->appendRow(new QStandardItem("Amtsterdam"));
     root->child(1)->child(3)->appendRow(new QStandardItem("Coffee shop"));
+
 
 }
 void UIManager::setParentMW(QMainWindow *p) {
@@ -168,29 +172,22 @@ std::any UIManager::openUI(std::string title, UIType uit) {
             qtv->expandAll();
             cdw = makeLibView(qtv, qtitle);
             dockLibView(cdw, Qt::DockWidgetArea::RightDockWidgetArea);
-            connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
-                [=](const QItemSelection & /*newSelection*/, const QItemSelection & /*oldSelection*/) {
-                    const QModelIndex index = qtv->selectionModel()->currentIndex();
-                    QString selectedText = index.data(Qt::DisplayRole).toString();
-                    int hierarchy = 1;
-                    QModelIndex seekRoot = index;
-                    while (seekRoot.parent() != QModelIndex()) {
-                        seekRoot = seekRoot.parent();
-                        hierarchy ++;
-                    }
-                    QString showString = QString("%1, level %2").arg(selectedText).arg(hierarchy);
-                    qDebug(showString.toUtf8());
-                    log("%p",cdw);
-                    cdw->setWindowTitle(showString);
-                });
-//            QObject::connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
-//                    [=](const QItemSelection & /*s*/, const QItemSelection & /*os*/) {log("selection changed");});
-
+//            connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
+//                [=](const QItemSelection & /*newSelection*/, const QItemSelection & /*oldSelection*/) {
+//                    const QModelIndex index = qtv->selectionModel()->currentIndex();
+//                    QString selectedText = index.data(Qt::DisplayRole).toString();
+//                    log("%s, level %d", selectedText.toStdString().c_str());
+//                });
         }
     } else if (uit == UIType::LIBTABLEVIEW) {
         if (!(cdw = findByType<QTableWidget>(m_openLibWidgets[title]))) {
             QTableView *qtv = new QTableView(m_parentMW);
-            qtv->setModel(new MyModel);
+            QSqlDatabase db = std::any_cast<QSqlDatabase>(m_pDbIf->database(title));
+            QSqlTableModel *sqm = new QSqlTableModel(this, db);
+            sqm->setTable("firsttable");
+            sqm->setEditStrategy(QSqlTableModel::OnRowChange);
+            sqm->select();
+            qtv->setModel(sqm);
             cdw = makeLibView(qtv, qtitle);
             dockLibView(cdw, Qt::DockWidgetArea::LeftDockWidgetArea);
         }
@@ -288,6 +285,9 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     m_pCore->pushActiveDb(title);
 }
 
-//void UIManager::treeSelectionChangeSlot(const QItemSelection & newItem, const QItemSelection & oldItem) {
-
-//}
+void UIManager::setDbIf(IDbIf *dbif) {
+    m_pDbIf = dbif;
+}
+IDbIf *UIManager::dbIf() const {
+    return m_pDbIf;
+}

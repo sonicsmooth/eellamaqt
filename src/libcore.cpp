@@ -1,4 +1,5 @@
 #include "libcore.h"
+#include <QSqlDatabase>
 #include <iostream>
 #include <sstream>
 #include <cassert>
@@ -6,6 +7,7 @@
 #include <fstream>
 #include <optional>
 #include <algorithm>
+#include <any>
 
 
 #ifdef _WIN32
@@ -25,7 +27,6 @@ LibCore::~LibCore() {}
 void LibCore::setDbIf(IDbIf* pDbIf) {
     m_pDbIf = pDbIf;
 }
-
 IDbIf *LibCore::DbIf() const {
     return m_pDbIf;
 }
@@ -50,11 +51,11 @@ void LibCore::pushActiveDb(std::string adb) {
     std::optional<std::string> oldFront(activeDb());
     m_activeDb.remove(adb);
     m_activeDb.push_front(adb);
-    log("---");
+    //log("---");
     for (auto const & s : m_activeDb) {
-        log("push, now: " + s);
+        //log("push, now: " + s);
     }
-    log("---");
+    //log("---");
 
 }
 void LibCore::popActiveDb(std::string adb) {
@@ -62,11 +63,11 @@ void LibCore::popActiveDb(std::string adb) {
     // throw error if not in list
     if (activeDb(adb)) {
         m_activeDb.remove(adb);
-        log("---");
+        //log("---");
         for (auto const & s : m_activeDb) {
-            log("pop, now: " + s);
+            //log("pop, now: " + s);
         }
-        log("---");
+        //log("---");
 
     } else {
         throw std::runtime_error("Library " + adb + " not in activeDb list");
@@ -81,7 +82,8 @@ void LibCore::newLib(std::string fullpath) {
     m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
     // TODO: somehow point UI to database
-    m_pUIManager->openUI(fullpath);
+    m_pUIManager->openUI(fullpath); // or maybe openDbUI(fullpath)
+    //m_pUIManager->assocDatabase(m_pDbIf->database(fullpath)); // like this maybe?
 }
 void LibCore::openLib(std::string fullpath) {
     log("LibCore::openLib Opening library " + fullpath);

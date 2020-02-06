@@ -10,6 +10,7 @@
 #include <exception>
 #include <filesystem>
 #include <system_error>
+#include <any>
 
 
 QSQDbIf::QSQDbIf() {}
@@ -110,11 +111,15 @@ void QSQDbIf::closeDatabase(std::string fullpath) {
         db.close(); // needed?
     }
     QSqlDatabase::removeDatabase(dbname);
-
 }
 void QSQDbIf::deleteDatabase(std::string fullpath) {
 //    log("DbIf::deleteDatabase: Deleting database " + fullpath);
     closeDatabase(fullpath);
     std::remove(fullpath.c_str());
 
+}
+// Return type here should probably be something better than std::any
+std::any QSQDbIf::database(std::string fullpath) {
+    QString dbname(QString::fromStdString(fullpath));
+    return QSqlDatabase::database(dbname);
 }

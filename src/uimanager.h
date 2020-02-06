@@ -6,11 +6,13 @@
 #include "loggable.h"
 #include "closingdockwidget.h"
 #include "libviewwidget.h"
+#include "idbif.h"
 #include <QString>
 #include <QWidget>
 #include <QMainWindow>
 #include <QAbstractItemView>
 #include <QStandardItemModel>
+#include <QSqlTableModel>
 #include <string>
 #include <map>
 #include <vector>
@@ -25,6 +27,7 @@ private:
     std::map<std::string, std::list<ClosingDockWidget *>> m_openLibWidgets;
     std::map<std::string, std::list<Connable *>> m_openConnWidgets;
     QStandardItemModel *m_siModel;
+    IDbIf *m_pDbIf;
 
     ClosingDockWidget *makeLibView(QAbstractItemView *, QString title);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
@@ -37,6 +40,8 @@ public:
     void onDockWidgetClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
     void setParentMW(QMainWindow *);
+    void setDbIf(IDbIf *);
+    IDbIf *dbIf() const;
     QMainWindow *parentMW() const;
 
 public slots:

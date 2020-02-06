@@ -4,7 +4,7 @@
 // This is the abstract interface to the interface between the core and the Qt database
 
 #include <iostream>
-//#include <optional>
+#include <any>
 
 class IDbIf
 {
@@ -16,6 +16,7 @@ public:
     virtual void renameDatabase(std::string, std::string) = 0;
     virtual void closeDatabase(std::string) = 0;
     virtual void deleteDatabase(std::string) = 0;
+    virtual std::any database(std::string) = 0;
 };
 
 #endif // DBIF_H
