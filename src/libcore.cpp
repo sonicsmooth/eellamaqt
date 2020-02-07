@@ -52,9 +52,9 @@ void LibCore::pushActiveDb(std::string adb) {
     m_activeDb.remove(adb);
     m_activeDb.push_front(adb);
     //log("---");
-    for (auto const & s : m_activeDb) {
+    //for (auto const & s : m_activeDb) {
         //log("push, now: " + s);
-    }
+    //}
     //log("---");
 
 }
@@ -64,9 +64,9 @@ void LibCore::popActiveDb(std::string adb) {
     if (activeDb(adb)) {
         m_activeDb.remove(adb);
         //log("---");
-        for (auto const & s : m_activeDb) {
+        //for (auto const & s : m_activeDb) {
             //log("pop, now: " + s);
-        }
+        //}
         //log("---");
 
     } else {
@@ -164,13 +164,14 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
 
 void LibCore::closeLib(std::string fullpath) {
     // Remove specified db from list and call UI to close related windows
+    // UI must be closed before db or db won't close properly
     // Call dbif to close lib
     // Caller should know the proper name of lib; throws error otherwise
    if (activeDb(fullpath)) {
         log("LibCore::closeLib Closing library %s", fullpath.c_str());
         popActiveDb(fullpath);
-        m_pDbIf->closeDatabase(fullpath);
         m_pUIManager->closeUI(fullpath);
+        m_pDbIf->closeDatabase(fullpath);
     } else {
         throw std::logic_error("LibCore::closeLib: No active db named this to close: " + fullpath);
     }

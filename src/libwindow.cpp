@@ -191,7 +191,7 @@ void LibWindow::fileOpenLib() {
     qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
 
     if(qfd.exec())
-        for (auto f : qfd.selectedFiles())
+        for (QString f : qfd.selectedFiles())
             m_pCore->openLib(f.toStdString());
     updateActions();
 }

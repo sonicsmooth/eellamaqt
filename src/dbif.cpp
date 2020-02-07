@@ -19,11 +19,8 @@ void QSQDbIf::createDatabase(std::string fullpath) {
     // Creates and opens qSqlite3 connection and file name fullpath. What's
     // weird is that I don't have to maintain a list of anything anywhere.  The
     // QSqlDatabase object somehow lives for the entirety of the application and
-    // keeps a list of available database connection, each of which points to a
+    // keeps a list of available database connections, each of which points to a
     // file of the same name.
-
-//    log("DbiF::createDatabase: Creating Sqlite database %s", fullpath.c_str());
-
 
     // database name is not the connection name
     // There can be multiple connections, each pointing to a single database
@@ -50,13 +47,13 @@ void QSQDbIf::openDatabase(std::string fullpath) {
     if (qfile.exists()) {
         QSqlDatabase db(QSqlDatabase::addDatabase("QSQLITE", dbname));
         db.setDatabaseName(dbname); // specifies file
-        if (db.open())
-            ;//log("DbIf::openDatabase: %s opened", fullpath.c_str());
-        else
+        if (!db.open())
             throw std::runtime_error("Cannot open " + fullpath);
     } else {
         log("Library '%s' not found", fullpath.c_str());
     }
+
+
 }
 void QSQDbIf::cloneDatabase(std::string oldpath, std::string newpath) {
     // Just copy the thing, then add it to available databases
@@ -106,9 +103,8 @@ void QSQDbIf::closeDatabase(std::string fullpath) {
 //    log("QSQDbIf::closeDatabase: Closing database " + fullpath);
     QString dbname(QString::fromStdString(fullpath));
     { // so db goes out of scope before removing from database
-
         QSqlDatabase db(QSqlDatabase::database(dbname));
-        db.close(); // needed?
+        db.close();
     }
     QSqlDatabase::removeDatabase(dbname);
 }

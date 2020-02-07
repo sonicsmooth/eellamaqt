@@ -76,7 +76,7 @@ ClosingDockWidget *UIManager::makeLibView(QAbstractItemView *qaiv, QString title
     ClosingDockWidget* libDockWidget = new ClosingDockWidget(m_parentMW);
     libViewWidget->setFocusProxy(libDockWidget); // doesn't seem to do anything
     libDockWidget->setFocusPolicy(Qt::StrongFocus);
-    libDockWidget->setWidget(libViewWidget);
+    libDockWidget->setWidget(libViewWidget);       
     libDockWidget->setWindowTitle(title);
     m_openLibWidgets[title.toStdString()].push_back(libDockWidget);
 
@@ -243,7 +243,6 @@ void UIManager::closeUI(std::string title) {
     QWidget *pw(nullptr);
     while (!m_openLibWidgets[title].empty()) {
         pw = m_openLibWidgets[title].back();
-        //log("UIManager::CloseUI: closing window %s @ 0x%x", title.c_str(), pw);
         pw->close();  // triggers onDockWidgetClose
         n++;
     }
@@ -259,17 +258,28 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     assert(m_pCore);
     ClosingDockWidget *cdw(dynamic_cast<ClosingDockWidget *>(pw));
     assert(cdw);
+    LibViewWidget *lvw(dynamic_cast<LibViewWidget *>(cdw->widget()));
+    if (lvw) {
+        QTableView *qtv (dynamic_cast<QTableView *>(lvw->view()));
+        if (qtv) {
+            // Delete old model to forget about sql connection
+            // No need to null out the model in the tableview
+            // as the tableview is about to get destroyed
+            delete qtv->model();
+        }
+    }
+
     std::string title(pw->windowTitle().toStdString());
     assert(m_openLibWidgets.find(title) != m_openLibWidgets.end());
     assert(m_openConnWidgets.find(title) != m_openConnWidgets.end());
     std::list<ClosingDockWidget *> & olwlst(m_openLibWidgets[title]);
     std::list<Connable *>          & ocwlst(m_openConnWidgets[title]);
-    olwlst.remove(cdw);
     ocwlst.remove(dynamic_cast<Connable *>(cdw->widget()));
+    olwlst.remove(cdw);
     m_parentMW->removeDockWidget(cdw);
     if (olwlst.empty()) {
         assert(ocwlst.empty());
-        if (m_pCore->activeDb(title)) { // this could legitimately be false
+        if (m_pCore->activeDb(title)) { // this could legitimately be false (depending on whether this ondockwidgetclose comes before or after core->closelib...?)
             m_pCore->closeLib(title);
             dynamic_cast<LibWindow *>(m_parentMW)->updateActions();
         }
