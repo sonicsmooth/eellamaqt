@@ -192,8 +192,8 @@ void LibCore::deleteLib(std::string fullpath) {
     if (activeDb(fullpath)) {
         log("LibCore::deleteLib " + fullpath);
         popActiveDb(fullpath); // this before closeUI
-        m_pDbIf->deleteDatabase(fullpath);
         m_pUIManager->closeUI(fullpath);
+        m_pDbIf->deleteDatabase(fullpath);
     } else {
         throw std::logic_error("LibCore: No active db to close");
     }
