@@ -18,36 +18,40 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     ../src/allicons.cpp \
     ../src/closingdockwidget.cpp \
+    ../src/closingmdiwidget.cpp \
     ../src/dbif.cpp \
     ../src/libcore.cpp \
-    ../src/libviewwidget.cpp \
+    ../src/libtableview.cpp \
+    ../src/libtreeview.cpp \
     ../src/libwindow.cpp \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
     ../src/uimanager.cpp \
     ../src/filesaveas.cpp \
-    ../src/utils.cpp \
     ../src/mymodel.cpp
 
 
 HEADERS += \
     ../src/allicons.h \
     ../src/closingdockwidget.h \
+    ../src/closingmdiwidget.h \
     ../src/connable.h \
     ../src/coreable.h \
     ../src/dbif.h \
     ../src/idbif.h \
     ../src/ilogger.h \
     ../src/iuimanager.h \
+    ../src/libclient.h \
     ../src/libcore.h \
-    ../src/libviewwidget.h \
+    ../src/libtableview.h \
+    ../src/libtreeview.h \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \
     ../src/uimanager.h \
     ../src/filesaveas.h \
-    ../src/mymodel.h
+    ../src/mymodel.h \
 
 
 FORMS += \

@@ -1,5 +1,5 @@
 #include "libwindow.h"
-#include "libviewwidget.h"
+#include "libtreeview.h"
 #include "ui_libwindow.h"
 #include "closingdockwidget.h"
 #include "uimanager.h"
@@ -74,7 +74,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
     connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
 
-    // This handles focusing on the dockwidget and its content widget
+    // This handles focusing on the dockwidgets and their content widgets
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
         // The goal is to get to the LibTreeWidget which has the dbConn.
         // But the LibTreeWidget doesn't receive focus events; only the QTreeView
@@ -94,24 +94,28 @@ LibWindow::LibWindow(QWidget *parent)
 
         (void) old;
         QDockWidget *qdw(dynamic_cast<QDockWidget *>(now));
-        LibViewWidget *lvw(nullptr);
-        QTreeView *qtreev(dynamic_cast<QTreeView *>(now));
-        QTableView *qtablev(dynamic_cast<QTableView *>(now));
+        LibClient *libc(dynamic_cast<LibClient *>(now));
+        //QTreeView *qtreev(dynamic_cast<QTreeView *>(now));
+        //QTableView *qtablev(dynamic_cast<QTableView *>(now));
 
         if (qdw) {
-            lvw = dynamic_cast<LibViewWidget *>(qdw->widget());
-        } else if (qtreev) {
-            lvw = dynamic_cast<LibViewWidget *>(qtreev->parentWidget());
+            libc = dynamic_cast<LibClient *>(qdw->widget());
+        }/* else if (qtreev) {
+            lvc = dynamic_cast<LibViewClient *>(qtreev->parentWidget());
         } else if (qtablev) {
-            lvw = dynamic_cast<LibViewWidget *>(qtablev->parentWidget());
-        }
+            lvc = dynamic_cast<LibViewClient *>(qtablev->parentWidget());
+        } */
 
-        if (lvw) {
-            m_pCore->pushActiveDb(lvw->dbConn());
+        if (libc) {
+            m_pCore->pushActiveDb(libc->dbConn());
         }
 
         // Might not assign lvw since there are other things getting focus
     });
+
+    //ui->mdiArea->addSubWindow(new QTextEdit());
+
+
 }
 
 

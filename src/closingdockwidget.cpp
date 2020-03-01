@@ -14,7 +14,7 @@ void ClosingDockWidget::closeEvent(QCloseEvent *event) {
 
 }
 
-void ClosingDockWidget::retarget(std::string *conn) {
-    setWindowTitle(QString::fromStdString(*conn));
-}
+//void ClosingDockWidget::retarget(std::string *conn) {
+//    setWindowTitle(QString::fromStdString(*conn));
+//}
 

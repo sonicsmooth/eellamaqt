@@ -15,7 +15,7 @@
 class Loggable {
     public:
         ILogger *m_pLogger;
-        Loggable();
+        Loggable(ILogger * = nullptr);
         void setLogger(ILogger *);
         ILogger *logger() const;
         // Just forward log to embedded logger

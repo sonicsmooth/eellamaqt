@@ -21,11 +21,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTextEdit" name="textEdit">
-        <property name="placeholderText">
-         <string>Type something</string>
-        </property>
-       </widget>
+       <widget class="QMdiArea" name="mdiArea"/>
       </item>
      </layout>
     </item>

@@ -33,6 +33,7 @@ void QSQDbIf::createDatabase(std::string fullpath) {
     QString dbname(QString::fromStdString(fullpath));
     QSqlDatabase db(QSqlDatabase::addDatabase("QSQLITE", dbname));
     db.setDatabaseName(dbname); // specifies file
+    QString xx = db.databaseName();
     bool ok = db.open();
     if (!ok) throw;
 
@@ -116,6 +117,5 @@ void QSQDbIf::deleteDatabase(std::string fullpath) {
 }
 // Return type here should probably be something better than std::any
 std::any QSQDbIf::database(std::string fullpath) {
-    QString dbname(QString::fromStdString(fullpath));
-    return QSqlDatabase::database(dbname);
+    return QSqlDatabase::database(QString::fromStdString(fullpath));
 }

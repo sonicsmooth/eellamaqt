@@ -1,7 +1,7 @@
-#ifndef CLOSINGDOCKWIDGET_H
-#define CLOSINGDOCKWIDGET_H
+#ifndef CLOSINGMDIWIDGET_H
+#define CLOSINGMDIWIDGET_H
 
-#include <QDockWidget>
+#include <QMdiSubWindow>
 #include <QCloseEvent>
 #include <QFocusEvent>
 
@@ -9,18 +9,18 @@
 
 // Captures close event and sends closing() signal
 
-class ClosingDockWidget : public QDockWidget
+class ClosingMDIWidget : public QMdiSubWindow
 {
     Q_OBJECT
 public:
-    explicit ClosingDockWidget(QWidget * = nullptr);
+    explicit ClosingMDIWidget(QWidget * = nullptr);
     void closeEvent(QCloseEvent *) override;
 //    void retarget(std::string *);
 
 signals:
-    void *closing(ClosingDockWidget *) const;
+    void *closing(ClosingMDIWidget *) const;
 
 public slots:
 };
 
-#endif // LIBDOCKWIDGET_H
+#endif // CLOSINGMDIWIDGET_H

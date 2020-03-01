@@ -1,7 +1,7 @@
 #include "ilogger.h"
 #include "loggable.h"
 
-Loggable::Loggable() : m_pLogger(nullptr) {};
+Loggable::Loggable(ILogger *lgr) : m_pLogger(lgr) {};
 void Loggable::setLogger(ILogger *lgr) {m_pLogger = lgr;};
 ILogger *Loggable::logger() const {return m_pLogger;};
 

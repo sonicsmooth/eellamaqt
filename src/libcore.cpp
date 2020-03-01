@@ -77,13 +77,11 @@ void LibCore::newLib(std::string fullpath) {
     // LibCore assumes the caller has already verified the path and name
     // So we log whether it exsts, then override
     assert(m_pDbIf);
-//    log("LibCore::newLib Creating new Library " + fullpath);
     // TODO: check for an existing lib with that name
     m_pDbIf->createDatabase(fullpath);
     pushActiveDb(fullpath);
     // TODO: somehow point UI to database
     m_pUIManager->openUI(fullpath); // or maybe openDbUI(fullpath)
-    //m_pUIManager->assocDatabase(m_pDbIf->database(fullpath)); // like this maybe?
 }
 void LibCore::openLib(std::string fullpath) {
     log("LibCore::openLib Opening library " + fullpath);
@@ -92,6 +90,9 @@ void LibCore::openLib(std::string fullpath) {
     } else {
         m_pDbIf->openDatabase(fullpath);
         pushActiveDb(fullpath);
+        // Somehow access the model here and pass to UI
+        // Model is responsible for connection details,
+        // and UI is responsible for window title text
         m_pUIManager->openUI(fullpath);
 
     }
