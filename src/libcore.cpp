@@ -36,6 +36,18 @@ void LibCore::setUIManager(IUIManager *uim) {
 IUIManager *LibCore::UIManager() const {
     return m_pUIManager;
 }
+void LibCore::setModelManager(IModelManager *mm) {
+    m_pModelManager = mm;
+}
+IModelManager *LibCore::modelManager() const {
+    return m_pModelManager;
+}
+void LibCore::setViewManager(IViewManager *wm) {
+    m_pViewManager = wm;
+}
+IViewManager *LibCore::viewManager() const {
+    return m_pViewManager;
+}
 std::optional<std::string> LibCore::activeDb() const {
     return m_activeDb.size() ? std::optional<std::string>{m_activeDb.front()} :
                                std::nullopt;

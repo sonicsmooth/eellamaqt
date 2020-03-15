@@ -3,6 +3,8 @@
 #include "logger.h"
 #include "dbif.h"
 #include "uimanager.h"
+#include "qmodelmanager.h"
+#include "qviewmanager.h"
 #include "utils.h"
 #include "allicons.h"
 #include "mymodel.h"
@@ -27,6 +29,8 @@ int main(int argc, char *argv[])
     LibWindow libwin;
     QSQDbIf dbif;
     UIManager uim;
+    QModelManager qmm;
+    QViewManager qvm;
 
     // Show all default icons
     //AllIcons ai;
@@ -59,6 +63,8 @@ int main(int argc, char *argv[])
     // Set up core and ui slave
     core.setDbIf(&dbif);
     core.setUIManager(&uim);
+    core.setModelManager(&qmm);
+    core.setViewManager(&qvm);
     core.setLogger(&logger);
 
     // Go!

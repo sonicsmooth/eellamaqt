@@ -27,6 +27,8 @@ SOURCES += \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
+    ../src/qmodelmanager.cpp \
+    ../src/qviewmanager.cpp \
     ../src/uimanager.cpp \
     ../src/filesaveas.cpp \
     ../src/mymodel.cpp
@@ -41,7 +43,9 @@ HEADERS += \
     ../src/dbif.h \
     ../src/idbif.h \
     ../src/ilogger.h \
+    ../src/imodelmanager.h \
     ../src/iuimanager.h \
+    ../src/iviewmanager.h \
     ../src/libclient.h \
     ../src/libcore.h \
     ../src/libtableview.h \
@@ -49,6 +53,8 @@ HEADERS += \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \
+    ../src/qmodelmanager.h \
+    ../src/qviewmanager.h \
     ../src/uimanager.h \
     ../src/filesaveas.h \
     ../src/mymodel.h \
