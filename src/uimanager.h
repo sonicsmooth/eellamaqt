@@ -39,6 +39,7 @@ public:
     UIManager(QObject * = nullptr);
     void openUI(std::string) override; // opens default UI types
     void openUI(std::string, UIType); // opens named UI type
+    void openUI(std::any view, ViewType); // opens view in CDW, MDI, etc. window
     void closeUI(std::string) override;
     void retargetUI(std::string oldpath, std::string newpath) override;
     void onDockWidgetClose(QWidget *);
