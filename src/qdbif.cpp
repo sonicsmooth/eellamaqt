@@ -36,11 +36,10 @@ void QSQDbIf::popActiveDb(std::string adb) {
     }
 }
 void QSQDbIf::cloneDb(std::string oldpath, std::string newpath) {
-    // Just copy the thing, then add it to available databases
-    // We assume here that sqlite is done writing.
+    // Just copy the file directly
+    // We assume here that sqlite is done writing to oldpath already
     // If this is run on a separate thread then we should wait until
     // everything is done, somehow
-//    log("QSQDbIf::closeDatabase: Cloning database");
     std::error_code ec;
     try {
         // Recursively create parent paths
@@ -53,16 +52,15 @@ void QSQDbIf::cloneDb(std::string oldpath, std::string newpath) {
         std::filesystem::copy_file(oldpath, newpath, std::filesystem::copy_options::overwrite_existing);
     }
     catch (std::filesystem::filesystem_error & err) {
-        //log("QSQDbIf::cloneDatabase: %s", err.what());
         throw err;
     }
 }
 void QSQDbIf::renameDb(std::string oldpath, std::string newpath) {
-    // Just copy the thing, then add it to available databases
-    // We assume here that sqlite is done writing.
+    // Just rename the file directly. This may throw an error of newpath 
+    // is already open, so caller should close newpath first
+    // We assume here that sqlite is done writing to oldpath already.
     // If this is run on a separate thread then we should wait until
     // everything is done, somehow
-//    log("QSQDbIf::closeDatabase: renaming database");
     std::error_code ec;
     try {
         // Recursively create parent paths
@@ -75,7 +73,6 @@ void QSQDbIf::renameDb(std::string oldpath, std::string newpath) {
         std::filesystem::rename(oldpath, newpath);
     }
     catch (std::filesystem::filesystem_error & err) {
-        //log("QSQDbIf::renameDatabase: %s", err.what());
         throw err;
     }
 }
@@ -191,11 +188,6 @@ std::optional<std::string> QSQDbIf::activeDatabase() const {
                                std::nullopt;
 }
 
-//bool QSQDbIf::activeDatabase(std::string fullpath) const {
-//    // Returns whether fullpath is in active db
-//    return std::find(m_activeDb.begin(), m_activeDb.end(), fullpath) != m_activeDb.end();
-//}
-
 void QSQDbIf::closeDatabase(std::string fullpath) {
     QString dbname(QString::fromStdString(fullpath));
     { // so db goes out of scope before removing from database
@@ -207,7 +199,8 @@ void QSQDbIf::closeDatabase(std::string fullpath) {
 }
 void QSQDbIf::deleteDatabase(std::string fullpath) {
     closeDatabase(fullpath);
-    std::remove(fullpath.c_str()); /// ????
+    // https://en.cppreference.com/w/cpp/io/c/remove
+    std::remove(fullpath.c_str()); // deletes file, from <cstdio>
 }
 bool QSQDbIf::isDatabaseOpen(std::string fullpath) const {
     // Returns whether fullpath is in active db
