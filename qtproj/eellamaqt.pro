@@ -19,7 +19,6 @@ SOURCES += \
     ../src/allicons.cpp \
     ../src/closingdockwidget.cpp \
     ../src/closingmdiwidget.cpp \
-    ../src/dbif.cpp \
     ../src/libcore.cpp \
     ../src/libtableview.cpp \
     ../src/libtreeview.cpp \
@@ -27,6 +26,7 @@ SOURCES += \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
+    ../src/qdbif.cpp \
     ../src/qmodelmanager.cpp \
     ../src/qviewmanager.cpp \
     ../src/uimanager.cpp \
@@ -40,7 +40,6 @@ HEADERS += \
     ../src/closingmdiwidget.h \
     ../src/connable.h \
     ../src/coreable.h \
-    ../src/dbif.h \
     ../src/idbif.h \
     ../src/ilogger.h \
     ../src/imodelmanager.h \
@@ -53,8 +52,10 @@ HEADERS += \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \
+    ../src/qdbif.h \
     ../src/qmodelmanager.h \
     ../src/qviewmanager.h \
+    ../src/saveoptions.h \
     ../src/uimanager.h \
     ../src/filesaveas.h \
     ../src/mymodel.h \

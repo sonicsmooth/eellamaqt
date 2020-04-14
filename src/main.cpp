@@ -1,7 +1,7 @@
 #include "libcore.h"
 #include "libwindow.h"
 #include "logger.h"
-#include "dbif.h"
+#include "qdbif.h"
 #include "uimanager.h"
 #include "qmodelmanager.h"
 #include "qviewmanager.h"
@@ -52,7 +52,9 @@ int main(int argc, char *argv[])
     uim.setCore(&core);
     uim.setLogger(&logger);
     uim.setParentMW(&libwin);
-    uim.setDbIf(&dbif);
+    uim.setModelManager(&qmm);
+    uim.setViewManager(&qvm);
+    //uim.setDbIf(&dbif);
 
     // Set up main window
     libwin.setCore(&core);
@@ -63,8 +65,6 @@ int main(int argc, char *argv[])
     // Set up core and ui slave
     core.setDbIf(&dbif);
     core.setUIManager(&uim);
-    core.setModelManager(&qmm);
-    core.setViewManager(&qvm);
     core.setLogger(&logger);
 
     // Go!

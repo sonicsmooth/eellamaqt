@@ -107,7 +107,7 @@ LibWindow::LibWindow(QWidget *parent)
         } */
 
         if (libc) {
-            m_pCore->pushActiveDb(libc->dbConn());
+//            m_pCore->pushActiveDb(libc->dbConn());
         }
 
         // Might not assign lvw since there are other things getting focus
@@ -124,9 +124,7 @@ LibWindow::~LibWindow()
     delete ui;
 }
 
-void LibWindow::updateActions() {
-    assert(m_pCore);
-    bool en(m_pCore->activeDb());
+void LibWindow::updateActions(bool en) {
     ui->actionFileRename->setEnabled(en);
     ui->actionFileSaveAs->setEnabled(en);
     ui->actionFileCloseLib->setEnabled(en);
@@ -183,7 +181,7 @@ void LibWindow::fileNewLib() {
 
     //log("LibWindow::fileNewLib");
     m_pCore->newLib(fullpath.toStdString());
-    updateActions();
+    updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
@@ -197,57 +195,54 @@ void LibWindow::fileOpenLib() {
     if(qfd.exec())
         for (QString f : qfd.selectedFiles())
             m_pCore->openLib(f.toStdString());
-    updateActions();
+    updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileSaveAs() {
     //  Choose options, then call core
-    assert(m_pCore->activeDb());
-    //log("LibWindow::fileSaveAs");
-    FileSaveAs fsa(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::SAVEAS);
-    if(fsa.exec()) {
-        std::string fname(fsa.fileName().toStdString());
-        if (fname.length()) {
-            m_pCore->saveLib(m_pCore->activeDb().value(), fname, fsa.option());
-        }
-    } else {
-        log("LibWindow::fileSaveAs: Canceled");
-    }
-    updateActions();
+//    assert(m_pCore->activeDb());
+//    FileSaveAs fsa(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::SAVEAS);
+//    if(fsa.exec()) {
+//        std::string fname(fsa.fileName().toStdString());
+//        if (fname.length()) {
+//            m_pCore->saveLib(m_pCore->activeDb().value(), fname, fsa.option());
+//        }
+//    } else {
+//        log("LibWindow::fileSaveAs: Canceled");
+//    }
+    updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
     //log("LibWindow::fileRename");
-    FileSaveAs frn(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
-    if(frn.exec()) {
-        std::string fname(frn.fileName().toStdString());
-        if (fname.length()) {
-            auto option = frn.option();
-            m_pCore->saveLib(m_pCore->activeDb().value(), fname, option);
-        }
-    } else {
-        log("LibWindow::fileRename: Canceled");
-    }
-    updateActions();
+//    FileSaveAs frn(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
+//    if(frn.exec()) {
+//        std::string fname(frn.fileName().toStdString());
+//        if (fname.length()) {
+//            auto option = frn.option();
+//            m_pCore->saveLib(m_pCore->activeDb().value(), fname, option);
+//        }
+//    } else {
+//        log("LibWindow::fileRename: Canceled");
+//    }
+    updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileCloseLib() {
     assert(m_pCore);
-    if (m_pCore->activeDb()) {
-        //log("LibWindow::fileCloseLib: " + m_pCore->activeDb().value());
+    if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->closeActiveLib();
     }
-    updateActions();
+    updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
-    if (m_pCore->activeDb()) {
-        //log("LibWindow: file delete lib " + m_pCore->activeDb().value());
+    if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->deleteActiveLib();
     }
-    updateActions();
+    updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::newShape() {
     assert(m_pCore);
@@ -328,25 +323,25 @@ void LibWindow::editPaste() {
 }
 void LibWindow::editDelete() {
     assert(m_pCore);
-    log("LibWindow: edit delete item from " + m_pCore->activeDb().value());
-    m_pCore->deleteShape("Some shape");
-    m_pCore->deleteSymbol("Some symbol");
+//    log("LibWindow: edit delete item from " + m_pCore->activeDb().value());
+//    m_pCore->deleteShape("Some shape");
+//    m_pCore->deleteSymbol("Some symbol");
 }
 void LibWindow::viewLibTreeView() {
     assert(m_pCore);
-    log("LibWindow: view LibTreeView");
-    if (m_pCore->activeDb()) {
-        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-        mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
-    }
+//    log("LibWindow: view LibTreeView");
+//    if (m_pCore->activeDb()) {
+//        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
+//        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
+//    }
 }
 void LibWindow::viewLibTableView() {
     assert(m_pCore);
-    log("LibWindow: view LibTableView");
-    if (m_pCore->activeDb()) {
-        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-        mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
-    }
+//    log("LibWindow: view LibTableView");
+//    if (m_pCore->activeDb()) {
+//        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
+//        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
+//    }
 }
 
 void LibWindow::helpAbout() {

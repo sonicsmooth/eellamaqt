@@ -6,6 +6,7 @@
 #include "iuimanager.h"
 #include "imodelmanager.h"
 #include "iviewmanager.h"
+#include "saveoptions.h"
 
 #include <string>
 #include <vector>
@@ -63,18 +64,15 @@ public:
     Text(double x, double y, std::string txt) : x(x), y(y), txt(txt) {}
 };
 
+
+
 class LibCore : public Loggable
 {
 private:
     IDbIf* m_pDbIf;
-    std::list<std::string> m_activeDb; // maybe move this to dbif??
     IUIManager *m_pUIManager;
-    IModelManager *m_pModelManager;
-    IViewManager *m_pViewManager;
 
 public:
-
-    enum class DupOptions {CLOSE_OLD, OPEN_NEW, QUIETLY, RENAME};
 
     LibCore();
     ~LibCore();
@@ -82,14 +80,6 @@ public:
     IDbIf *DbIf() const;
     void setUIManager(IUIManager *);
     IUIManager *UIManager() const;
-    void setModelManager(IModelManager *);
-    IModelManager *modelManager() const;
-    void setViewManager(IViewManager *);
-    IViewManager *viewManager() const;
-    std::optional<std::string> activeDb() const; // returns top active Db or null_opt
-    bool activeDb(std::string) const; // returns string in activeDb list or null_opt
-    void pushActiveDb(std::string);
-    void popActiveDb(std::string);
     void newLib(std::string);
     void openLib(std::string);
     void saveLib(std::string, std::string, DupOptions);

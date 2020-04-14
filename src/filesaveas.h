@@ -4,6 +4,7 @@
 #include "loggable.h"
 #include "logger.h"
 #include "libcore.h"
+#include "saveoptions.h"
 
 
 #include <QDialog>
@@ -21,14 +22,14 @@ public:
 private:
     QString m_fileName;
     bool m_overwrite;
-    LibCore::DupOptions m_option;
+    DupOptions m_option;
     Mode m_mode;
 public:
     FileSaveAs(QWidget * = nullptr, std::string = "", Logger * = nullptr, Mode = Mode::SAVEAS);
     void setMode(Mode);
     Mode mode() const;
     QString fileName() const;
-    LibCore::DupOptions option() const;
+    DupOptions option() const;
 
 public slots:
 //    void accept() override;
