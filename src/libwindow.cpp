@@ -200,33 +200,38 @@ void LibWindow::fileOpenLib() {
 
 void LibWindow::fileSaveAs() {
     //  Choose options, then call core
-//    assert(m_pCore->activeDb());
-//    FileSaveAs fsa(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::SAVEAS);
-//    if(fsa.exec()) {
-//        std::string fname(fsa.fileName().toStdString());
-//        if (fname.length()) {
-//            m_pCore->saveLib(m_pCore->activeDb().value(), fname, fsa.option());
-//        }
-//    } else {
-//        log("LibWindow::fileSaveAs: Canceled");
-//    }
+    assert(m_pCore);
+    assert(m_pCore->DbIf()->isDatabaseOpen());
+    FileSaveAs fsa(this, m_pCore->DbIf()->activeDatabase().value(),
+                   static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::SAVEAS);
+    if(fsa.exec()) {
+        std::string fname(fsa.fileName().toStdString());
+        if (fname.length()) {
+            m_pCore->saveLib(m_pCore->DbIf()->activeDatabase().value(), fname, fsa.option());
+        }
+    } else {
+        log("LibWindow::fileSaveAs: Canceled");
+    }
     updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
+    assert(m_pCore);
+    assert(m_pCore->DbIf()->isDatabaseOpen());
     //log("LibWindow::fileRename");
-//    FileSaveAs frn(this, m_pCore->activeDb().value(), static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
-//    if(frn.exec()) {
-//        std::string fname(frn.fileName().toStdString());
-//        if (fname.length()) {
-//            auto option = frn.option();
-//            m_pCore->saveLib(m_pCore->activeDb().value(), fname, option);
-//        }
-//    } else {
-//        log("LibWindow::fileRename: Canceled");
-//    }
+    FileSaveAs frn(this, m_pCore->DbIf()->activeDatabase().value(),
+                   static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
+    if(frn.exec()) {
+        std::string fname(frn.fileName().toStdString());
+        if (fname.length()) {
+            auto option = frn.option();
+            m_pCore->saveLib(m_pCore->DbIf()->activeDatabase().value(), fname, option);
+        }
+    } else {
+        log("LibWindow::fileRename: Canceled");
+    }
     updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 

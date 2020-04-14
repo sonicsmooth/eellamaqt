@@ -127,9 +127,6 @@ void QSQDbIf::openDatabase(std::string fullpath) {
     }
 }
 void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions opt) {
-
-
-
     switch(opt) {
     case DupOptions::CLOSE_OLD:
         // Use existing UI for new, close old one
@@ -137,9 +134,7 @@ void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions 
         try {
             cloneDb(oldpath, newpath);
             closeDatabase(oldpath);
-            //popActiveDb(oldpath);
             openDatabase(newpath);
-            //pushActiveDb(newpath);
         }
         catch (std::filesystem::filesystem_error err) {
             log("LibCore::saveLib: Failed to save library");
@@ -151,7 +146,6 @@ void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions 
         try {
             cloneDb(oldpath, newpath);
             openDatabase(newpath);
-            //pushActiveDb(newpath);
         }
         catch (std::filesystem::filesystem_error err) {
             log("LibCore::saveLib: Failed to save library");
@@ -169,19 +163,18 @@ void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions 
         break;
     case DupOptions::RENAME:
         log("LibCore::saveLib: Saving library RENAME " + newpath);
-//        bool newIsOpen = false;
+        bool newIsOpen(isDatabaseOpen(newpath));
         try {
             closeDatabase(oldpath);
-            popActiveDb(oldpath);
+            if (newIsOpen)
+                closeDatabase(newpath);
             renameDb(oldpath, newpath);
             openDatabase(newpath);
-            pushActiveDb(newpath);
         }
         catch (std::filesystem::filesystem_error err) {
             log("LibCore::saveLib: Failed to rename library");
             // restore previous
             openDatabase(oldpath);
-            pushActiveDb(oldpath);
         }
         break;
     }
