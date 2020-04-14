@@ -52,7 +52,7 @@ UIManager::UIManager(QObject *parent) :
     root->child(1)->child(2)->appendRow(new QStandardItem("Paris"));
     root->child(1)->child(2)->appendRow(new QStandardItem("Marseilles"));
     root->child(1)->appendRow(new QStandardItem("Netherlands"));
-    root->child(1)->child(3)->appendRow(new QStandardItem("Amtsterdam"));
+    root->child(1)->child(3)->appendRow(new QStandardItem("Amsterdam"));
     root->child(1)->child(3)->appendRow(new QStandardItem("Coffee shop"));
 }
 void UIManager::setParentMW(QMainWindow *p) {
