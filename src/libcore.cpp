@@ -73,7 +73,7 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         switch(opt) {
         case DupOptions::CLOSE_OLD:
             // Use existing UI for new, close old one
-            log("LibCore::saveLib: Saving library CLOSE_OLD " + newpath);
+            log("LibCore::saveLib: Saving library CLOSE_OLD" + newpath);
             if (m_pUIManager)
                 // notifyDbRename must know what to do if oldpath is not currently open
                 m_pUIManager->notifyDbRename(m_pDbIf, oldpath, newpath);
