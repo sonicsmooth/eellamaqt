@@ -1,4 +1,5 @@
 #include "filesaveas.h"
+#include "saveoptions.h"
 #include "libcore.h"
 
 #include <QTextEdit>
@@ -53,11 +54,11 @@ FileSaveAs::FileSaveAs(QWidget *parent,
     auto cbOverwrite = new QCheckBox("Overwrite without prompt");
     auto updateOptions = [=]() {
         if (mode == Mode::SAVEAS) {
-        m_option = !cbOpenNew->isChecked()       ? LibCore::DupOptions::QUIETLY   :
-                    cbCloseExisting->isChecked() ? LibCore::DupOptions::CLOSE_OLD :
-                                                   LibCore::DupOptions::OPEN_NEW;
+        m_option = !cbOpenNew->isChecked()       ? DupOptions::QUIETLY   :
+                    cbCloseExisting->isChecked() ? DupOptions::CLOSE_OLD :
+                                                   DupOptions::OPEN_NEW;
         } else if (mode == Mode::RENAME) {
-            m_option = LibCore::DupOptions::RENAME;
+            m_option = DupOptions::RENAME;
         } else {
             throw std::invalid_argument ("Wrong mode argument");
         }
@@ -206,7 +207,7 @@ FileSaveAs::FileSaveAs(QWidget *parent,
 QString FileSaveAs::fileName() const {
     return m_fileName;
 }
-LibCore::DupOptions FileSaveAs::option() const {
+DupOptions FileSaveAs::option() const {
     return m_option;
 }
 

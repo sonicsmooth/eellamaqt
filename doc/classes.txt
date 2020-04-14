@@ -1,0 +1,52 @@
+
+ILogger
+Logger : ILogger
+
+Coreable (has *LibCore)
+Loggable (has *ILogger)
+Connable (has std::string)
+
+LibClient: Coreable, Loggable, Connable
+LibWindow: QMainWindow, Coreable, Loggable
+	
+IViewManager
+QViewManager: IViewManager
+
+IModelManager
+QModelManager: IModelManager
+
+IUIManager
+UIManager: IUIManager, Coreable, Loggable, QObject
+
+IDbIf
+DbIf: IDbif, Coreable, Loggable
+
+LibTreeView   :    QTreeView, LibClient
+LibTableView  :    QTableView, LibClient
+LibSymbolView :    QAbstractItemView, LibClient
+LibFootprintView : QAbstractItemView, LibClient
+
+
+   qw    Coreable Loggable Connable
+    |         \     |      /
+   qaiv         LibClient
+     |          /
+	qtv        |
+	   \       |
+      LibTreeView
+	  LibTableView
+		 
+
+ClosingDockWidget : QDockWidget
+ClosingMDIWidget : QMdiSubWindow
+
+
+LibTreeView:
+Shows each lib item which can open revealing contents.
+Contents can be symbol and/or footprint, either of which can be linked to source
+Each content item can be further opened to reveal primitives
+Can multiple-select
+Single-click lib item, contents, or primitive -> select & open tmp graphical view
+Double-click lib item, contents, or primitive -> select & open new graphical view
+If selected or multi-selected, show in table and inspector views if available
+If those views are not available, the option to view them in table or inspector is available under RMB

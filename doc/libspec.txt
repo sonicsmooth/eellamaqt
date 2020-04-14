@@ -1,0 +1,63 @@
+
+
+
+
+library:
+
+import "another/library/path/extlib.schlib"; // requires qualification
+import "another/library/path/bob.schlib" as r;
+
+// abstract things like transforms and curves can exist
+// outside a shape
+transform tr1 (scale, rotate, pan);          
+transform tr2 ([1,2,3,4,5,6,7,8,9,11,12]);   
+curvePath cpth1(...);
+
+shape MyShape1 {  // only primtives allowed
+	circle c1(x,y,r);   
+	square sq1(x,y,w,h);
+};
+
+shape MyShape2 {  // only primtives allowed
+	line l1(x1,y1,x2,y2, color="red");
+	text t1(x,y, text="what", font="TimesNewRoman", color="purple")
+	transform tr3(scale, rotate, pan);
+	image i1(x,y,"c:\junk.png").tr1();
+	pwlPath ppth1(x1,y1,x2,y2,...);
+	line l2(ppth1, thickness = 2px); // mm,um,px,pt, etc.
+	text t3(cpth1, "curvypath");
+	svg sv1(...);
+	r.line(...); // use element from another library
+	MyShape1 innerShape(...); // can nest shapes
+};
+
+symbol MySymbol1 { // primitives and shapes allowed
+	MyShape1 msa(more transforms);
+	MyShape1 msb(more transforms);
+	MyShape2;
+	r.someCircle(more transforms); // use element from other library
+	line l1(...);
+	arrow ar1(...);
+	pin (1, "A1", power);
+	pin (2, "A2", passive);
+	pin (3, "A3", low-Z); // etc -- figure this out
+};
+
+
+schematic (NOT the same as an HDL)
+using "thelibrary.schlib";
+
+// Can define symbols and shapes locally
+shape blabla {};
+symbol blabla {};
+
+MySymbol1 U10(sheet, x,y);
+MySymbol1 U11(sheet, x,y, transform);
+
+wire w1(sheet, [list of segments]);
+wire ?(sheet, [list of segments]); // auto-named
+
+	
+
+
+	

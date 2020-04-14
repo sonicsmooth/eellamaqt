@@ -20,18 +20,14 @@ class LibWindow : public QMainWindow, public Coreable, public Loggable
     Q_OBJECT
 private:
     Ui::LibWindow *ui;
-//    void _duplicateWithOptions(LibCore::DupOptions);
 
 public:
     LibWindow(QWidget *parent = nullptr);
     ~LibWindow() override;
-    void updateActions();
+    void updateActions(bool);
     void fileNewLib();
     void fileOpenLib();
     void fileSaveAs();
-//    void fileSaveAsAndCloseOld();
-//    void fileSaveAsAndOpenNew();
-//    void fileSaveAsQuietly();
     void fileRename();
     void fileCloseLib();
     void fileDeleteLib();
