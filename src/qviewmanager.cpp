@@ -1,13 +1,23 @@
-#include "qviewmanager.h"
-#include <any>
+// #include "qviewmanager.h"
+// #include "qmodelmanager.h"
+// #include "mvtypes.h"
+// #include "libtreeview.h"
+// #include "libtableview.h"
 
-QViewManager::QViewManager()
-{
+// #include <any>
+// #include <string>
 
-}
-std::any QViewManager::createTreeView(std::any model) {
-    return nullptr;
-}
-std::any QViewManager::createTableView(std::any model) {
-    return nullptr;
-}
+// QViewManager::QViewManager()
+// {
+
+// }
+// std::any QViewManager::createView(std::string fullpath, ViewType vt) {
+//     // Create new model based on path
+//     if (vt == ViewType::LIBTREEVIEW) {
+//         LibTreeView *ltv 
+//     } else if (vt == ViewType::LIBTABLEVIEW) {
+
+//     }
+
+//     return nullptr;
+// }

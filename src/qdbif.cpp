@@ -11,7 +11,6 @@
 #include <exception>
 #include <filesystem>
 #include <system_error>
-#include <any>
 
 //static void cloneDatabase(std::string oldpath, std::string newpath);
 //static void renameDatabase(std::string oldpath, std::string newpath);
@@ -152,6 +151,8 @@ void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions 
         // Neither open new one nor close old one
         log("QSQDbIf::saveLib: Saving library QUIETLY " + newpath);
         try {
+            // Not sure why this works.  It should fail
+            // if newpath is already open
             cloneDb(oldpath, newpath);
         }
         catch (std::filesystem::filesystem_error err) {
@@ -175,11 +176,6 @@ void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions 
         }
         break;
     }
-
-
-
-
-
 }
 std::optional<std::string> QSQDbIf::activeDatabase() const {
     // Returns either the string of the active db or null option

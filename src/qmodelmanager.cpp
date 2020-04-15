@@ -1,14 +1,14 @@
-#include "qmodelmanager.h"
-#include <any>
-#include <string>
+//#include "qmodelmanager.h"
+//#include <any>
+//#include <string>
 
-QModelManager::QModelManager()
-{
+//QModelManager::QModelManager()
+//{
 
-}
-std::any QModelManager::createSqlTableModel(std::string name) {
-    return nullptr;
-}
-std::any QModelManager::createSqlTreeModel(std::string name) {
-    return nullptr;
-}
+//}
+//std::any QModelManager::createSqlTableModel(std::string name) {
+//    return nullptr;
+//}
+//std::any QModelManager::createSqlTreeModel(std::string name) {
+//    return nullptr;
+//}

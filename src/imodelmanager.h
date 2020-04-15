@@ -1,15 +1,15 @@
-#ifndef IMODELMANAGER_H
-#define IMODELMANAGER_H
+// #ifndef IMODELMANAGER_H
+// #define IMODELMANAGER_H
 
-#include <any>
-#include <string>
+// #include "mvtypes.h"
+// #include <any>
+// #include <string>
 
-class IModelManager
-{
-public:
-    virtual ~IModelManager() {}
-    virtual std::any createSqlTableModel(std::string) = 0;
-    virtual std::any createSqlTreeModel(std::string) = 0;
-};
+// class IModelManager
+// {
+// public:
+//     virtual ~IModelManager() {}
+//     virtual std::any createModel(std::string, ModelType) = 0;
+// };
 
-#endif // IMODELMANAGER_H
+// #endif // IMODELMANAGER_H

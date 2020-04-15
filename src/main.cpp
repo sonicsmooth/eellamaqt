@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
     LibWindow libwin;
     QSQDbIf dbif;
     UIManager uim;
-    QModelManager qmm;
-    QViewManager qvm;
+    //QModelManager qmm;
+    //QViewManager qvm;
 
     // Show all default icons
     //AllIcons ai;
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
     uim.setCore(&core);
     uim.setLogger(&logger);
     uim.setParentMW(&libwin);
-    uim.setModelManager(&qmm);
-    uim.setViewManager(&qvm);
+    //uim.setModelManager(&qmm);
+    //uim.setViewManager(&qvm);
     //uim.setDbIf(&dbif);
 
     // Set up main window

@@ -1,16 +1,18 @@
-#ifndef QVIEWMANAGER_H
-#define QVIEWMANAGER_H
+// #ifndef QVIEWMANAGER_H
+// #define QVIEWMANAGER_H
 
-#include "iviewmanager.h"
-#include <any>
+// #include "iviewmanager.h"
+// #include "mvtypes.h"
+// #include <any>
+// #include <string>
 
 
-class QViewManager : public IViewManager
-{
-public:
-    QViewManager();
-    std::any createTreeView(std::any model) override;
-    std::any createTableView(std::any model) override;
-};
+// class QViewManager : public IViewManager
+// {
+// public:
+//     QViewManager();
+//     std::any createView(std::string, ViewType) override;
+//     //std::any createView(std::any model, ViewType) override;
+// };
 
-#endif // QVIEWMANAGER_H
+// #endif // QVIEWMANAGER_H

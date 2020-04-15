@@ -58,7 +58,8 @@ HEADERS += \
     ../src/saveoptions.h \
     ../src/uimanager.h \
     ../src/filesaveas.h \
-    ../src/mymodel.h \
+    ../src/mymodel.h \ \
+    ../src/mvtypes.h
 
 
 FORMS += \

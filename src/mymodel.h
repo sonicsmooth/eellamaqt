@@ -4,6 +4,7 @@
 #include <QAbstractTableModel>
 #include <QTimer>
 
+// From the example
 
 const int COLS= 3;
 const int ROWS= 2;

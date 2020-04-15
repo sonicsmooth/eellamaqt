@@ -1,16 +1,20 @@
-#ifndef IVIEWMANAGER_H
-#define IVIEWMANAGER_H
+// #ifndef IVIEWMANAGER_H
+// #define IVIEWMANAGER_H
 
-#include <any>
+// #include "mvtypes.h"
+// #include <any>
+// #include <string>
 
 
-class IViewManager
-{
-public:
-    virtual ~IViewManager() {}
-    virtual std::any createTreeView(std::any model) = 0; // takes a model and returns a view
-    virtual std::any createTableView(std::any model) = 0;
+// class IViewManager
+// {
+// public:
+//     virtual ~IViewManager() {}
+//     // Create a new model with this view
+//     virtual std::any createView(std::string, ViewType) = 0;
+    
+//     // Use specified model for this view
+//     //virtual std::any createView(std::any model, ViewType) = 0; // takes a model and returns a view
+// };
 
-};
-
-#endif // IVIEWMANAGER_H
+// #endif // IVIEWMANAGER_H

@@ -1,20 +1,22 @@
 #ifndef IUIMANAGER_H
 #define IUIMANAGER_H
 
+#include "imodelmanager.h"
+#include "iviewmanager.h"
 #include "idbif.h"
 
-//#include <any>
 #include <string>
 
 // These functions are called by the core to do bare minimal stuff to the UI.
-
-enum class UIType {LIBTREEVIEW, LIBTABLEVIEW, LIBSYMBOLEDITORVIEW, LIBFOOTPRINTEDITORVIEW};
 
 class IUIManager
 {
 public:
     virtual ~IUIManager() {}
-    // Tell UIManager that a db has been opened/closed/renamed
+    //virtual void setModelManager(IModelManager *);
+    //virtual IModelManager *modelManager() const;
+    //virtual void setViewManager(IViewManager *);
+    //virtual IViewManager *viewManager() const;
     virtual void notifyDbOpen(IDbIf *, std::string) = 0;
     virtual void notifyDbClose(IDbIf *, std::string) = 0;
     virtual void notifyDbRename(IDbIf *, std::string, std::string) = 0;
