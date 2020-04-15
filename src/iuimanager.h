@@ -13,10 +13,6 @@ class IUIManager
 {
 public:
     virtual ~IUIManager() {}
-    //virtual void setModelManager(IModelManager *);
-    //virtual IModelManager *modelManager() const;
-    //virtual void setViewManager(IViewManager *);
-    //virtual IViewManager *viewManager() const;
     virtual void notifyDbOpen(IDbIf *, std::string) = 0;
     virtual void notifyDbClose(IDbIf *, std::string) = 0;
     virtual void notifyDbRename(IDbIf *, std::string, std::string) = 0;

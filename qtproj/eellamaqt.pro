@@ -28,6 +28,7 @@ SOURCES += \
     ../src/main.cpp \
     ../src/qdbif.cpp \
     ../src/qmodelmanager.cpp \
+    ../src/qsqltreemodel.cpp \
     ../src/qviewmanager.cpp \
     ../src/uimanager.cpp \
     ../src/filesaveas.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     ../src/logger.h \
     ../src/qdbif.h \
     ../src/qmodelmanager.h \
+    ../src/qsqltreemodel.h \
     ../src/qviewmanager.h \
     ../src/saveoptions.h \
     ../src/uimanager.h \

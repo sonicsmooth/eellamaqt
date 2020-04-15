@@ -4,6 +4,8 @@
 #include "iuimanager.h"
 #include "coreable.h"
 #include "loggable.h"
+#include "libtreeview.h"
+#include "libtableview.h"
 #include "closingdockwidget.h"
 #include "closingmdiwidget.h"
 #include "idbif.h"
@@ -28,22 +30,19 @@ private:
     std::list<ViewType> m_defaultViewTypes;
     // Each model maps to list of views, each also a LibClient
     std::map<QAbstractItemModel *, std::list<QAbstractItemView *>> m_libViews;
-    QStandardItemModel m_siModel; // temporary until real model comes in
-    //IModelManager *m_pModelManager;
-    //IViewManager *m_pViewManager;
+    //QStandardItemModel *m_pSQLTreeModel; // temporary until real model comes in
 
-    ClosingMDIWidget *makeMDILibView(QAbstractItemView *, QString title);
-    ClosingDockWidget *makeCDWLibView(QAbstractItemView *, QString title);
+    LibTreeView *makeLibTreeView(IDbIf *, std::string);
+    LibTableView *makeLibTableView(IDbIf *, std::string);
+    ClosingMDIWidget *makeMDILibWidget(QAbstractItemView *, QString title);
+    ClosingDockWidget *makeCDWLibWidget(QAbstractItemView *, QString title);
 
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
     void openUI(IDbIf *, std::string, ViewType); // opens named UI type
+    //void closeUI
 
 public:
     UIManager(QObject * = nullptr);
-    // void setModelManager(IModelManager *) override;
-    // IModelManager *modelManager() const override;
-    // void setViewManager(IViewManager *) override;
-    // IViewManager *viewManager() const override;
 
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
