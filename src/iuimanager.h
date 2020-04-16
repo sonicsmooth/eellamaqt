@@ -1,8 +1,6 @@
 #ifndef IUIMANAGER_H
 #define IUIMANAGER_H
 
-#include "imodelmanager.h"
-#include "iviewmanager.h"
 #include "idbif.h"
 
 #include <string>

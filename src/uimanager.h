@@ -23,23 +23,25 @@
 #include <vector>
 
 // Why is this a QObject?
+
+typedef std::map<ViewType, std::list<QAbstractItemView *>> TypeViewMap;
+
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
 private:
     QMainWindow *m_parentMW;
     std::list<ViewType> m_defaultViewTypes;
     // Each model maps to list of views, each also a LibClient
-    std::map<QAbstractItemModel *, std::list<QAbstractItemView *>> m_libViews;
-    //QStandardItemModel *m_pSQLTreeModel; // temporary until real model comes in
+    //std::map<QAbstractItemModel *, std::list<QAbstractItemView *>> m_libViews;
+    std::map<std::string, TypeViewMap> m_connViews;
 
-    LibTreeView *makeLibTreeView(IDbIf *, std::string);
-    LibTableView *makeLibTableView(IDbIf *, std::string);
-    ClosingMDIWidget *makeMDILibWidget(QAbstractItemView *, QString title);
-    ClosingDockWidget *makeCDWLibWidget(QAbstractItemView *, QString title);
-
+    QAbstractItemView *makeLibTreeView(IDbIf *, std::string);
+    QAbstractItemView *makeLibTableView(IDbIf *, std::string);
+    ClosingMDIWidget *makeMDILibWidget(QAbstractItemView *, std::string);
+    ClosingDockWidget *makeCDWLibWidget(QAbstractItemView *, std::string);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
     void openUI(IDbIf *, std::string, ViewType); // opens named UI type
-    //void closeUI
+    void closeUI(std::string, ViewType);
 
 public:
     UIManager(QObject * = nullptr);

@@ -4,8 +4,6 @@
 #include "loggable.h"
 #include "idbif.h"
 #include "iuimanager.h"
-#include "imodelmanager.h"
-#include "iviewmanager.h"
 #include "saveoptions.h"
 
 #include <string>

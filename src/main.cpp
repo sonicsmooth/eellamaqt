@@ -3,8 +3,6 @@
 #include "logger.h"
 #include "qdbif.h"
 #include "uimanager.h"
-#include "qmodelmanager.h"
-#include "qviewmanager.h"
 #include "utils.h"
 #include "allicons.h"
 #include "mymodel.h"
@@ -45,7 +43,7 @@ int main(int argc, char *argv[])
     pLogWidget->setWindowTitle("Log");
     pLogWidget->setWidget(logger.textEdit());
 
-    // Set up databae interface
+    // Set up database interface
     dbif.setLogger(&logger);
 
     // Set up ui slave
