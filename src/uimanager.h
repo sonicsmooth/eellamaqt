@@ -32,7 +32,6 @@ private:
     QMainWindow *m_parentMW;
     std::list<ViewType> m_defaultViewTypes;
     // Each model maps to list of views, each also a LibClient
-    //std::map<QAbstractItemModel *, std::list<QAbstractItemView *>> m_libViews;
     std::map<std::string, TypeViewMap> m_connViews;
 
     QAbstractItemView *makeLibTreeView(IDbIf *, std::string);

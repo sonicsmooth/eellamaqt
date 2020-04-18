@@ -185,12 +185,10 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
      {{ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
 
-    if (m_connViews[fullpath].size() && m_connViews[fullpath][vt].size()) {
-            // For now just returning the first view
-            return;
-    } 
+    if (m_connViews[fullpath].size() && m_connViews[fullpath][vt].size())
+        // For now just returning thexjdy.bjhhnecbtccckyytpxixky.k.i. first view
+        return;
     else { // create new view
-        //abstractViewFn afn = dwfm[vt];
         QAbstractItemView *view = (this->*dwfm[vt])(dbif, fullpath); // from https://stackoverflow.com/questions/14814158/c-call-pointer-to-member-function
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingDockWidget *widget(makeCDWLibWidget(view, title));
@@ -237,15 +235,20 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
     (void) dbif;
     log("Notify close %s", fullpath.c_str());
-    // Close all widgets that ultimately connect to fullpath
-    for (auto vt : m_defaultViewTypes) {
-        closeUI(fullpath, vt);
+    // Close all widgets that are downstream from fullpath
+    TypeViewMap tvm(m_connViews[fullpath]);
+    for (auto kvp : tvm) {
+        std::list<QAbstractItemView *> views(kvp.second);
+        for (QAbstractItemView *view : views) {
+            view->parentWidget()->close();
+        }
     }
+    m_connViews.erase(fullpath);
 }
 
 // This colud probably be templated, but if so, then the other ones
 // probably should be as well
-void UIManager::closeUI(std::string fullpath, ViewType vt) {
+//void UIManager::closeUI(std::string fullpath, ViewType vt) {
     // When called with a given string, this fn will close all QAbstractItemViews
     // keyed to a model associated with that string and remove model from map
     // Each viewtype/fullpoth combination must be unique in the map
@@ -267,7 +270,7 @@ void UIManager::closeUI(std::string fullpath, ViewType vt) {
     // }
     // // Now it's empty, so remove model from map
     // m_libViews.erase(model);
- }
+// }
 
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
     (void) dbif;
