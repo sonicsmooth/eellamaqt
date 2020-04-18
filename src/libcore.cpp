@@ -109,9 +109,9 @@ void LibCore::closeLib(std::string fullpath) {
     assert(m_pDbIf);
     log("LibCore::closeLib Closing library %s", fullpath.c_str());
     try {
-//        m_pDbIf->closeDatabase(fullpath);
         if (m_pUIManager)
             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
+        // If this goes first, then there are notifications
         m_pDbIf->closeDatabase(fullpath);
 
     } catch (...) {

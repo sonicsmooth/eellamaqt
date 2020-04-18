@@ -230,12 +230,12 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     QDockWidget *qdw(static_cast<QDockWidget *>(pw));
     QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
     QAbstractItemModel *model(view->model());
+    
     // Check each type of model; if they were both derived from the
     // same base class then we wouldn't need to check
     std::string fullpath;
     QSqlTreeModel *treeModel(dynamic_cast<QSqlTreeModel *>(model));
     QSqlTableModel *tableModel(dynamic_cast<QSqlTableModel *>(model));
-
     ViewType vt;
     if (treeModel) {
         fullpath = treeModel->database().connectionName().toStdString();
@@ -248,15 +248,21 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     else
         throw std::exception("Neither treeModel nor tableModel");
     
+    // If this fn originates from CloseLib rather than from user
+    // closing a widget, then the database is already closed, and 
+    // returns empty connectionName()
     if (fullpath.empty()) // lib already closed
         return;
     
-    // Remove from list; if list is empty, delete 
+    // Remove view from list; if list is empty, delete 
     // <viewtype, list> from map keyed by fullpath
     // if m_connViews[fullpath] is empty, then close lib
     m_connViews[fullpath][vt].remove(view);
     if (m_connViews[fullpath][vt].empty()) {
         m_connViews[fullpath].erase(vt);
+        // This model is done, so delete which causes db connection to close
+        delete treeModel; // one of these deletes will be harmless
+        delete tableModel;
         if (m_connViews[fullpath].empty()) {
             m_pCore->closeLib(fullpath);
             static_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
