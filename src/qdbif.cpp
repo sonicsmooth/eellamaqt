@@ -12,9 +12,6 @@
 #include <filesystem>
 #include <system_error>
 
-//static void cloneDatabase(std::string oldpath, std::string newpath);
-//static void renameDatabase(std::string oldpath, std::string newpath);
-
 
 //// PRIVATE FUNCTIONS
 void QSQDbIf::pushActiveDb(std::string adb) {
@@ -75,12 +72,7 @@ void QSQDbIf::renameDb(std::string oldpath, std::string newpath) {
         throw err;
     }
 }
-
-
-
-
 QSQDbIf::QSQDbIf() {}
-
 void QSQDbIf::createDatabase(std::string fullpath) {
     // Creates and opens qSqlite3 connection and file name fullpath. What's
     // weird is that I don't have to maintain a list of anything anywhere.  The
@@ -194,7 +186,9 @@ void QSQDbIf::closeDatabase(std::string fullpath) {
     popActiveDb(fullpath);
 }
 void QSQDbIf::deleteDatabase(std::string fullpath) {
-    closeDatabase(fullpath);
+    // Don't delete; caller must do that
+    if(isDatabaseOpen(fullpath))
+        throw("Cannot delete open database");
     // https://en.cppreference.com/w/cpp/io/c/remove
     std::remove(fullpath.c_str()); // deletes file, from <cstdio>
 }
@@ -205,7 +199,6 @@ bool QSQDbIf::isDatabaseOpen(std::string fullpath) const {
 bool QSQDbIf::isDatabaseOpen() const  {
     return m_activeDb.size() > 0;
 }
-// Return type here should probably be something better than std::any
 QSqlDatabase QSQDbIf::database(std::string fullpath) {
     return QSqlDatabase::database(QString::fromStdString(fullpath));
 }

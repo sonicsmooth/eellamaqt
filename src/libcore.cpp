@@ -107,49 +107,49 @@ void LibCore::closeLib(std::string fullpath) {
     // Call dbif to close lib
     // Caller should know the proper name of lib; throws error otherwise
     assert(m_pDbIf);
-    log("LibCore::closeLib Closing library %s", fullpath.c_str());
     try {
         if (m_pUIManager)
             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
-        // If this goes first, then there are notifications
-        m_pDbIf->closeDatabase(fullpath);
-
-    } catch (...) {
-        log("Could not close library");
+        if (m_pDbIf->isDatabaseOpen())
+            m_pDbIf->closeDatabase(fullpath);
+        }
+    catch (...) {
+        log("LibCore::closeLib Could not close library");
     }
 }
- void LibCore::closeActiveLib() {
-     // Get active lib and foward to closeLib
-     assert(m_pDbIf);
-     if (m_pDbIf->isDatabaseOpen()) {
-         log("LibCore::closeActiveLib");
-         closeLib(m_pDbIf->activeDatabase().value());
-     } else {
-         log("LibCore::closeActiveLib No active db to close");
-     }
- }
- void LibCore::deleteLib(std::string fullpath) {
+void LibCore::deleteLib(std::string fullpath) {
      // Remove specified db from list and call UI to close related windows
      // Call dbif to delete lib
      // Caller should know the proper name of lib; throws error otherwise
+    assert(m_pDbIf);
+    try {
+        if (m_pUIManager)
+            m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
+        if (m_pDbIf->isDatabaseOpen(fullpath))
+            m_pDbIf->closeDatabase(fullpath);
+        m_pDbIf->deleteDatabase(fullpath);
+        }
+    catch (...) {
+        log("LibCore::deleteLib Could not delete library");
+    }
+ }
+
+void LibCore::closeActiveLib() {
+     // Get active lib and foward to closeLib
      assert(m_pDbIf);
-     if (m_pDbIf->isDatabaseOpen(fullpath)) {
-         log("LibCore::deleteLib " + fullpath);
-         m_pDbIf->deleteDatabase(fullpath);
-         if (m_pUIManager)
-             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
+     if (m_pDbIf->isDatabaseOpen()) {
+         closeLib(m_pDbIf->activeDatabase().value());
      } else {
-         throw std::logic_error("LibCore: No active db to close");
+         log("LibCore::closeActiveLib No active library to close");
      }
  }
- void LibCore::deleteActiveLib() {
+void LibCore::deleteActiveLib() {
      // Get active lib and foward to deleteLib
      assert(m_pDbIf);
      if (m_pDbIf->isDatabaseOpen()) {
-         log("LibCore::deleteActiveLib");
          deleteLib(m_pDbIf->activeDatabase().value());
      } else {
-         log("LibCore: No active db to delete");
+         log("LibCore::deleteActiveLib No active library to delete");
      }
  }
 
