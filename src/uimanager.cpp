@@ -139,9 +139,10 @@ T *findViewBySubType(std::list<QAbstractItemView *> lst) {
 
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     log("Notify open %s", fullpath.c_str());
-    for (auto uit : m_defaultViewTypes) {
-        openUI(dbif, fullpath, uit);
-    }
+    openUI(dbif, fullpath, ViewType::LIBTREEVIEW);
+//    for (auto uit : m_defaultViewTypes) {
+//        openUI(dbif, fullpath, uit);
+//    }
 }
 
 void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
@@ -206,18 +207,14 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
 
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
     (void) dbif;
-    log("Notify close %s", fullpath.c_str());
     // Close all widgets that are downstream from fullpath
-    TypeViewMap tvm(m_connViews[fullpath]);
-    if (tvm.empty())
+    if (m_connViews[fullpath].empty())
         return;
-    for (auto kvp : tvm) {
-        std::list<QAbstractItemView *> views(kvp.second);
-        for (QAbstractItemView *view : views) {
-            view->parentWidget()->close();
+    log("Notify close %s", fullpath.c_str());
+    while (!m_connViews[fullpath].empty() &&
+           !m_connViews[fullpath].begin()->second.empty()) {
+            m_connViews[fullpath].begin()->second.front()->parentWidget()->close();
         }
-    }
-    m_connViews.erase(fullpath);
 }
 
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
@@ -225,28 +222,44 @@ void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string new
     log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
 }
 
+auto getModelViewFromWidget(QWidget *pw) {
+    QDockWidget *qdw(static_cast<QDockWidget *>(pw));
+    QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
+    QAbstractItemModel *model(view->model());
+    struct retVals {
+        QAbstractItemModel *model;
+        QAbstractItemView *view;
+    };
+    return retVals {model, view};
+}
+
+auto getFullpathFromModel(QAbstractItemModel *model) {
+    QSqlTreeModel *treeModel(dynamic_cast<QSqlTreeModel *>(model));
+    QSqlTableModel *tableModel(dynamic_cast<QSqlTableModel *>(model));
+    std::string fullpath(treeModel  ? treeModel->database().connectionName().toStdString():
+                         tableModel ? tableModel->database().connectionName().toStdString() :
+                         throw("Neither treeModel nor tableModel"));
+    ViewType vt(treeModel  ? ViewType::LIBTREEVIEW :
+                tableModel ? ViewType::LIBTABLEVIEW :
+                throw("Neither treeModel nor tableModel"));
+    struct retVals {
+        std::string fullpath;
+        QSqlTreeModel *treeModel;
+        QSqlTableModel *tableModel;
+        ViewType vt;
+    };
+    return retVals {fullpath, treeModel, tableModel, vt};
+}
 
 void UIManager::onDockWidgetClose(QWidget *pw) {
     // From widget get the view then model then fullpath
     // Check each type of model; if they were both derived from the
     // same base class then we wouldn't need to check
-    QDockWidget *qdw(static_cast<QDockWidget *>(pw));
-    QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
-    QAbstractItemModel *model(view->model());
-    QSqlTreeModel *treeModel(dynamic_cast<QSqlTreeModel *>(model));
-    QSqlTableModel *tableModel(dynamic_cast<QSqlTableModel *>(model));
+    auto [model, view] = getModelViewFromWidget(pw);
+    auto [fullpath, treeModel, tableModel, vt] = getFullpathFromModel(model);
 
-    std::string fullpath(treeModel  ? treeModel->database().connectionName().toStdString():
-                         tableModel ? tableModel->database().connectionName().toStdString() :
-                         throw("Neither treeModel nor tableModel"));
-
-    ViewType vt(treeModel  ? ViewType::LIBTREEVIEW :
-                tableModel ? ViewType::LIBTABLEVIEW :
-                throw("Neither treeModel nor tableModel"));
-
-    // If this fn originates from CloseLib rather than from user
-    // closing a widget, then the database is already closed, and 
-    // returns empty connectionName()
+    // This fn should be called before closing library from core
+    // So if library is already closed, an error has occured
     if (fullpath.empty()) // lib already closed
         throw("Library already closed");
     
@@ -261,6 +274,7 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
         if (m_connViews[fullpath].empty()) {
             m_pCore->closeLib(fullpath);
             static_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
+            m_connViews.erase(fullpath);
         }
     }
 }
@@ -268,10 +282,9 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is click
     assert(m_pCore);
-    auto *qdw(dynamic_cast<QDockWidget *>(pw));
-    assert(qdw);
-    std::string title(qdw->windowTitle().toStdString());
-    log("UIManager::OnDockWidgetActivate: activated %s", title.c_str());
-//    m_pCore->pushActiveDb(title);
+    auto [model, _v] = getModelViewFromWidget(pw);
+    auto [fullpath, _x, _y, _z] = getFullpathFromModel(model);
+    log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
+    m_pCore->activateLib(fullpath);
 }
 

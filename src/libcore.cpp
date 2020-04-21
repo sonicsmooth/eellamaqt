@@ -110,11 +110,12 @@ void LibCore::closeLib(std::string fullpath) {
     try {
         if (m_pUIManager)
             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
-        if (m_pDbIf->isDatabaseOpen())
+        if (m_pDbIf->isDatabaseOpen(fullpath))
             m_pDbIf->closeDatabase(fullpath);
         }
-    catch (...) {
+    catch (const std::exception& ex) {
         log("LibCore::closeLib Could not close library");
+        log("%s", ex.what());
     }
 }
 void LibCore::deleteLib(std::string fullpath) {
@@ -152,6 +153,11 @@ void LibCore::deleteActiveLib() {
          log("LibCore::deleteActiveLib No active library to delete");
      }
  }
+void LibCore::activateLib(std::string fullpath) {
+    // Make fullpath the currently active lib
+    assert(m_pDbIf);
+    m_pDbIf->activateDatabase(fullpath);
+}
 
 void LibCore::newShape() {
 //     if (activeDb())

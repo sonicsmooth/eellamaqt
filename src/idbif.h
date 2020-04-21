@@ -20,6 +20,7 @@ public:
     virtual void openDatabase(std::string) = 0;
     virtual void saveDatabase(std::string, std::string, DupOptions) = 0;
     virtual std::optional<std::string> activeDatabase() const = 0; // returns top active Db or null_opt    
+    virtual void activateDatabase(std::string) = 0;
     virtual void closeDatabase(std::string) = 0;
     virtual void deleteDatabase(std::string) = 0;
     virtual bool isDatabaseOpen(std::string) const = 0; // checks if a specific database is open
