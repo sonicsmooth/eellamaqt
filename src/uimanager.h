@@ -41,6 +41,7 @@ private:
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
     void openUI(IDbIf *, std::string, ViewType); // opens named UI type
     void closeUI(std::string, ViewType);
+    void removeView(QWidget *qw);
 
 public:
     UIManager(QObject * = nullptr);

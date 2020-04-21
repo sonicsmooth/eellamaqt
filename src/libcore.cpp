@@ -102,19 +102,33 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
 }
 
 void LibCore::closeLib(std::string fullpath) {
-    // Remove specified db from list and call UI to close related windows
-    // UI must be closed before db or db won't close properly
-    // Call dbif to close lib
-    // Caller should know the proper name of lib; throws error otherwise
+    // Notifies guis to close themselves and close the lib.
+    // If no UI is present, then closes the lib directly.
+    // Invalid fullpath causes exception
     assert(m_pDbIf);
     try {
         if (m_pUIManager)
             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
-        if (m_pDbIf->isDatabaseOpen(fullpath))
+        else if (m_pDbIf->isDatabaseOpen(fullpath))
             m_pDbIf->closeDatabase(fullpath);
         }
     catch (const std::exception& ex) {
         log("LibCore::closeLib Could not close library");
+        log("%s", ex.what());
+    }
+}
+void LibCore::closeLibNoGui(std::string fullpath) {
+    // Close specified database without regard to any gui.
+    // Invalid fullpath causes exception
+    // This function helps break recursion and having to
+    // detect such recursion in UIManager.
+    assert(m_pDbIf);
+    try {
+        if (m_pDbIf->isDatabaseOpen(fullpath))
+            m_pDbIf->closeDatabase(fullpath);
+        }
+    catch (const std::exception& ex) {
+        log("LibCore::closeLibNoGui Could not close library");
         log("%s", ex.what());
     }
 }
@@ -126,8 +140,9 @@ void LibCore::deleteLib(std::string fullpath) {
     try {
         if (m_pUIManager)
             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
-        if (m_pDbIf->isDatabaseOpen(fullpath))
+        else if (m_pDbIf->isDatabaseOpen(fullpath)) {
             m_pDbIf->closeDatabase(fullpath);
+        }
         m_pDbIf->deleteDatabase(fullpath);
         }
     catch (...) {

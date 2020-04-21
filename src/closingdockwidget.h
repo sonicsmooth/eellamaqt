@@ -15,7 +15,6 @@ class ClosingDockWidget : public QDockWidget
 public:
     explicit ClosingDockWidget(QWidget * = nullptr);
     void closeEvent(QCloseEvent *) override;
-//    void retarget(std::string *);
 
 signals:
     void *closing(ClosingDockWidget *) const;

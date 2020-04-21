@@ -139,10 +139,9 @@ T *findViewBySubType(std::list<QAbstractItemView *> lst) {
 
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     log("Notify open %s", fullpath.c_str());
-    openUI(dbif, fullpath, ViewType::LIBTREEVIEW);
-//    for (auto uit : m_defaultViewTypes) {
-//        openUI(dbif, fullpath, uit);
-//    }
+    for (auto uit : m_defaultViewTypes) {
+        openUI(dbif, fullpath, uit);
+    }
 }
 
 void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
@@ -208,13 +207,16 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
     (void) dbif;
     // Close all widgets that are downstream from fullpath
-    if (m_connViews[fullpath].empty())
-        return;
+    // Suspend event before closing
     log("Notify close %s", fullpath.c_str());
     while (!m_connViews[fullpath].empty() &&
            !m_connViews[fullpath].begin()->second.empty()) {
-            m_connViews[fullpath].begin()->second.front()->parentWidget()->close();
-        }
+        auto view(m_connViews[fullpath].begin()->second.front());
+        auto *cdw(static_cast<ClosingDockWidget *>(view->parentWidget()));
+        cdw->blockSignals(true);
+        cdw->close();
+        removeView(cdw);
+    }
 }
 
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
@@ -251,17 +253,13 @@ auto getFullpathFromModel(QAbstractItemModel *model) {
     return retVals {fullpath, treeModel, tableModel, vt};
 }
 
-void UIManager::onDockWidgetClose(QWidget *pw) {
-    // From widget get the view then model then fullpath
-    // Check each type of model; if they were both derived from the
-    // same base class then we wouldn't need to check
+void UIManager::removeView(QWidget *pw) {
+    // Finds view and removes it from list.
+    // if doCloseLib is true, then when view is the last from
+    // the list, calls closeLib.
+    // Returns true if all views from fullpath are closed
     auto [model, view] = getModelViewFromWidget(pw);
     auto [fullpath, treeModel, tableModel, vt] = getFullpathFromModel(model);
-
-    // This fn should be called before closing library from core
-    // So if library is already closed, an error has occured
-    if (fullpath.empty()) // lib already closed
-        throw("Library already closed");
     
     // Remove view from list; if list is empty, delete 
     // <viewtype, list> from map keyed by fullpath
@@ -272,11 +270,17 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
         // This model is done, so delete which causes db connection to close
         delete model;
         if (m_connViews[fullpath].empty()) {
-            m_pCore->closeLib(fullpath);
-            static_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
             m_connViews.erase(fullpath);
-        }
+            m_pCore->closeLibNoGui(fullpath);
+        } 
     }
+}
+
+void UIManager::onDockWidgetClose(QWidget *pw) {
+    // Remove the view from list and allow library to be closed
+    // This happens when user clicks the close button
+    removeView(pw);
+    dynamic_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void UIManager::onDockWidgetActivate(QWidget *pw) {

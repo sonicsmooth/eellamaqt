@@ -83,6 +83,7 @@ public:
     void saveLib(std::string, std::string, DupOptions);
     void closeActiveLib();
     void closeLib(std::string);
+    void closeLibNoGui(std::string);
     void deleteActiveLib();
     void deleteLib(std::string);
     void activateLib(std::string);
