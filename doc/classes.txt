@@ -40,6 +40,21 @@ LibFootprintView : QAbstractItemView, LibClient
 ClosingDockWidget : QDockWidget
 ClosingMDIWidget : QMdiSubWindow
 
+EEAbstractDatabase
+QSqlDatabase
+EEQDatabase : EEAbstractDatabase, QSqlDatabase
+
+maps...
+tablemodel(lib1): tableview1, tableview2
+treemodel(lib1): treeview1, treeview2
+
+{:conn1 {TREEVIEW {:view1 -> treemodel
+                   :view2 -> treemodel
+		 TABLEVIEW {:view3 -> tablemodel
+		            :view4 -> tablemodel}}}
+ :conn2 ... }					
+
+
 
 LibTreeView:
 Shows each lib item which can open revealing contents.

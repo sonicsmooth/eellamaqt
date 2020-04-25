@@ -22,6 +22,7 @@ SOURCES += \
     ../src/libcore.cpp \
     ../src/libtableview.cpp \
     ../src/libtreeview.cpp \
+    ../src/libsymbolview.cpp \
     ../src/libwindow.cpp \
     ../src/loggable.cpp \
     ../src/logger.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     ../src/libcore.h \
     ../src/libtableview.h \
     ../src/libtreeview.h \
+    ../src/libsymbolview.h \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \

@@ -36,12 +36,14 @@ private:
 
     QAbstractItemView *makeLibTreeView(IDbIf *, std::string);
     QAbstractItemView *makeLibTableView(IDbIf *, std::string);
+    QAbstractItemView *makeLibSymbolView(IDbIf *, std::string);
     ClosingMDIWidget *makeMDILibWidget(QAbstractItemView *, std::string);
     ClosingDockWidget *makeCDWLibWidget(QAbstractItemView *, std::string);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
     void openUI(IDbIf *, std::string, ViewType); // opens named UI type
     void closeUI(std::string, ViewType);
     void removeView(QWidget *qw);
+    void updateTitle(); // Grabs current database, or delegates to main window
 
 public:
     UIManager(QObject * = nullptr);

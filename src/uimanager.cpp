@@ -6,6 +6,7 @@
 #include "mymodel.h"
 #include "libtableview.h"
 #include "libtreeview.h"
+#include "libsymbolview.h"
 #include "qsqltreemodel.h"
 #include "qdbif.h"
 #include "mvtypes.h"
@@ -36,6 +37,7 @@ UIManager::UIManager(QObject *parent) :
 {
     m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
     m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
+    m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
 }
 void UIManager::setParentMW(QMainWindow *p) {
     m_parentMW = p;
@@ -48,18 +50,31 @@ QAbstractItemView *UIManager::makeLibTreeView(IDbIf *dbif, std::string fullpath)
     //QAbstractItemModel *model = m_pSQLTreeModel;
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
     QSqlTreeModel *model(new QSqlTreeModel(m_parentMW, db));
-    LibTreeView *view(new LibTreeView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    QAbstractItemView *view(new LibTreeView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    // model->setTable("firsttable");
+    // model->setEditStrategy(QSqlTableModel::OnRowChange);
+    // model->select();
     m_connViews[fullpath][ViewType::LIBTREEVIEW].push_back(view);
     return view;
 }
 QAbstractItemView *UIManager::makeLibTableView(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
     QSqlTableModel *model(new QSqlTableModel(this, db));
-    LibTableView *view(new LibTableView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    QAbstractItemView *view(new LibTableView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
     model->setTable("firsttable");
     model->setEditStrategy(QSqlTableModel::OnRowChange);
     model->select();
     m_connViews[fullpath][ViewType::LIBTABLEVIEW].push_back(view);
+    return view;
+}
+QAbstractItemView *UIManager::makeLibSymbolView(IDbIf *dbif, std::string fullpath) {
+    QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+    QSqlTableModel *model(new QSqlTableModel(this, db));
+    QAbstractItemView *view(new LibSymbolView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    model->setTable("firsttable");
+    model->setEditStrategy(QSqlTableModel::OnRowChange);
+    model->select();
+    m_connViews[fullpath][ViewType::LIBSYMBOLVIEW].push_back(view);
     return view;
 }
 ClosingDockWidget *UIManager::makeCDWLibWidget(QAbstractItemView *view, std::string title) {
@@ -111,7 +126,7 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
     QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget
     QList<int> qdww; // the widths for QDockWidget
     for (auto const & cdw : cdws) {
-        qdww.push_back(50);
+        qdww.push_back(100);
         qdws.push_back(static_cast<QDockWidget *>(cdw));
     }
     m_parentMW->resizeDocks(qdws, qdww, Qt::Orientation::Horizontal);
@@ -127,16 +142,6 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
 }
 
-template <class T>
-T *findViewBySubType(std::list<QAbstractItemView *> lst) {
-    // Return first element that can be cast to T*
-    // T is typically LibTreeView, LibTableView, etc.
-    for (QAbstractItemView *v : lst)
-        if (T *t = dynamic_cast<T *>(v))
-            return t;
-    return nullptr;
-}
-
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     log("Notify open %s", fullpath.c_str());
     for (auto uit : m_defaultViewTypes) {
@@ -150,21 +155,33 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
 
     std::map<ViewType, Qt::DockWidgetArea> dwam = 
      {{ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
-      {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
+      {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea},
+      {ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea}};
     
     typedef QAbstractItemView * (UIManager::*abstractViewFn)(IDbIf *, std::string);
     std::map<ViewType, abstractViewFn> dwfm = 
      {{ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
-      {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
+      {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView},
+      {ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolView}};
 
-    if (m_connViews[fullpath].size() && m_connViews[fullpath][vt].size())
-        // For now just returning thexjdy.bjhhnecbtccckyytpxixky.k.i. first view
+    if (m_connViews[fullpath].size() && m_connViews[fullpath][vt].size()) {
+        // For now just returning the first view
+        updateTitle();
         return;
+    }
     else { // create new view
         QAbstractItemView *view = (this->*dwfm[vt])(dbif, fullpath); // from https://stackoverflow.com/questions/14814158/c-call-pointer-to-member-function
         std::string title(std::filesystem::path(fullpath).filename().string());
-        ClosingDockWidget *widget(makeCDWLibWidget(view, title));
-        dockLibView(widget, dwam[vt]);
+        if (dwam[vt] > Qt::DockWidgetArea::NoDockWidgetArea) {
+            ClosingDockWidget *widget(makeCDWLibWidget(view, title));
+            dockLibView(widget, dwam[vt]);
+        }
+        else {
+            assert(m_parentMW);
+            ClosingMDIWidget *widget(makeMDILibWidget(view, title));
+            static_cast<LibWindow *>(m_parentMW)->mdiArea()->addSubWindow(widget);
+        }
+        updateTitle();
     } 
  }
 
@@ -272,6 +289,7 @@ void UIManager::removeView(QWidget *pw) {
         if (m_connViews[fullpath].empty()) {
             m_connViews.erase(fullpath);
             m_pCore->closeLibNoGui(fullpath);
+            updateTitle();
         } 
     }
 }
@@ -281,6 +299,7 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     // This happens when user clicks the close button
     removeView(pw);
     dynamic_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateTitle();
 }
 
 void UIManager::onDockWidgetActivate(QWidget *pw) {
@@ -290,5 +309,24 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     auto [fullpath, _x, _y, _z] = getFullpathFromModel(model);
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
+    updateTitle();
 }
 
+void UIManager::updateTitle() {
+    auto db(m_pCore->DbIf()->activeDatabase());
+    if (db) {
+        static_cast<LibWindow *>(m_parentMW)->updateTitle(db.value());
+        std::map<ViewType, std::list<QAbstractItemView *>> mp = m_connViews[db.value()];
+        QAbstractItemView *view = mp.begin()->second.front();
+        ClosingDockWidget *libDockWidget = static_cast<ClosingDockWidget *>(view->parentWidget());
+
+        m_parentMW->blockSignals(true);
+        libDockWidget->setVisible(true);
+        libDockWidget->setFocus();
+        libDockWidget->raise();
+        m_parentMW->blockSignals(false);
+
+    }
+    else
+        static_cast<LibWindow *>(m_parentMW)->updateTitle();
+}

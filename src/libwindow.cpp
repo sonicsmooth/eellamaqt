@@ -35,7 +35,7 @@ LibWindow::LibWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    setWindowTitle("Library Editor");
+    updateTitle();
 
     QPushButton *pb = new QPushButton(this);
     pb->setText("Push me");
@@ -151,6 +151,16 @@ void LibWindow::updateActions(bool en) {
     ui->actionLibTreeView->setEnabled(en);
     ui->actionLibTableView->setEnabled(en);
 }
+void LibWindow::updateTitle() {
+    setWindowTitle("Library Editor");
+}
+void LibWindow::updateTitle(std::string title) {
+    setWindowTitle(QString::fromStdString(title));
+}
+QMdiArea *LibWindow::mdiArea() {
+    return ui->mdiArea;
+}
+
 
 void LibWindow::fileNewLib() {
     // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
