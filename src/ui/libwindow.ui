@@ -21,7 +21,11 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QMdiArea" name="mdiArea"/>
+       <widget class="QMdiArea" name="mdiArea">
+        <property name="viewMode">
+         <enum>QMdiArea::TabbedView</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -33,7 +37,7 @@
      <x>0</x>
      <y>0</y>
      <width>706</width>
-     <height>37</height>
+     <height>38</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">

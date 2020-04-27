@@ -36,7 +36,7 @@ UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
     m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
-    m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
+m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
     m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
 }
 void UIManager::setParentMW(QMainWindow *p) {
@@ -179,6 +179,9 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         else {
             assert(m_parentMW);
             ClosingMDIWidget *widget(makeMDILibWidget(view, title));
+            //static_cast<LibWindow *>(m_parentMW)->mdiArea()->setViewMode(QMdiArea::ViewMode::TabbedView);
+           
+            static_cast<LibWindow *>(m_parentMW)->mdiArea()->setTabsClosable(true);
             static_cast<LibWindow *>(m_parentMW)->mdiArea()->addSubWindow(widget);
         }
         updateTitle();
