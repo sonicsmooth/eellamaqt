@@ -6,6 +6,11 @@
 #include "mymodel.h"
 #include "libtableview.h"
 #include "libtreeview.h"
+#include "libsymbolview.h"
+#include "qsqltreemodel.h"
+#include "qdbif.h"
+#include "mvtypes.h"
+
 #include <QObject>
 #include <QString>
 #include <QDockWidget>
@@ -19,41 +24,20 @@
 #include <QSqlTableModel>
 #include <QSqlDatabase>
 #include <QItemSelection>
+
+#include <filesystem>
 #include <typeinfo>
 #include <iterator>
 #include <list>
 #include <vector>
-#include <any>
 #include <exception>
 
 UIManager::UIManager(QObject *parent) :
     QObject(parent)
-    //m_siModel(new QStandardItemModel)
-
 {
-    m_defaultUITypes.push_back(UIType::LIBTREEVIEW);
-    m_defaultUITypes.push_back(UIType::LIBTABLEVIEW);
-    auto root = m_siModel.invisibleRootItem();
-    root->appendRow(new QStandardItem("Americas"));
-    root->child(0)->appendRow(new QStandardItem("Canada"));
-    root->child(0)->child(0)->appendRow(new QStandardItem("Calgary"));
-    root->child(0)->child(0)->appendRow(new QStandardItem("Montreal"));
-    root->child(0)->appendRow(new QStandardItem("USA"));
-    root->child(0)->child(1)->appendRow(new QStandardItem("Boston"));
-    root->child(0)->child(1)->appendRow(new QStandardItem("Seattle"));
-    root->appendRow(new QStandardItem("Europe"));
-    root->child(1)->appendRow(new QStandardItem("Italy"));
-    root->child(1)->child(0)->appendRow(new QStandardItem("Rome"));
-    root->child(1)->child(0)->appendRow(new QStandardItem("Verona"));
-    root->child(1)->appendRow(new QStandardItem("Germany"));
-    root->child(1)->child(1)->appendRow(new QStandardItem("Berlin"));
-    root->child(1)->child(1)->appendRow(new QStandardItem("Stuttgart"));
-    root->child(1)->appendRow(new QStandardItem("France"));
-    root->child(1)->child(2)->appendRow(new QStandardItem("Paris"));
-    root->child(1)->child(2)->appendRow(new QStandardItem("Marseilles"));
-    root->child(1)->appendRow(new QStandardItem("Netherlands"));
-    root->child(1)->child(3)->appendRow(new QStandardItem("Amsterdam"));
-    root->child(1)->child(3)->appendRow(new QStandardItem("Coffee shop"));
+    m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
+m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
+    m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
 }
 void UIManager::setParentMW(QMainWindow *p) {
     m_parentMW = p;
@@ -61,28 +45,54 @@ void UIManager::setParentMW(QMainWindow *p) {
 QMainWindow *UIManager::parentMW() const {
     return m_parentMW;
 }
-ClosingDockWidget *UIManager::makeCDWLibView(QAbstractItemView *qaiv, QString title) {
-    //assert(m_pCore);
-    qaiv->setMaximumWidth(1000);
-    qaiv->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
 
-    ClosingDockWidget* libDockWidget = new ClosingDockWidget(m_parentMW);
-    qaiv->setFocusProxy(libDockWidget); // doesn't seem to do anything
+QAbstractItemView *UIManager::makeLibTreeView(IDbIf *dbif, std::string fullpath) {
+    //QAbstractItemModel *model = m_pSQLTreeModel;
+    QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+    QSqlTreeModel *model(new QSqlTreeModel(m_parentMW, db));
+    QAbstractItemView *view(new LibTreeView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    // model->setTable("firsttable");
+    // model->setEditStrategy(QSqlTableModel::OnRowChange);
+    // model->select();
+    m_connViews[fullpath][ViewType::LIBTREEVIEW].push_back(view);
+    return view;
+}
+QAbstractItemView *UIManager::makeLibTableView(IDbIf *dbif, std::string fullpath) {
+    QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+    QSqlTableModel *model(new QSqlTableModel(this, db));
+    QAbstractItemView *view(new LibTableView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    model->setTable("firsttable");
+    model->setEditStrategy(QSqlTableModel::OnRowChange);
+    model->select();
+    m_connViews[fullpath][ViewType::LIBTABLEVIEW].push_back(view);
+    return view;
+}
+QAbstractItemView *UIManager::makeLibSymbolView(IDbIf *dbif, std::string fullpath) {
+    QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+    QSqlTableModel *model(new QSqlTableModel(this, db));
+    QAbstractItemView *view(new LibSymbolView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
+    model->setTable("firsttable");
+    model->setEditStrategy(QSqlTableModel::OnRowChange);
+    model->select();
+    m_connViews[fullpath][ViewType::LIBSYMBOLVIEW].push_back(view);
+    return view;
+}
+ClosingDockWidget *UIManager::makeCDWLibWidget(QAbstractItemView *view, std::string title) {
+    view->setMaximumWidth(1000);
+    view->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
+    ClosingDockWidget* libDockWidget(new ClosingDockWidget(m_parentMW));
+    view->setFocusProxy(libDockWidget); // doesn't seem to do anything
     libDockWidget->setFocusPolicy(Qt::StrongFocus); // accepts focus by tabbing or clicking
-    libDockWidget->setWidget(qaiv);
-    libDockWidget->setWindowTitle(title);
-    //m_closingDockWidgets[title.toStdString()].push_back(libDockWidget);
+    libDockWidget->setWidget(view);
+    libDockWidget->setWindowTitle(QString::fromStdString(title));
     return libDockWidget;
 }
-ClosingMDIWidget *UIManager::makeMDILibView(QAbstractItemView *qaiv, QString title) {
-    //assert(m_pCore);
-    qaiv->setMaximumWidth(1000);
-    qaiv->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
-
-    ClosingMDIWidget* libMDIWidget = new ClosingMDIWidget(m_parentMW);
-    libMDIWidget->setWidget(qaiv);
-    libMDIWidget->setWindowTitle(title);
-    //m_MDISubWindows[title.toStdString()].push_back(libMDIWidget);
+ClosingMDIWidget *UIManager::makeMDILibWidget(QAbstractItemView *view, std::string title) {
+    view->setMaximumWidth(1000);
+    view->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
+    ClosingMDIWidget* libMDIWidget(new ClosingMDIWidget(m_parentMW));
+    libMDIWidget->setWidget(view);
+    libMDIWidget->setWindowTitle(QString::fromStdString(title));
     return libMDIWidget;
 }
 
@@ -116,7 +126,7 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
     QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget
     QList<int> qdww; // the widths for QDockWidget
     for (auto const & cdw : cdws) {
-        qdww.push_back(50);
+        qdww.push_back(100);
         qdws.push_back(static_cast<QDockWidget *>(cdw));
     }
     m_parentMW->resizeDocks(qdws, qdww, Qt::Orientation::Horizontal);
@@ -132,94 +142,58 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
 }
 
-template <class T>
-T *findViewBySubType(std::list<QAbstractItemView *> lst) {
-    // Return first element that can by cast to T*
-    // T is typically LibTreeView, LibTableView, etc.
-    for (QAbstractItemView *v : lst)
-        if (T *t = dynamic_cast<T *>(v))
-            return t;
-    return nullptr;
-}
-
-QAbstractItemModel *findSqlModelKeyByPath(std::map<QAbstractItemModel *, std::list<QAbstractItemView *>> libViews,
-                                          QString dbpath) {
-    // Searches through keys of libViews
-   // Returns first QSqlTableModel model in libViews which points to path.
-    // libViews must actually use QSqlTableModel as key
-    for (auto entry : libViews) {
-        if (auto *m = dynamic_cast<QSqlTableModel *>(entry.first)) {
-            if (m->database().connectionName() == dbpath)
-                return m;
-        }
-        else
-            continue;
-    }
-    return nullptr;
-}
-
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     log("Notify open %s", fullpath.c_str());
-    
-}
-void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
-    log("Notify close %s", fullpath.c_str());
-    
-}
-void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
-    log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
-    
+    for (auto uit : m_defaultViewTypes) {
+        openUI(dbif, fullpath, uit);
+    }
 }
 
+void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
+    // Ensures only one of any type of view is opened for any given title
+    // Returns pointer if one already exists, otherwise creates new one
 
+    static bool even = true;
 
+    std::map<ViewType, Qt::DockWidgetArea> dwam = 
+     {{ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
+      {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea},
+      {ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea}};
+    
+    typedef QAbstractItemView * (UIManager::*abstractViewFn)(IDbIf *, std::string);
+    std::map<ViewType, abstractViewFn> dwfm = 
+     {{ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
+      {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView},
+      {ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolView}};
 
+    if (m_connViews[fullpath].size() && m_connViews[fullpath][vt].size()) {
+        // For now just returning the first view
+        updateTitle();
+        return;
+    }
+    else { // create new view
+        QAbstractItemView *view = (this->*dwfm[vt])(dbif, fullpath); // from https://stackoverflow.com/questions/14814158/c-call-pointer-to-member-function
+        std::string title(std::filesystem::path(fullpath).filename().string());
+        if (dwam[vt] > Qt::DockWidgetArea::NoDockWidgetArea) {
+            ClosingDockWidget *widget(makeCDWLibWidget(view, title));
+            dockLibView(widget, dwam[vt]);
+        }
+        else {
+            assert(m_parentMW);
+            ClosingMDIWidget *widget(makeMDILibWidget(view, title));
+            static_cast<LibWindow *>(m_parentMW)->mdiArea()->setTabsClosable(true);
+            static_cast<LibWindow *>(m_parentMW)->mdiArea()->addSubWindow(widget);
+        }
+        updateTitle();
+    } 
+ }
 
-// void UIManager::openUI(std::string title) {
-//     // Called from core typically
-//     for (auto uit : m_defaultUITypes)
-//         openUI(title, uit);
-// }
-
-// void UIManager::openUI(std::string connpath, UIType uit) {
-//     // Ensures only one of any type of view/window is opened for any given title
-//     // Returns pointer if one already exists, otherwise creates new one
-//     assert(m_pCore);
-//     QString qtitle("junktitle");//QString::fromStdString(connpath));
-//     if(uit == UIType::LIBTREEVIEW) {
-//         // Find a LibTreeView containing siModel.  How to do multiple LibTreeViews of this model?
-//         if (!findViewBySubType<LibTreeView>(m_libViews[&m_siModel])) {
-//             LibTreeView *ltv = new LibTreeView(m_parentMW, &m_siModel, m_pCore, m_pLogger, connpath);
-//             m_libViews[&m_siModel].push_back(ltv); // store this view keyed to model
-//             ClosingDockWidget *cdw = makeCDWLibView(ltv, qtitle);
-//             dockLibView(cdw, Qt::DockWidgetArea::RightDockWidgetArea);
-// //            connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
-// //                [=](const QItemSelection & /*newSelection*/, const QItemSelection & /*oldSelection*/) {
-// //                    const QModelIndex index = qtv->selectionModel()->currentIndex();
-// //                    QString selectedText = index.data(Qt::DisplayRole).toString();
-// //                    log("%s, level %d", selectedText.toStdString().c_str());
-// //                });
-//         }
-//     } else if (uit == UIType::LIBTABLEVIEW) {
-//         // Look for db models in keys that have same connection as title
-//         QAbstractItemModel *model = findSqlModelKeyByPath(m_libViews, QString::fromStdString(connpath));
-//         if (!model || // model has not been used for any views
-//             !findViewBySubType<LibTableView>(m_libViews[model])) { // model has been used already, but not for labtableview
-//             QSqlDatabase db = std::any_cast<QSqlDatabase>(m_pDbIf->database(connpath));
-//             QSqlTableModel *sqm = new QSqlTableModel(this, db);
-//             QTableView *qtv = new LibTableView(m_parentMW, sqm, m_pCore, m_pLogger, connpath);
-//             m_libViews[sqm].push_back(qtv);
-//             sqm->setTable("firsttable");
-//             sqm->setEditStrategy(QSqlTableModel::OnRowChange);
-//             sqm->select();
-//             ClosingDockWidget *cdw = makeCDWLibView(qtv, qtitle);
-//             dockLibView(cdw, Qt::DockWidgetArea::LeftDockWidgetArea);
-//         }
-// //    } else if (uit == UIType::LIBSYMBOLEDITOR) {
-
-//     }
-// //    return nullptr;
-// }
+ //            connect(qtv->selectionModel(), &QItemSelectionModel::selectionChanged,
+ //                [=](const QItemSelection & /*newSelection*/, const QItemSelection & /*oldSelection*/) {
+ //                    const QModelIndex index = qtv->selectionModel()->currentIndex();
+ //                    QString selectedText = index.data(Qt::DisplayRole).toString();
+ //                    log("%s, level %d", selectedText.toStdString().c_str());
+ //                });
 
 // void UIManager::retargetUI(std::string oldpath, std::string newpath) {
 //     // Rename key which points to all open UIs which currently have oldpath, to newpath
@@ -250,66 +224,112 @@ void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string new
 //     delete oldmodel;
 // }
 
-// void UIManager::closeUI(std::string connpath) {
-//     // Intended to be called from Core, which is is not aware of UIs very much.
-//     // When called with a given string, this fn will close all QAbstractItemViews
-//     // which have a model associated with that string and remove string from map
-//     QAbstractItemModel *model = findSqlModelKeyByPath(m_libViews, QString::fromStdString(connpath));
-//     // ok if null, as this was maybe called indirectly from onDockWidgetClose
-//     if (!model)
-//         return;
-
-//     // Can't use for loop because body modifies m_libViews
-//     while (!m_libViews[model].empty()) {
-//         QAbstractItemView *view(m_libViews[model].back());
-//         view->parentWidget()->close();  // triggers onDockWidgetClose
-//     }
-// }
-
-void UIManager::onDockWidgetClose(QWidget *pw) {
-    // Remove the widget from the open widgets map
-    // Remove the viewwidget from the conn widgets map
-    // They should track either, but be ignorant of each other
-    // So we modify them separately either here or in retargetUI
-    // If no more open widgets, then ask core to close lib
-    // And ask parent to update menu enables
-    assert(m_pCore);
-    ClosingDockWidget *cdw(static_cast<ClosingDockWidget *>(pw));
-    QAbstractItemView *libview(static_cast<QAbstractItemView *>(cdw->widget()));
-    QAbstractItemModel *model = libview->model();
-    m_libViews[model].remove(libview);
-    if (m_libViews[model].empty()) {
-        m_libViews.erase(model); // Delete key/value entry entirely;
-        // could be that model is not a sql model, so dynamic cast and check
-        if (auto *sqlmodel = dynamic_cast<QSqlTableModel *>(model)) {
-            std::string conn(sqlmodel->database().databaseName().toStdString());
-//            if (m_pCore->activeDb(conn)) {
-//                m_pCore->closeLib(conn);
-//                static_cast<LibWindow *>(m_parentMW)->updateActions();
-//            }
-        }
+void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
+    (void) dbif;
+    // Close all widgets that are downstream from fullpath
+    // Suspend event before closing
+    log("Notify close %s", fullpath.c_str());
+    while (!m_connViews[fullpath].empty() &&
+           !m_connViews[fullpath].begin()->second.empty()) {
+        auto view(m_connViews[fullpath].begin()->second.front());
+        auto *cdw(static_cast<ClosingDockWidget *>(view->parentWidget()));
+        cdw->blockSignals(true);
+        cdw->close();
+        removeView(cdw);
     }
 }
+
+void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
+    (void) dbif;
+    log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
+}
+
+auto getModelViewFromWidget(QWidget *pw) {
+    QDockWidget *qdw(static_cast<QDockWidget *>(pw));
+    QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
+    QAbstractItemModel *model(view->model());
+    struct retVals {
+        QAbstractItemModel *model;
+        QAbstractItemView *view;
+    };
+    return retVals {model, view};
+}
+
+auto getFullpathFromModel(QAbstractItemModel *model) {
+    QSqlTreeModel *treeModel(dynamic_cast<QSqlTreeModel *>(model));
+    QSqlTableModel *tableModel(dynamic_cast<QSqlTableModel *>(model));
+    std::string fullpath(treeModel  ? treeModel->database().connectionName().toStdString():
+                         tableModel ? tableModel->database().connectionName().toStdString() :
+                         throw("Neither treeModel nor tableModel"));
+    ViewType vt(treeModel  ? ViewType::LIBTREEVIEW :
+                tableModel ? ViewType::LIBTABLEVIEW :
+                throw("Neither treeModel nor tableModel"));
+    struct retVals {
+        std::string fullpath;
+        QSqlTreeModel *treeModel;
+        QSqlTableModel *tableModel;
+        ViewType vt;
+    };
+    return retVals {fullpath, treeModel, tableModel, vt};
+}
+
+void UIManager::removeView(QWidget *pw) {
+    // Finds view and removes it from list.
+    // if doCloseLib is true, then when view is the last from
+    // the list, calls closeLib.
+    // Returns true if all views from fullpath are closed
+    auto [model, view] = getModelViewFromWidget(pw);
+    auto [fullpath, treeModel, tableModel, vt] = getFullpathFromModel(model);
+    
+    // Remove view from list; if list is empty, delete 
+    // <viewtype, list> from map keyed by fullpath
+    // if m_connViews[fullpath] is empty, then close lib
+    m_connViews[fullpath][vt].remove(view);
+    if (m_connViews[fullpath][vt].empty()) {
+        m_connViews[fullpath].erase(vt);
+        // This model is done, so delete which causes db connection to close
+        delete model;
+        if (m_connViews[fullpath].empty()) {
+            m_connViews.erase(fullpath);
+            m_pCore->closeLibNoGui(fullpath);
+            updateTitle();
+        } 
+    }
+}
+
+void UIManager::onDockWidgetClose(QWidget *pw) {
+    // Remove the view from list and allow library to be closed
+    // This happens when user clicks the close button
+    removeView(pw);
+    dynamic_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateTitle();
+}
+
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is click
     assert(m_pCore);
-    auto *qdw(dynamic_cast<QDockWidget *>(pw));
-    assert(qdw);
-    std::string title(qdw->windowTitle().toStdString());
-    log("UIManager::OnDockWidgetActivate: activated %s", title.c_str());
-//    m_pCore->pushActiveDb(title);
+    auto [model, _v] = getModelViewFromWidget(pw);
+    auto [fullpath, _x, _y, _z] = getFullpathFromModel(model);
+    log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
+    m_pCore->activateLib(fullpath);
+    updateTitle();
 }
 
+void UIManager::updateTitle() {
+    auto db(m_pCore->DbIf()->activeDatabase());
+    if (db) {
+        static_cast<LibWindow *>(m_parentMW)->updateTitle(db.value());
+        std::map<ViewType, std::list<QAbstractItemView *>> mp = m_connViews[db.value()];
+        QAbstractItemView *view = mp.begin()->second.front();
+        ClosingDockWidget *libDockWidget = static_cast<ClosingDockWidget *>(view->parentWidget());
 
-void UIManager::setModelManager(IModelManager *pmm) {
-    m_pModelManager = pmm;
-}
-IModelManager *UIManager::modelManager() const {
-    return m_pModelManager;
-}
-void UIManager::setViewManager(IViewManager *pvm) {
-    m_pViewManager = pvm;
-}
-IViewManager *UIManager::viewManager() const {
-    return m_pViewManager;
+        m_parentMW->blockSignals(true);
+        libDockWidget->setVisible(true);
+        libDockWidget->setFocus();
+        libDockWidget->raise();
+        m_parentMW->blockSignals(false);
+
+    }
+    else
+        static_cast<LibWindow *>(m_parentMW)->updateTitle();
 }

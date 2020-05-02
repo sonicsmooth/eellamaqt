@@ -4,8 +4,6 @@
 #include "loggable.h"
 #include "idbif.h"
 #include "iuimanager.h"
-#include "imodelmanager.h"
-#include "iviewmanager.h"
 #include "saveoptions.h"
 
 #include <string>
@@ -85,8 +83,10 @@ public:
     void saveLib(std::string, std::string, DupOptions);
     void closeActiveLib();
     void closeLib(std::string);
+    void closeLibNoGui(std::string);
     void deleteActiveLib();
     void deleteLib(std::string);
+    void activateLib(std::string);
 
     // Symbols are created/deleted
     // Shapes are created/deleted then inserted/removed with position/rotation, and can be reused

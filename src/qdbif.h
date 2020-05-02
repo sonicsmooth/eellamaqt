@@ -30,15 +30,12 @@ public:
     void openDatabase(std::string) override;
     void saveDatabase(std::string, std::string, DupOptions) override;
     std::optional<std::string> activeDatabase() const override; // returns top active Db or null_opt
-    //bool activeDatabase(std::string) const override;
+    void activateDatabase(std::string) override;
     void closeDatabase(std::string) override;
     void deleteDatabase(std::string) override;
     bool isDatabaseOpen(std::string) const override;
     bool isDatabaseOpen() const override;
     QSqlDatabase database(std::string);
-
-
-
 };
 
 #endif // DBIF_H

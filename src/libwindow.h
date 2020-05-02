@@ -7,6 +7,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QMdiArea>
 
 #include <any>
 
@@ -25,6 +26,9 @@ public:
     LibWindow(QWidget *parent = nullptr);
     ~LibWindow() override;
     void updateActions(bool);
+    void updateTitle();
+    void updateTitle(std::string);
+    QMdiArea *mdiArea();
     void fileNewLib();
     void fileOpenLib();
     void fileSaveAs();

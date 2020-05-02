@@ -4,55 +4,58 @@
 #include "iuimanager.h"
 #include "coreable.h"
 #include "loggable.h"
+#include "libtreeview.h"
+#include "libtableview.h"
 #include "closingdockwidget.h"
 #include "closingmdiwidget.h"
-#include "libclient.h"
-#include "libtreeview.h"
-//#include "libtableview.h"
 #include "idbif.h"
+#include "mvtypes.h"
+
 #include <QString>
 #include <QWidget>
 #include <QMainWindow>
 #include <QAbstractItemView>
 #include <QStandardItemModel>
 #include <QAbstractItemView>
-#include <QSqlTableModel>
+
 #include <string>
 #include <map>
 #include <vector>
-#include <any>
 
-// WHy is this a QObject?
+// Why is this a QObject?
+
+typedef std::map<ViewType, std::list<QAbstractItemView *>> TypeViewMap;
+
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
 private:
     QMainWindow *m_parentMW;
-    std::list<UIType> m_defaultUITypes;
-    std::map<QAbstractItemModel *, std::list<QAbstractItemView *>> m_libViews; // which will also be LibClients
-    QStandardItemModel m_siModel; // temporary until real model comes in
-    IModelManager *m_pModelManager;
-    IViewManager *m_pViewManager;
+    std::list<ViewType> m_defaultViewTypes;
+    // Each model maps to list of views, each also a LibClient
+    std::map<std::string, TypeViewMap> m_connViews;
 
-    ClosingMDIWidget *makeMDILibView(QAbstractItemView *, QString title);
-    ClosingDockWidget *makeCDWLibView(QAbstractItemView *, QString title);
-
+    QAbstractItemView *makeLibTreeView(IDbIf *, std::string);
+    QAbstractItemView *makeLibTableView(IDbIf *, std::string);
+    QAbstractItemView *makeLibSymbolView(IDbIf *, std::string);
+    ClosingMDIWidget *makeMDILibWidget(QAbstractItemView *, std::string);
+    ClosingDockWidget *makeCDWLibWidget(QAbstractItemView *, std::string);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea);
+    void openUI(IDbIf *, std::string, ViewType); // opens named UI type
+    void closeUI(std::string, ViewType);
+    void removeView(QWidget *qw);
+    void updateTitle(); // Grabs current database, or delegates to main window
+
 public:
     UIManager(QObject * = nullptr);
-    void setModelManager(IModelManager *);
-    IModelManager *modelManager() const;
-    void setViewManager(IViewManager *);
-    IViewManager *viewManager() const;
 
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
-    void notifyDbRename(IDbIf *, std::string oldpath, std::string newpath) override;
-    void openUI(std::string, UIType); // opens named UI type
+    void notifyDbRename(IDbIf *, std::string, std::string) override;
+
+    // Do these need to be public?
     void onDockWidgetClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
     void setParentMW(QMainWindow *);
-    //void setDbIf(IDbIf *);
-    //IDbIf *dbIf() const;
     QMainWindow *parentMW() const;
 
 public slots:

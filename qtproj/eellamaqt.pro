@@ -22,13 +22,13 @@ SOURCES += \
     ../src/libcore.cpp \
     ../src/libtableview.cpp \
     ../src/libtreeview.cpp \
+    ../src/libsymbolview.cpp \
     ../src/libwindow.cpp \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
     ../src/qdbif.cpp \
-    ../src/qmodelmanager.cpp \
-    ../src/qviewmanager.cpp \
+    ../src/qsqltreemodel.cpp \
     ../src/uimanager.cpp \
     ../src/filesaveas.cpp \
     ../src/mymodel.cpp
@@ -42,23 +42,22 @@ HEADERS += \
     ../src/coreable.h \
     ../src/idbif.h \
     ../src/ilogger.h \
-    ../src/imodelmanager.h \
     ../src/iuimanager.h \
-    ../src/iviewmanager.h \
     ../src/libclient.h \
     ../src/libcore.h \
     ../src/libtableview.h \
     ../src/libtreeview.h \
+    ../src/libsymbolview.h \
     ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \
     ../src/qdbif.h \
-    ../src/qmodelmanager.h \
-    ../src/qviewmanager.h \
+    ../src/qsqltreemodel.h \
     ../src/saveoptions.h \
     ../src/uimanager.h \
     ../src/filesaveas.h \
-    ../src/mymodel.h \
+    ../src/mymodel.h \ \
+    ../src/mvtypes.h
 
 
 FORMS += \

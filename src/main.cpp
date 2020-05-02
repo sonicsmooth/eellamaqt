@@ -3,8 +3,6 @@
 #include "logger.h"
 #include "qdbif.h"
 #include "uimanager.h"
-#include "qmodelmanager.h"
-#include "qviewmanager.h"
 #include "utils.h"
 #include "allicons.h"
 #include "mymodel.h"
@@ -29,8 +27,8 @@ int main(int argc, char *argv[])
     LibWindow libwin;
     QSQDbIf dbif;
     UIManager uim;
-    QModelManager qmm;
-    QViewManager qvm;
+    //QModelManager qmm;
+    //QViewManager qvm;
 
     // Show all default icons
     //AllIcons ai;
@@ -45,15 +43,15 @@ int main(int argc, char *argv[])
     pLogWidget->setWindowTitle("Log");
     pLogWidget->setWidget(logger.textEdit());
 
-    // Set up databae interface
+    // Set up database interface
     dbif.setLogger(&logger);
 
     // Set up ui slave
     uim.setCore(&core);
     uim.setLogger(&logger);
     uim.setParentMW(&libwin);
-    uim.setModelManager(&qmm);
-    uim.setViewManager(&qvm);
+    //uim.setModelManager(&qmm);
+    //uim.setViewManager(&qvm);
     //uim.setDbIf(&dbif);
 
     // Set up main window
