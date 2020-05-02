@@ -153,6 +153,8 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // Ensures only one of any type of view is opened for any given title
     // Returns pointer if one already exists, otherwise creates new one
 
+    static bool even = true;
+
     std::map<ViewType, Qt::DockWidgetArea> dwam = 
      {{ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
       {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea},
@@ -179,8 +181,6 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         else {
             assert(m_parentMW);
             ClosingMDIWidget *widget(makeMDILibWidget(view, title));
-            //static_cast<LibWindow *>(m_parentMW)->mdiArea()->setViewMode(QMdiArea::ViewMode::TabbedView);
-           
             static_cast<LibWindow *>(m_parentMW)->mdiArea()->setTabsClosable(true);
             static_cast<LibWindow *>(m_parentMW)->mdiArea()->addSubWindow(widget);
         }
