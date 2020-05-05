@@ -44,17 +44,107 @@ EEAbstractDatabase
 QSqlDatabase
 EEQDatabase : EEAbstractDatabase, QSqlDatabase
 
-maps...
-tablemodel(lib1): tableview1, tableview2
-treemodel(lib1): treeview1, treeview2
+A conn can have multiple main views per main window
+A conn have a single aux view of each type per main window, shared with other conns.
+A conn can have at most one of each type of model
 
-{:conn1 {TREEVIEW {:view1 -> treemodel
-                   :view2 -> treemodel
-		 TABLEVIEW {:view3 -> tablemodel
-		            :view4 -> tablemodel}}}
- :conn2 ... }					
+Each row represents a particular view and widget, so it can be opened/closed, shown/hidden, dragged, etc.
+
+CONN   MVTYPE  MODEL         VIEW            SELECTED  WIDGET          MAINWINDOW
+-----  ------  ------------  -------------   --------  ------          -----
+NULL   NULL    NULL          NULL            FALSE     NULL            mainwindow1 -- empty main window
+conn1  MAIN    mainmodel_c1  mainview1_c1w1  FALSE     MDIWidget1_w1   mainwindow1 -- c1 first main view in mainwindow1
+conn1  MAIN    mainmodel_c1  mainview2_c1w1  FALSE     MDIWidget2_w1   mainwindow1 -- c1 second main view in mainwindow1
+conn1  MAIN    mainmodel_c1  mainview3_c1w2  FALSE     MDIWidget3_w2   mainwindow2 -- c1 first main view in mainwindow2
+conn1  MAIN    mainmodel_c1  mainview4_c1w2  TRUE      MDIWidget4_w2   mainwindow2 -- c1 second main view in mainwindow2
+conn1  TREE    treemodel_c1  treeview_w1     FALSE     dockWidget1_w1  mainwindow1 -- c1 only treeview in mainwindow1
+conn1  TREE    treemodel_c1  treeview_w2     TRUE      dockWidget2_w2  mainwindow2 -- c1 only treeview in mainwindow2
+									      
+conn2  MAIN    mainmodel_c2  mainview5_c2w1  FALSE     MDIWidget5_w1   mainwindow1 -- c2 first main view in main window1
+conn2  MAIN    mainmodel_c2  mainview6_c2w2  FALSE     MDIWidget6_w2   mainwindow2 -- c2 first main view in main window2
+conn2  TREE    treemodel_c1  treeview_w1     FALSE     dockWidget1_w1  mainwindow1 -- c2 only treeview in mainwindow1
+conn2  TREE    treemodel_c1  treeview_w2     FALSE     dockWidget2_w2  mainwindow2 -- c2 only treeview in mainwindow2
+
+New Main Window
+	mainmodel = select `model` where `CONN`==conn1 && MVTYPE=='MAIN' limit 1, OR new mainmodel
+	mainwindow = new mainWindow
+	mainview = new mainView(mainmodel)
+	mainwidget = new mdiWidget(mainview)
+	INSERT(conn, mainmodel, mainview, mainwidget, mainwindow)
+	mainWindow->addMDIWidget(mainwidget)
+
+	treemodel = select `model` where `CONN`==conn1 && MVTYPE=='TREE' limit 1, OR new treemodel
+	treeview = new treeView(treemodel)
+	treewidget = new dockWidget(treeview)
+	INSERT(conn, treemodel, treeview, treewidget, mainwindow)
+	mainWindow->dockWidget(treewidget, right)
+	mainWindow->show()
+	
+New Main View
+	mainmodel = select `model` where `CONN`==conn1 && MVTYPE=='MAIN' limit 1, OR new mainmodel
+	mainwindow = current main window, or from arg
+	mainview = new mainView(mainmodel)
+	mainwidget = new mdiWidget(mainview)
+	INSERT(conn, mainmodel, mainview, mainwidget, mainwindow)
+	mainWindow->addMDIWidget(mainwidget)
+
+New Aux View
+	treemodel = select `model` where `CONN`==conn1 && MVTYPE=='TREE' limit 1, OR new treemodel
+	treeview = select `view` where `CONN`==conn1 && MVTYPE == 'TREE' limit 1, or new treeView(treemodel)
+	treewidget = select `widget` where 'CONN`==conn1 && MVTYPE == 'TREE' limit 1, or new dockWidget(treeview)
+	assert new treeview and new dockwidget, or both already existed
+	INSERT(conn, treemodel, treeview, treewidget, mainwindow)
+	if new,	mainWindow->dockWidget(treewidget, right)
+
+New conn
+	mainmodel = select `model` where `CONN`==conn1 && MVTYPE=='MAIN' limit 1
+	if mainmodel, error and return
+	else new mainmodel
+	mainwindow = current main window, or from arg
+	mainview = new mainView(mainmodel)
+	mainwidget = new mdiWidget(mainview)
+	INSERT(conn, mainmodel, mainview, mainwidget, mainwindow)
+	mainWindow->addMDIWidget(mainwidget)
+
+	treemodel = select `model` where `CONN`==conn1 && MVTYPE=='TREE' limit 1
+	if treemodel, error and return
+	else new treemodel
+	treeview = select `view` where `mainwindow`==mainwindow && MVTYPE=='TREE', OR new treeView(treemodel)
+	treewidget = select `widget` where `mainwindow`==mainwindow && MVTYPE=='TREE', OR new dockWidget(treeview)
+	INSERT(conn, treemodel, treeview, treewidget, mainwindow)
+	if new, mainWindow->dockWidget(treewidget, right)
+	
+Close conn
+	mainmodel = select `model` where `CONN`==conn1 && MVTYPE=='MAIN', limit 1
+	treemodel = select `model` where `CONN`==conn1 && MVTYPE =='TREE', limit 1
+	auxwidgets = select `widget` where `CONN`==conn1 && MVTYPE=='TREE' (no limit)
+	close all auxwidgets
+	mainwidgets = select `widget` where `CONN1==conn1 && MVTYPE=='MAIN' (no limit)
+	close all mainwidgets
+	close all mainWindows unless it's the only one remaining
+	Do something with count(...) and groupby(mainwindow) to show which rows have all NULLs for their mainwindow
+	delete model
+	
+User clicks on main view
+	All aux views for that conn in the same mainwindow are selected and shown
+	
+User clicks on auxI view
+	Nothing special, as the main view associated with the same conn was already selected
+
+User closes aux view
+	delete row where `conn`==conn1 && MVTYPE=='TREE' && mainwindow==current window
+	verify only one of these
+	verify that select `widget` where `conn`==conn1 && MVTYPE=='TREE' returns empty
+	
+User closes main view
+	If it's the last main view, then close conn() (above)
+	Otherwise close main widget and main view.
+	
 
 
+						   
+	
+		
 
 LibTreeView:
 Shows each lib item which can open revealing contents.

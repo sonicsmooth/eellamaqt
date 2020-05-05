@@ -13,20 +13,20 @@
 
 
 LibSymbolView::LibSymbolView(QWidget *parent) :
-    LibSymbolView(parent, nullptr, nullptr, nullptr, std::string())
+    LibSymbolView(parent, nullptr, nullptr, nullptr/*, std::string()*/)
 {
 
 }
 
 LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model) :
-    LibSymbolView(parent, model, nullptr, nullptr, std::string())
+    LibSymbolView(parent, model, nullptr, nullptr/*, std::string()*/)
 {
 
 }
 
-LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl, std::string connpath) :
-    LibClient(pc, pl, connpath)
-    {
+LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl /*, std::string connpath*/)
+   /*: LibClient(pc, pl, connpath) */
+{
 
 }
 

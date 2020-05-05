@@ -11,14 +11,14 @@
 
 #include <string>
 
-class LibSymbolView : public LibClient, public QAbstractItemView
+class LibSymbolView : /*public LibClient, */public QAbstractItemView
 {
 private:
     QModelIndex m_index;
 public:
     LibSymbolView(QWidget * = nullptr);
     LibSymbolView(QWidget * = nullptr, QAbstractItemModel * = nullptr);
-    LibSymbolView(QWidget * = nullptr, QAbstractItemModel * = nullptr, LibCore * = nullptr, ILogger * = nullptr, std::string = std::string());
+    LibSymbolView(QWidget * = nullptr, QAbstractItemModel * = nullptr, LibCore * = nullptr, ILogger * = nullptr/*, std::string = std::string()*/);
     void paintEvent(QPaintEvent *event) override;
 
     // Reimplemented public functions

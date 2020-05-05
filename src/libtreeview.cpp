@@ -11,20 +11,20 @@
 #include <exception>
 
 LibTreeView::LibTreeView(QWidget *parent) :
-    LibTreeView(parent, nullptr, nullptr, nullptr, std::string())
+    LibTreeView(parent, nullptr, nullptr, nullptr/*, std::string()*/)
 {
 
 }
 
 LibTreeView::LibTreeView(QWidget *parent, QAbstractItemModel *model) :
-    LibTreeView(parent, model, nullptr, nullptr, std::string())
+    LibTreeView(parent, model, nullptr, nullptr/*, std::string()*/)
 {
 
 }
 
-LibTreeView::LibTreeView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl, std::string connpath) :
-    QTreeView(parent),
-    LibClient(pc, pl, connpath)
+LibTreeView::LibTreeView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl/*, std::string connpath*/) :
+    QTreeView(parent)
+    /*, LibClient(pc, pl, connpath)*/
     {
 
     // model should already have hadits internal path set the same as connpath
