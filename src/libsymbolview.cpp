@@ -26,8 +26,9 @@ LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model) :
 
 LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl /*, std::string connpath*/)
    /*: LibClient(pc, pl, connpath) */
+    //m_model(model)
 {
-
+    setModel(model);
 }
 
 void LibSymbolView::paintEvent(QPaintEvent *event) {
@@ -45,9 +46,6 @@ void LibSymbolView::keyboardSearch(const QString &search) {
 
 }
 void LibSymbolView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)  {
-
-}
-void LibSymbolView::setModel(QAbstractItemModel *model) {
 
 }
 void LibSymbolView::setSelectionModel(QItemSelectionModel *selectionModel) {

@@ -103,11 +103,13 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
 
 void LibCore::closeLib(std::string fullpath) {
     // Notifies guis to close themselves and close the lib.
+    // Typically called from console or top level button
     // If no UI is present, then closes the lib directly.
     // Invalid fullpath causes exception
     assert(m_pDbIf);
     try {
         if (m_pUIManager)
+            // delegates actual closing to closeLibNoGui
             m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
         else if (m_pDbIf->isDatabaseOpen(fullpath))
             m_pDbIf->closeDatabase(fullpath);
@@ -119,6 +121,7 @@ void LibCore::closeLib(std::string fullpath) {
 }
 void LibCore::closeLibNoGui(std::string fullpath) {
     // Close specified database without regard to any gui.
+    // Typically called from uimanager
     // Invalid fullpath causes exception
     // This function helps break recursion and having to
     // detect such recursion in UIManager.
@@ -134,6 +137,7 @@ void LibCore::closeLibNoGui(std::string fullpath) {
 }
 void LibCore::deleteLib(std::string fullpath) {
      // Remove specified db from list and call UI to close related windows
+     // Typically called from console or top level button
      // Call dbif to delete lib
      // Caller should know the proper name of lib; throws error otherwise
     assert(m_pDbIf);

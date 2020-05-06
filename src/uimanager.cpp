@@ -38,45 +38,74 @@
 //////////
 // LOCAL
 //////////
-auto getModelViewFromWidget(QWidget *pw) {
-    QDockWidget *qdw(static_cast<QDockWidget *>(pw));
+template <typename T_WIDGET>
+auto getModelViewFromWidget(T_WIDGET *pw) {
+    T_WIDGET *qdw(static_cast<T_WIDGET *>(pw));
     QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
     QAbstractItemModel *model(view->model());
+    ViewType vt(dynamic_cast<LibSymbolView *>(view) ? ViewType::LIBSYMBOLVIEW :
+                dynamic_cast<LibTreeView *>(view) ? ViewType::LIBTREEVIEW :
+                dynamic_cast<LibTableView *>(view) ? ViewType::LIBTABLEVIEW :
+                throw("Must be symbolview, treeview, or tableview"));
     struct retVals {
         QAbstractItemModel *model;
         QAbstractItemView *view;
+        ViewType vt;
     };
-    return retVals {model, view};
+    return retVals {model, view, vt};
 }
 auto getFullpathFromModel(QAbstractItemModel *model) {
+    // Attempt to cast model to different things to determine vt
     QSqlTreeModel *treeModel(dynamic_cast<QSqlTreeModel *>(model));
     QSqlTableModel *tableModel(dynamic_cast<QSqlTableModel *>(model));
     std::string fullpath(treeModel  ? treeModel->database().connectionName().toStdString():
                          tableModel ? tableModel->database().connectionName().toStdString() :
                          throw("Neither treeModel nor tableModel"));
-    ViewType vt(treeModel  ? ViewType::LIBTREEVIEW :
-                tableModel ? ViewType::LIBTABLEVIEW :
-                throw("Neither treeModel nor tableModel"));
     struct retVals {
         std::string fullpath;
         QSqlTreeModel *treeModel;
         QSqlTableModel *tableModel;
-        ViewType vt;
     };
-    return retVals {fullpath, treeModel, tableModel, vt};
+    return retVals {fullpath, treeModel, tableModel};
 }
 
 
 //////////
 // PRIVATE
 //////////
+std::optional<ConnView> UIManager::selectWhere(QDockWidget *w) {
+    // Return first entry where widget matches, else nullopt
+    for (auto cv : m_connViews) {
+        if (cv.widget == w)
+            return std::move(cv);
+    }
+    return std::nullopt;
+}
+std::optional<ConnView> UIManager::selectWhere(QMdiSubWindow *w) {
+    // Return first entry where widget matches, else nullopt
+    for (auto cv : m_connViews) {
+        if (cv.widget == w)
+            return std::move(cv);
+    }
+    return std::nullopt;
+}
+std::optional<ConnView> UIManager::selectWhere(QMainWindow *mw) {
+    // Go through each item in cvs and return first
+    // entry where mainwindow matches.
+    // Returns std::optional::nullopt when nothing found
+    for (auto cv : m_connViews) {
+        if (cv.mainwindow == mw)
+            return std::move(cv);
+    }
+    return std::nullopt;
+}
 std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt) {
     // Go through each item in cvs and return first
     // entry where conn and viewtype match.
     // Returns std::optional::nullopt when nothing found
     for (auto cv : m_connViews) {
         if (cv.conn == conn && cv.vt == vt)
-            return cv;
+            return std::move(cv);
     }
     return std::nullopt;
 }
@@ -86,9 +115,18 @@ std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt, QM
     // Returns std::optional::nullopt when nothing found
     for (auto cv : m_connViews) {
         if (cv.conn == conn && cv.vt == vt && cv.mainwindow==mw)
-            return cv;
+            return std::move(cv);
     }
     return std::nullopt;
+}
+ConnViews UIManager::selectWheres(std::string conn) {
+    // Return list of matching entries, else empty list
+    ConnViews retval;
+    for (auto cv: m_connViews) {
+        if(cv.conn == conn)
+            retval.push_back(cv);
+    }
+    return retval;
 }
 ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
     // Go through each item in cvs and return list of matching entries
@@ -251,13 +289,16 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         QAbstractItemView *view(nullptr);
         QWidget *w(QApplication::activeWindow());
         LibWindow *mw = static_cast<LibWindow *>(w ? w : m_parentMW);
-        auto modelopt(selectWhere(fullpath, vt, mw));
-        model = modelopt ? (*modelopt).model : (this->*makeModelfm[vt])(dbif, fullpath);
+        auto selectopt(selectWhere(fullpath, vt, mw));
+        model = selectopt ? (*selectopt).model : (this->*makeModelfm[vt])(dbif, fullpath);
         view = (this->*makeViewfm[vt])(model);
+        assert(view->model() == model);
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
+        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMainWidgetClose);
         mw->mdiArea()->addSubWindow(widget);
         widget->show();
+        m_connViews.push_back({fullpath, vt, model, view, true, widget, mw});
         
     } else {
         
@@ -275,26 +316,6 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     //    dock
 
 
-    // if (m_connViews[fullpath].size() && m_connViews[fullpath][vt].size()) {
-    //     // For now just returning the first view
-    //     updateTitle();
-    //     return;
-    // }
-    // else { // create new view
-    //     QAbstractItemView *view = (this->*dwfm[vt])(dbif, fullpath); // from https://stackoverflow.com/questions/14814158/c-call-pointer-to-member-function
-    //     std::string title(std::filesystem::path(fullpath).filename().string());
-    //     if (dwam[vt] > Qt::DockWidgetArea::NoDockWidgetArea) {
-    //         ClosingDockWidget *widget(makeCDWLibWidget(view, title));
-    //         dockLibView(widget, dwam[vt]);
-    //     }
-    //     else {
-    //         assert(m_parentMW);
-    //         ClosingMDIWidget *widget(makeMDILibWidget(view, title));
-    //         static_cast<LibWindow *>(m_parentMW)->mdiArea()->setTabsClosable(true);
-    //         static_cast<LibWindow *>(m_parentMW)->mdiArea()->addSubWindow(widget);
-    //     }
-    //     updateTitle();
-    // } 
  }
 void UIManager::updateTitle() {
     // auto db(m_pCore->DbIf()->activeDatabase());
@@ -321,11 +342,43 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     dynamic_cast<LibWindow *>(m_parentMW)->updateActions(m_pCore->DbIf()->isDatabaseOpen());
     // updateTitle();
 }
+void UIManager::onMainWidgetClose(QWidget *pw) {
+    log("OnMainWidgetClose");
+    auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
+    auto [fullpath, _x, _y] = getFullpathFromModel(model);
+    assert(vt == ViewType::LIBSYMBOLVIEW);
+    auto mw(static_cast<QMainWindow *>(QApplication::activeWindow()));
+    
+    // Count total entries with this conn and vt.
+    // If == 0, error
+    // if == 1, close all entries with fullpath
+    // If > 1, then remove just the one with this conn, vt, and mainwindow
+    ConnViews mainViews(selectWheres(fullpath, vt));
+    if (mainViews.size() == 0)
+        throw("Error in mainViews count");
+    else if (mainViews.size() == 1) {
+        // nothing else found, so close all (aux) views and close library
+        for (auto cv : selectWheres(fullpath)) {
+            cv.widget->blockSignals(true);
+            cv.widget->close();
+            m_connViews.remove(cv);
+        }
+        delete model; // hopefully no views still point here
+        m_pCore->closeLibNoGui(fullpath);        
+    } else {
+        // Other mainviews found, so just delete this entry
+        // May still need to shuffle windows
+        m_connViews.remove(*selectWhere(fullpath, vt, mw));
+    }
+    LibWindow *lw(static_cast<LibWindow *>(mw));
+    lw->mdiArea()->activateNextSubWindow();
+
+}
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is click
     assert(m_pCore);
-    auto [model, _v] = getModelViewFromWidget(pw);
-    auto [fullpath, _x, _y, _z] = getFullpathFromModel(model);
+    auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
+    auto [fullpath, _x, _y] = getFullpathFromModel(model);
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
     updateTitle();

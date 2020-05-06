@@ -24,13 +24,24 @@
 #include <optional>
 
 
-typedef struct {
+typedef struct connview {
     std::string conn;
     ViewType vt;
     QAbstractItemModel *model;
     QAbstractItemView *view;
     bool selected;
+    QWidget *widget;
     QMainWindow *mainwindow;
+    bool operator==(const struct connview& a) const
+    {
+         return ( a.conn == this->conn && 
+                  a.vt == this->vt &&
+                  a.model == this->model &&
+                  a.view  == this->view &&
+                  a.selected == this->selected &&
+                  a.widget == this->widget &&
+                  a.mainwindow == this->mainwindow);
+    }
 } ConnView;
 typedef std::list<ConnView> ConnViews;
 
@@ -39,8 +50,8 @@ class UIManager : public QObject, public IUIManager, public Coreable, public Log
 {
 private:
 
-    std::map<ViewType, Qt::DockWidgetArea> dwam = 
-     {{ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea},
+    std::map<ViewType, Qt::DockWidgetArea> dockWidgetAream = 
+     {//{ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea},
       {ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
       {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
     
@@ -59,8 +70,12 @@ private:
     QMainWindow *m_parentMW;
     std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
+    std::optional<ConnView> selectWhere(QDockWidget *);
+    std::optional<ConnView> selectWhere(QMdiSubWindow *);
+    std::optional<ConnView> selectWhere(QMainWindow *);
     std::optional<ConnView> selectWhere(std::string, ViewType);
     std::optional<ConnView> selectWhere(std::string, ViewType, QMainWindow *);
+    ConnViews selectWheres(std::string); 
     ConnViews selectWheres(std::string, ViewType); 
 
     void newMainWindow(IDbIf *, std::string);
@@ -78,6 +93,7 @@ private:
     //void removeView(QWidget *qw);
     void updateTitle(); // Grabs current database, or delegates to main window
     void onDockWidgetClose(QWidget *);
+    void onMainWidgetClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
 
 public:
