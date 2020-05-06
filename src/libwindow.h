@@ -55,8 +55,12 @@ public:
     void editCopy();
     void editPaste();
     void editDelete();
+    void viewNewSymbolView();
+    void viewCloseSymbolView();
     void viewLibTreeView();
     void viewLibTableView();
+    void windowNewWindow();
+    void windowCloseWindow();
     void helpAbout();
     void reloadStyle();
 

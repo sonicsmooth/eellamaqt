@@ -109,14 +109,24 @@
     <property name="title">
      <string>Views</string>
     </property>
+    <addaction name="actionNewSymbolView"/>
+    <addaction name="actionCloseSymbolView"/>
     <addaction name="actionLibTreeView"/>
     <addaction name="actionLibTableView"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionNewWindow"/>
+    <addaction name="actionCloseWindow"/>
    </widget>
    <addaction name="menuLibrarian"/>
    <addaction name="menuSymbols"/>
    <addaction name="menuLibrary"/>
    <addaction name="menuEdit"/>
    <addaction name="menuViews"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp_2"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -541,21 +551,12 @@
     <string>Delete selection</string>
    </property>
   </action>
-  <action name="actionHelpAbout">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/help-about.png</normaloff>:/actions/help-about.png</iconset>
-   </property>
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
   <action name="actionLibTreeView">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Lib Tree View</string>
+    <string>Enable Tree View</string>
    </property>
    <property name="toolTip">
     <string>Open tree view for current library</string>
@@ -566,7 +567,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Lib Table View</string>
+    <string>Enable Table View</string>
    </property>
    <property name="toolTip">
     <string>Open table view for active library</string>
@@ -579,6 +580,35 @@
    </property>
    <property name="text">
     <string>Reload Style</string>
+   </property>
+  </action>
+  <action name="actionNewWindow">
+   <property name="text">
+    <string>New Window</string>
+   </property>
+  </action>
+  <action name="actionCloseWindow">
+   <property name="text">
+    <string>Close Window</string>
+   </property>
+  </action>
+  <action name="actionNewSymbolView">
+   <property name="text">
+    <string>New Symbol View</string>
+   </property>
+  </action>
+  <action name="actionCloseSymbolView">
+   <property name="text">
+    <string>Close Symbol View</string>
+   </property>
+  </action>
+  <action name="actionHelpAbout">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/help-about.png</normaloff>:/actions/help-about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

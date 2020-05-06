@@ -69,8 +69,12 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
+    connect(ui->actionNewSymbolView, &QAction::triggered, this, &LibWindow::viewNewSymbolView);
+    connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::viewCloseSymbolView);
     connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::viewLibTreeView);
     connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::viewLibTableView);
+    connect(ui->actionNewWindow, &QAction::triggered, this, &LibWindow::windowNewWindow);
+    connect(ui->actionCloseWindow, &QAction::triggered, this, &LibWindow::windowCloseWindow);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
     connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
 
@@ -342,6 +346,14 @@ void LibWindow::editDelete() {
 //    m_pCore->deleteShape("Some shape");
 //    m_pCore->deleteSymbol("Some symbol");
 }
+
+void LibWindow::viewNewSymbolView() {
+    log("New Symbol View");
+}
+void LibWindow::viewCloseSymbolView() {
+    log("Close Symbol View");
+}
+
 void LibWindow::viewLibTreeView() {
     assert(m_pCore);
 //    log("LibWindow: view LibTreeView");
@@ -358,6 +370,14 @@ void LibWindow::viewLibTableView() {
 //        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
 //    }
 }
+
+void LibWindow::windowNewWindow() {
+    log("New Window");
+}
+void LibWindow::windowCloseWindow() {
+    log("CloseWindow");
+}
+
 
 void LibWindow::helpAbout() {
 
