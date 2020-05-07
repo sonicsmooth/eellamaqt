@@ -8,6 +8,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QMdiArea>
+#include <QEvent>
 
 #include <any>
 
@@ -64,6 +65,11 @@ public:
     void helpAbout();
     void reloadStyle();
 
+    // Overloaded
+    void changeEvent(QEvent *) override;
+
+    signals:
+    void activated() const;
 
 
 

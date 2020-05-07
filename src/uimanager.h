@@ -1,6 +1,7 @@
 #ifndef UIMANAGER_H
 #define UIMANAGER_H
 
+#include "libcore.h"
 #include "iuimanager.h"
 #include "coreable.h"
 #include "loggable.h"
@@ -104,6 +105,10 @@ public:
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
     void notifyDbRename(IDbIf *, std::string, std::string) override;
+    void newWindow() override; // Creates new top level window
+    void newWindow(LibCore *, ILogger *); // Creates new top level window
+    void closeWindow() override; // Closes current top level window
+    std::list<QMainWindow *> mainWindows(); // Returns list of main windows
 
 
 public slots:

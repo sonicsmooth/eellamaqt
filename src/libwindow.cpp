@@ -12,6 +12,7 @@
 #include <cassert>
 #include <any>
 
+#include <QEvent>
 #include <QStatusBar>
 #include <QPushButton>
 #include <QAction>
@@ -372,10 +373,13 @@ void LibWindow::viewLibTableView() {
 }
 
 void LibWindow::windowNewWindow() {
-    log("New Window");
+    assert(m_pCore);
+    m_pCore->UIManager()->newWindow();
+    static_cast<UIManager *>(m_pCore->UIManager())->mainWindows().back()->show();
 }
 void LibWindow::windowCloseWindow() {
-    log("CloseWindow");
+    assert(m_pCore);
+    m_pCore->UIManager()->closeWindow();
 }
 
 
@@ -411,12 +415,23 @@ void LibWindow::reloadStyle() {
 //        child->update();
 //     }
 
-
-
-
-
-
-
+}
+void LibWindow::changeEvent(QEvent *e) {
+    //if(!m_pLogger) return;
+    if (e->type() == QEvent::WindowActivate && isActiveWindow())
+        emit activated();
+    // std::string s(isActiveWindow() ? "active" : "not active");
+    // auto et(e->type());
+    // switch(et) {
+    //     case QEvent::ActivationChange:
+    //         log("Activation change: %x %s", this, s.c_str());
+    //         break;
+    //     case QEvent::WindowActivate:
+    //         log("Window activate %x %s", this, s.c_str());
+    //         break;
+    //     default:
+    //             log("event %d", et);
+    // }
 
 }
 

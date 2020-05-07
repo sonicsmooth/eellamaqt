@@ -20,7 +20,6 @@
 #include <QTreeView>
 #include <QTreeWidget>
 #include <QAbstractItemView>
-//#include <QStandardItem>
 #include <QItemSelectionModel>
 #include <QSqlTableModel>
 #include <QSqlDatabase>
@@ -30,7 +29,7 @@
 #include <typeinfo>
 #include <iterator>
 #include <list>
-#include <vector>
+#include <set>
 #include <exception>
 #include <optional>
 
@@ -394,9 +393,6 @@ UIManager::UIManager(QObject *parent) :
     m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
     m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
     m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
-
-    // Create entry for default main window
-    m_connViews.push_back({"",ViewType::INVALID, nullptr, nullptr, false, nullptr});
 }
 void UIManager::setParentMW(QMainWindow *p) {
     m_parentMW = p;
@@ -428,4 +424,29 @@ void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
     (void) dbif;
     log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
+}
+
+void UIManager::newWindow()  {
+    newWindow(core(), logger());
+}; // Creates new top level window
+
+void UIManager::newWindow(LibCore *core, ILogger *lgr)  {
+    LibWindow *w(new LibWindow());
+    w->setCore(core);
+    w->setLogger(lgr);
+    if (logger())
+        log("Creating %x", w);
+    m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, false, nullptr, w});
+}; // Creates new top level window
+
+void UIManager::closeWindow() {
+    log("UIManager::closeWindow");
+}; // Closes current top level window
+
+std::list<QMainWindow *> UIManager::mainWindows() {
+    std::set<QMainWindow *> set;
+    for (auto cv : m_connViews)
+        set.insert(cv.mainwindow);
+    return {set.begin(), set.end()};
+
 }

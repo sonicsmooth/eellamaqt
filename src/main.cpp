@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
     LibCore core;
-    LibWindow libwin;
+    //LibWindow *pLibwin;
     QSQDbIf dbif;
     UIManager uim;
     //QModelManager qmm;
@@ -34,8 +34,6 @@ int main(int argc, char *argv[])
     //AllIcons ai;
     //ai.show();
 
-    // Set up style
-    libwin.reloadStyle();
 
     // Set up logger and its log window
     Logger logger(new QTextEdit);
@@ -49,16 +47,17 @@ int main(int argc, char *argv[])
     // Set up ui slave
     uim.setCore(&core);
     uim.setLogger(&logger);
-    uim.setParentMW(&libwin);
-    //uim.setModelManager(&qmm);
-    //uim.setViewManager(&qvm);
-    //uim.setDbIf(&dbif);
+    uim.newWindow();
+    std::list<QMainWindow *> mainWindows(uim.mainWindows());
+    LibWindow *recentMainWindow(static_cast<LibWindow *>(mainWindows.back()));
+    recentMainWindow->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, pLogWidget);
+    recentMainWindow->reloadStyle();
+    recentMainWindow->show();
 
     // Set up main window
-    libwin.setCore(&core);
-    libwin.setLogger(&logger);
-    libwin.addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, pLogWidget);
-    libwin.show();
+    //libwin.setCore(&core);
+    //libwin.setLogger(&logger);
+    //libwin.show();
 
     // Set up core and ui slave
     core.setDbIf(&dbif);
