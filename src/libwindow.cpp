@@ -70,7 +70,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
-    connect(ui->actionNewSymbolView, &QAction::triggered, this, &LibWindow::viewNewSymbolView);
+    connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &LibWindow::viewNewSymbolView);
     connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::viewCloseSymbolView);
     connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::viewLibTreeView);
     connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::viewLibTableView);
@@ -153,6 +153,8 @@ void LibWindow::updateActions(bool en) {
     ui->actionNewPolygon->setEnabled(en);
     ui->actionNewPolyline->setEnabled(en);
     ui->actionNewRectangle->setEnabled(en);
+    ui->actionDuplicateSymbolView->setEnabled(en);
+    ui->actionCloseSymbolView->setEnabled(en);
     ui->actionLibTreeView->setEnabled(en);
     ui->actionLibTableView->setEnabled(en);
 }
@@ -207,9 +209,11 @@ void LibWindow::fileOpenLib() {
     qfd.setFileMode(QFileDialog::ExistingFiles);
     qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
 
-    if(qfd.exec())
+    if(qfd.exec()) {
+        QApplication::setActiveWindow(this); // shouldn't be necessary
         for (QString f : qfd.selectedFiles())
             m_pCore->openLib(f.toStdString());
+    }
     updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
@@ -350,6 +354,9 @@ void LibWindow::editDelete() {
 
 void LibWindow::viewNewSymbolView() {
     log("New Symbol View");
+    assert(m_pCore);
+    UIManager *uim(static_cast<UIManager *>(m_pCore->UIManager()));
+    uim->duplicateSymbolView();
 }
 void LibWindow::viewCloseSymbolView() {
     log("Close Symbol View");

@@ -109,7 +109,7 @@
     <property name="title">
      <string>Views</string>
     </property>
-    <addaction name="actionNewSymbolView"/>
+    <addaction name="actionDuplicateSymbolView"/>
     <addaction name="actionCloseSymbolView"/>
     <addaction name="actionLibTreeView"/>
     <addaction name="actionLibTableView"/>
@@ -551,6 +551,22 @@
     <string>Delete selection</string>
    </property>
   </action>
+  <action name="actionDuplicateSymbolView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Duplicate Symbol View</string>
+   </property>
+  </action>
+  <action name="actionCloseSymbolView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Close Symbol View</string>
+   </property>
+  </action>
   <action name="actionLibTreeView">
    <property name="enabled">
     <bool>false</bool>
@@ -590,16 +606,6 @@
   <action name="actionCloseWindow">
    <property name="text">
     <string>Close Window</string>
-   </property>
-  </action>
-  <action name="actionNewSymbolView">
-   <property name="text">
-    <string>New Symbol View</string>
-   </property>
-  </action>
-  <action name="actionCloseSymbolView">
-   <property name="text">
-    <string>Close Symbol View</string>
    </property>
   </action>
   <action name="actionHelpAbout">

@@ -47,7 +47,6 @@ void LibCore::newLib(std::string fullpath) {
 }
 void LibCore::openLib(std::string fullpath) {
     assert(m_pDbIf);
-    //log("LibCore::openLib Opening library " + fullpath);
     if (m_pDbIf->isDatabaseOpen(fullpath)) {
         log("Library %s already open", fullpath.c_str());
     } else {

@@ -68,7 +68,7 @@ private:
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
 
-    QMainWindow *m_parentMW;
+    //QMainWindow *m_parentMW;
     std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
     std::optional<ConnView> selectWhere(QDockWidget *);
@@ -99,16 +99,17 @@ private:
 
 public:
     UIManager(QObject * = nullptr);
-    void setParentMW(QMainWindow *);
-    QMainWindow *parentMW() const;
+    // void setParentMW(QMainWindow *);
+    // QMainWindow *parentMW() const;
 
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
     void notifyDbRename(IDbIf *, std::string, std::string) override;
-    void newWindow() override; // Creates new top level window
-    void newWindow(LibCore *, ILogger *); // Creates new top level window
+    void newWindow() override;                     // Creates new top level window
+    void newWindow(LibCore *, ILogger *) override; // Creates new top level window
     void closeWindow() override; // Closes current top level window
     std::list<QMainWindow *> mainWindows(); // Returns list of main windows
+    void duplicateSymbolView();
 
 
 public slots:
