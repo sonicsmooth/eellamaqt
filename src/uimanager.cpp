@@ -349,8 +349,8 @@ void UIManager::onMainWidgetClose(QWidget *pw) {
     auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
     auto [fullpath, _x, _y] = getFullpathFromModel(model);
     assert(vt == ViewType::LIBSYMBOLVIEW);
-    auto mw(static_cast<QMainWindow *>(QApplication::activeWindow()));
-    
+    QMainWindow *mw(static_cast<QMainWindow *>(QApplication::activeWindow()));
+
     // Count total entries with this conn and vt.
     // If == 0, error
     // if == 1, close all entries with fullpath
@@ -366,7 +366,8 @@ void UIManager::onMainWidgetClose(QWidget *pw) {
             m_connViews.remove(cv);
         }
         delete model; // hopefully no views still point here
-        m_pCore->closeLibNoGui(fullpath);        
+        log("UIManager::onMainWidgetClose Closing lib %s", fullpath.c_str());
+        m_pCore->closeLibNoGui(fullpath);
     } else {
         // Other mainviews found, so just delete this entry
         // May still need to shuffle windows
@@ -374,7 +375,7 @@ void UIManager::onMainWidgetClose(QWidget *pw) {
     }
     LibWindow *lw(static_cast<LibWindow *>(mw));
     lw->mdiArea()->activateNextSubWindow();
-
+    lw->updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is click
@@ -405,7 +406,6 @@ UIManager::UIManager(QObject *parent) :
 //     return m_parentMW;
 // }
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
-    log("UIManager::notifyDbOpen activeWindow: 0x%x", QApplication::activeWindow());
     log("Notify open %s", fullpath.c_str());
     for (auto uit : m_defaultViewTypes) {
         openUI(dbif, fullpath, uit);
@@ -438,8 +438,7 @@ void UIManager::newWindow(LibCore *core, ILogger *lgr)  {
     LibWindow *w(new LibWindow());
     w->setCore(core);
     w->setLogger(lgr);
-    if (logger())
-        log("Creating %x", w);
+    w->setAttribute(Qt::WA_DeleteOnClose);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, false, nullptr, w});
 }; // Creates new top level window
 

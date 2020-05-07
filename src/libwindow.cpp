@@ -196,7 +196,6 @@ void LibWindow::fileNewLib() {
     }
     QString fullpath = currdir.filePath(libname_extended);
 
-    //log("LibWindow::fileNewLib");
     m_pCore->newLib(fullpath.toStdString());
     updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
@@ -439,6 +438,13 @@ void LibWindow::changeEvent(QEvent *e) {
     //     default:
     //             log("event %d", et);
     // }
+
+}
+
+void LibWindow::closeEvent(QCloseEvent *event) {
+    //emit closing(this);
+    ui->mdiArea->closeAllSubWindows();
+    QMainWindow::closeEvent(event);
 
 }
 

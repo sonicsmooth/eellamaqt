@@ -9,6 +9,7 @@
 #include <QString>
 #include <QMdiArea>
 #include <QEvent>
+#include <QCloseEvent>
 
 #include <any>
 
@@ -67,9 +68,11 @@ public:
 
     // Overloaded
     void changeEvent(QEvent *) override;
+    void closeEvent(QCloseEvent *) override;
 
     signals:
     void activated() const;
+    //void closing() const;
 
 
 
