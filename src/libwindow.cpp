@@ -442,8 +442,8 @@ void LibWindow::changeEvent(QEvent *e) {
 }
 
 void LibWindow::closeEvent(QCloseEvent *event) {
-    //emit closing(this);
     ui->mdiArea->closeAllSubWindows();
+    emit closing(this);
     QMainWindow::closeEvent(event);
 
 }

@@ -26,26 +26,26 @@
 #include <functional>
 
 typedef struct connview {
-    std::string conn;
-    ViewType vt;
+    std::string fullpath;
+    ViewType viewType;
     QAbstractItemModel *model;
     QAbstractItemView *view;
-    bool selected;
-    QWidget *widget;
-    QMainWindow *mainwindow;
+    QWidget *mdiWidget;
+    QMainWindow *mainWindow;
     // operator== is used for removing a struct from m_connViews
     bool operator==(const struct connview& a) const
     {
-         return ( a.conn == this->conn && 
-                  a.vt == this->vt &&
+         return ( a.fullpath == this->fullpath && 
+                  a.viewType == this->viewType &&
                   a.model == this->model &&
                   a.view  == this->view &&
-                  a.selected == this->selected &&
-                  a.widget == this->widget &&
-                  a.mainwindow == this->mainwindow);
+                  a.mdiWidget == this->mdiWidget &&
+                  a.mainWindow == this->mainWindow);
     }
+    void log(ILogger *);
 } ConnView;
 typedef std::list<ConnView> ConnViews;
+void cvlog(ConnViews cvs, ILogger *lgr);
 
 // Why is this a QObject?
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
@@ -79,8 +79,9 @@ private:
     // From https://stackoverflow.com/questions/40844622/use-a-lambda-as-a-parameter-for-a-c-function
     template <typename F>
     std::optional<ConnView> selectWhere(F&&);
-    ConnViews selectWheres(std::string); 
-    ConnViews selectWheres(std::string, ViewType); 
+    ConnViews selectWheres(std::string);
+    ConnViews selectWheres(QMainWindow *);
+    ConnViews selectWheres(std::string, ViewType);
 
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
@@ -96,6 +97,7 @@ private:
     //void removeView(QWidget *qw);
     void onDockWidgetClose(QWidget *);
     void onMainWidgetClose(QWidget *);
+    void onMainWindowClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
 
 public:

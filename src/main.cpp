@@ -12,6 +12,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QTextEdit>
+#include <QFont>
 #include <QDockWidget>
 #include <QMessageBox>
 #include <QTreeView>
@@ -36,10 +37,12 @@ int main(int argc, char *argv[])
 
 
     // Set up logger and its log window
-    Logger logger(new QTextEdit);
+    QTextEdit *pte = new QTextEdit();
+    pte->setFontFamily("Consolas");
+    Logger logger(pte);
     QDockWidget* pLogWidget = new QDockWidget;
     pLogWidget->setWindowTitle("Log");
-    pLogWidget->setWidget(logger.textEdit());
+    pLogWidget->setWidget(pte);
 
     // Set up database interface
     dbif.setLogger(&logger);
@@ -53,11 +56,6 @@ int main(int argc, char *argv[])
     recentMainWindow->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, pLogWidget);
     recentMainWindow->reloadStyle();
     recentMainWindow->show();
-
-    // Set up main window
-    //libwin.setCore(&core);
-    //libwin.setLogger(&logger);
-    //libwin.show();
 
     // Set up core and ui slave
     core.setDbIf(&dbif);

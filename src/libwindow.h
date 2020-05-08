@@ -72,7 +72,7 @@ public:
 
     signals:
     void activated() const;
-    //void closing() const;
+    void closing(LibWindow *) const;
 
 
 
