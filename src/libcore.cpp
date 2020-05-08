@@ -48,12 +48,14 @@ void LibCore::newLib(std::string fullpath) {
 void LibCore::openLib(std::string fullpath) {
     assert(m_pDbIf);
     if (m_pDbIf->isDatabaseOpen(fullpath)) {
-        log("Library %s already open", fullpath.c_str());
+        log("Library %s already open; creating new view", fullpath.c_str());
+        log("Whether this happens should be an option someplace");
     } else {
         m_pDbIf->openDatabase(fullpath);
-        if (m_pUIManager)
-            m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
     }
+    if (m_pUIManager)
+    m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
+
 }
 
 

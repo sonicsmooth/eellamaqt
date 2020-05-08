@@ -26,12 +26,12 @@
 #include <QItemSelection>
 
 #include <filesystem>
-#include <typeinfo>
 #include <iterator>
 #include <list>
 #include <set>
 #include <exception>
 #include <optional>
+#include <functional>
 
 
 //////////
@@ -89,8 +89,8 @@ std::optional<ConnView> UIManager::selectWhere(QMdiSubWindow *w) {
     return std::nullopt;
 }
 std::optional<ConnView> UIManager::selectWhere(QMainWindow *mw) {
-    // Go through each item in cvs and return first
-    // entry where mainwindow matches.
+    // Returns first item in m_connViews where
+    // mainWindow matches
     // Returns std::optional::nullopt when nothing found
     for (auto cv : m_connViews) {
         if (cv.mainwindow == mw)
@@ -99,8 +99,8 @@ std::optional<ConnView> UIManager::selectWhere(QMainWindow *mw) {
     return std::nullopt;
 }
 std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt) {
-    // Go through each item in cvs and return first
-    // entry where conn and viewtype match.
+    // Returns first item in m_connViews where
+    // conn and viewtype match.
     // Returns std::optional::nullopt when nothing found
     for (auto cv : m_connViews) {
         if (cv.conn == conn && cv.vt == vt)
@@ -109,11 +109,21 @@ std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt) {
     return std::nullopt;
 }
 std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt, QMainWindow *mw) {
-    // Go through each item in cvs and return first
-    // entry where conn, viewtype, and mainwindow match.
+    // Returns first item in m_connViews where
+    // conn, viewtype, and mainwindow match.
     // Returns std::optional::nullopt when nothing found
     for (auto cv : m_connViews) {
         if (cv.conn == conn && cv.vt == vt && cv.mainwindow==mw)
+            return std::move(cv);
+    }
+    return std::nullopt;
+}
+template<typename F>
+std::optional<ConnView> UIManager::selectWhere(F&& fn) {
+    // Returns first item in m_connViews where
+    // pred(item) returns true
+    for (auto cv : m_connViews) {
+        if (fn(cv))
             return std::move(cv);
     }
     return std::nullopt;
@@ -138,35 +148,6 @@ ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
     return retval;
 }
 
-void UIManager::newMainWindow(IDbIf *dbif, std::string fullpath) {
-    // // Create new LibWindow
-    // auto modelopt = selectWhere(fullpath, ViewType::LIBFOOTPRINTVIEW);
-    // QAbstractItemModel *model(nullptr);
-    // if (modelopt) {
-    //     model = (*modelopt).model;
-    // } else {
-    //     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
-    //     QSqlTableModel *model(new QSqlTableModel(this, db));
-    //     model->setTable("firsttable");
-    //     model->setEditStrategy(QSqlTableModel::OnRowChange);
-    //     model->select();
-    // }
-
-    // QAbstractItemView *view(new LibSymbolView(m_parentMW, model, m_pCore, m_pLogger, fullpath));
-    // view->setMaximumWidth(1000);
-    // view->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
-    // ClosingMDIWidget* libMDIWidget(new ClosingMDIWidget(m_parentMW));
-    // libMDIWidget->setWidget(view);
-    // std::string title(std::filesystem::path(fullpath).filename().string());
-    // libMDIWidget->setWindowTitle(QString::fromStdString(title));
-
-    // m_parentMW = new LibWindow();
-    // static_cast<LibWindow *>(m_parentMW)->mdiArea()->setTabsClosable(true);
-    // static_cast<LibWindow *>(m_parentMW)->mdiArea()->addSubWindow(libMDIWidget);
-
-    // m_connViews.push_back({fullpath, ViewType::LIBFOOTPRINTVIEW, model, view, true, m_parentMW});
-    // m_parentMW->show();
-}
 
 QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
@@ -288,9 +269,8 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
         LibWindow *mw = static_cast<LibWindow *>(QApplication::activeWindow());
-        assert(QApplication::focusWidget());
         assert(mw);
-        auto selectopt(selectWhere(fullpath, vt, mw));
+        auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
         model = selectopt ? (*selectopt).model : (this->*makeModelfm[vt])(dbif, fullpath);
         view = (this->*makeViewfm[vt])(model);
         assert(view->model() == model);
@@ -300,49 +280,18 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         mw->mdiArea()->addSubWindow(widget);
         widget->show();
         m_connViews.push_back({fullpath, vt, model, view, true, widget, mw});
-        
+
     } else {
-        
+
     }
-
-    // if libview
-    //    look for model, use that if found, else new model
-    //    create new view, new mdiwidget
-    //    add mdiwidget to current mainwindow 
-    // else if treeview
-    //    look for tree model, use that if found, else new tree model
-    //    look for tree view for this main window and get its parentwidget
-    //    confirm parent widget in table, error if other
-    //    If no view, create new view, new dock widget
-    //    dock
-
-
  }
-void UIManager::updateTitle() {
-    // auto db(m_pCore->DbIf()->activeDatabase());
-    // if (db) {
-    //     static_cast<LibWindow *>(m_parentMW)->updateTitle(db.value());
-    //     std::map<ViewType, std::list<QAbstractItemView *>> mp = m_connViews[db.value()];
-    //     QAbstractItemView *view = mp.begin()->second.front();
-    //     ClosingDockWidget *libDockWidget = static_cast<ClosingDockWidget *>(view->parentWidget());
-
-    //     m_parentMW->blockSignals(true);
-    //     libDockWidget->setVisible(true);
-    //     libDockWidget->setFocus();
-    //     libDockWidget->raise();
-    //     m_parentMW->blockSignals(false);
-
-    // }
-    // else
-    //     static_cast<LibWindow *>(m_parentMW)->updateTitle();
-}
 void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
     //removeView(pw);
     LibWindow *lw(dynamic_cast<LibWindow *>(QApplication::activeWindow()));
-    lw->updateActions(m_pCore->DbIf()->isDatabaseOpen());
-    // updateTitle();
+    lw->updateActions(m_pCore->DbIf()->isDatabaseOpen() && 
+                      selectWhere([lw](ConnView cv) -> bool {return cv.view && cv.mainwindow == lw;}));
 }
 void UIManager::onMainWidgetClose(QWidget *pw) {
     log("OnMainWidgetClose");
@@ -375,7 +324,9 @@ void UIManager::onMainWidgetClose(QWidget *pw) {
     }
     LibWindow *lw(static_cast<LibWindow *>(mw));
     lw->mdiArea()->activateNextSubWindow();
-    lw->updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    lw->updateActions(m_pCore->DbIf()->isDatabaseOpen() && 
+                      selectWhere([lw](ConnView cv) -> bool {return cv.view && cv.mainwindow == lw;}));
+
 }
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is click
@@ -384,12 +335,11 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     auto [fullpath, _x, _y] = getFullpathFromModel(model);
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
-    updateTitle();
 }
 
 
 //////////
-// PUBLIC 
+// PUBLIC
 //////////
 UIManager::UIManager(QObject *parent) :
     QObject(parent)
@@ -450,7 +400,7 @@ void UIManager::closeWindow() {
     // TODO: send signal from either logger or text edit to clients
     // telling them to clear pointer.
     QApplication::activeWindow()->close();
-}; 
+};
 
 std::list<QMainWindow *> UIManager::mainWindows() {
     std::set<QMainWindow *> set;

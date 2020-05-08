@@ -23,7 +23,7 @@
 #include <map>
 #include <list>
 #include <optional>
-
+#include <functional>
 
 typedef struct connview {
     std::string conn;
@@ -33,6 +33,7 @@ typedef struct connview {
     bool selected;
     QWidget *widget;
     QMainWindow *mainwindow;
+    // operator== is used for removing a struct from m_connViews
     bool operator==(const struct connview& a) const
     {
          return ( a.conn == this->conn && 
@@ -56,7 +57,7 @@ private:
       {ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
       {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
     
-    typedef QAbstractItemModel * (UIManager::*abstractModelFn)(IDbIf *, std::string);
+    typedef QAbstractItemModel *(UIManager::*abstractModelFn)(IDbIf *, std::string);
     std::map<ViewType, abstractModelFn> makeModelfm = 
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolModel},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeModel},
@@ -68,7 +69,6 @@ private:
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
 
-    //QMainWindow *m_parentMW;
     std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
     std::optional<ConnView> selectWhere(QDockWidget *);
@@ -76,10 +76,12 @@ private:
     std::optional<ConnView> selectWhere(QMainWindow *);
     std::optional<ConnView> selectWhere(std::string, ViewType);
     std::optional<ConnView> selectWhere(std::string, ViewType, QMainWindow *);
+    // From https://stackoverflow.com/questions/40844622/use-a-lambda-as-a-parameter-for-a-c-function
+    template <typename F>
+    std::optional<ConnView> selectWhere(F&&);
     ConnViews selectWheres(std::string); 
     ConnViews selectWheres(std::string, ViewType); 
 
-    void newMainWindow(IDbIf *, std::string);
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTableModel(IDbIf *, std::string);
@@ -92,15 +94,12 @@ private:
     void openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
-    void updateTitle(); // Grabs current database, or delegates to main window
     void onDockWidgetClose(QWidget *);
     void onMainWidgetClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
 
 public:
     UIManager(QObject * = nullptr);
-    // void setParentMW(QMainWindow *);
-    // QMainWindow *parentMW() const;
 
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
