@@ -11,6 +11,8 @@ void Logger::setTextEdit(QTextEdit* pte) {
 }
 
 void Logger::vlog(const char *fmt, va_list argp) {
+    if (m_pte == nullptr)
+        return;
     size_t sz = static_cast<size_t>(vsnprintf(nullptr, 0, fmt, argp)) + 1;
     std::unique_ptr<char> buff(new char [sz]);
     vsnprintf(buff.get(), sz, fmt, argp);
@@ -18,7 +20,8 @@ void Logger::vlog(const char *fmt, va_list argp) {
 }
 
 void Logger::log(const char *fmt, ...) {
-    assert(m_pte);
+    if (m_pte == nullptr)
+        return;
     va_list args;
     va_start(args, fmt);
     vlog(fmt, args);
@@ -27,18 +30,21 @@ void Logger::log(const char *fmt, ...) {
 }
 
 void Logger::log(std::string msg) {
-    assert(m_pte);
+    if (m_pte == nullptr)
+        return;
     m_pte->append(QString::fromStdString(msg));
 }
 
 void Logger::log(std::stringstream & msg) {
-    assert(m_pte);
+    if (m_pte == nullptr)
+        return;
     m_pte->append(QString::fromStdString(msg.str()));
     // Clear stringstream when done
     msg.str(std::string());
 }
 
 void Logger::log(QString msg) {
-     assert(m_pte);
+    if (m_pte == nullptr)
+        return;
     m_pte->append(msg);
  }

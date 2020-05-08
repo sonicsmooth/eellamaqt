@@ -40,9 +40,11 @@ int main(int argc, char *argv[])
     QTextEdit *pte = new QTextEdit();
     pte->setFontFamily("Consolas");
     Logger logger(pte);
-    QDockWidget* pLogWidget = new QDockWidget;
+    ClosingDockWidget* pLogWidget = new ClosingDockWidget;
     pLogWidget->setWindowTitle("Log");
     pLogWidget->setWidget(pte);
+    auto fn = [&]() -> void {logger.setTextEdit(nullptr);};
+    QObject::connect(pLogWidget, &ClosingDockWidget::closing, fn);
 
     // Set up database interface
     dbif.setLogger(&logger);
