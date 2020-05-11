@@ -10,7 +10,6 @@
 #include <QMdiArea>
 #include <QEvent>
 #include <QCloseEvent>
-
 #include <any>
 
 
@@ -65,6 +64,9 @@ public:
     void windowCloseWindow();
     void helpAbout();
     void reloadStyle();
+    void mdiViewMode(bool);
+    void setDocMode(bool);
+    void tabDocMode(bool);
 
     // Overloaded
     void changeEvent(QEvent *) override;

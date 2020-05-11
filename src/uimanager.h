@@ -99,6 +99,7 @@ private:
     void onMainWidgetClose(QWidget *);
     void onMainWindowClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
+    //void setMdiViewMode(QMdiArea::ViewMode);
 
 public:
     UIManager(QObject * = nullptr);

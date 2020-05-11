@@ -355,7 +355,6 @@ void UIManager::onMainWindowClose(QWidget *w) {
     m_connViews.remove(selectopt.front());
     cvlog(m_connViews, m_pLogger);
 }
-
 void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is clicked
     assert(m_pCore);
@@ -364,7 +363,9 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
 }
-
+// void UIManager::setMdiViewMode(QMdiArea::ViewMode vm) {
+    
+// }
 
 //////////
 // PUBLIC

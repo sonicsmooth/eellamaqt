@@ -26,7 +26,7 @@
 #include <QInputDialog>
 #include <QObjectList>
 #include <QCommonStyle>
-
+#include <QMdiArea>
 
 
 
@@ -44,7 +44,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(pb, &QPushButton::clicked,[=](){m_pCore->newShape();});
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
-    
+
     connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
     connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
     connect(ui->actionFileSaveAs, &QAction::triggered, this, &LibWindow::fileSaveAs);
@@ -78,6 +78,17 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionCloseWindow, &QAction::triggered, this, &LibWindow::windowCloseWindow);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
     connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
+    connect(ui->rbTabbed, &QRadioButton::toggled, this, &LibWindow::mdiViewMode);
+    connect(ui->rbTabbed, &QRadioButton::toggled, this, &LibWindow::setDocMode);  // en/disables doc mode checkbox
+    connect(ui->cbDocMode, &QCheckBox::toggled, this, &LibWindow::tabDocMode); // en/disabled doc mode
+    connect(ui->pbTile, &QPushButton::clicked, [=]{ui->mdiArea->tileSubWindows();});
+    connect(ui->pbCascade, &QPushButton::clicked, [=]{ui->mdiArea->cascadeSubWindows();});
+
+
+    mdiViewMode(ui->rbTabbed->isChecked());
+    setDocMode(ui->rbTabbed->isChecked());
+    if (ui->rbTabbed->isChecked())
+        tabDocMode(ui->cbDocMode->isChecked());
 
     // This handles focusing on the dockwidgets and their content widgets
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
@@ -210,8 +221,11 @@ void LibWindow::fileOpenLib() {
 
     if(qfd.exec()) {
         QApplication::setActiveWindow(this); // shouldn't be necessary
-        for (QString f : qfd.selectedFiles())
+        for (QString f : qfd.selectedFiles()) {
             m_pCore->openLib(f.toStdString());
+            QApplication::processEvents();
+        }
+
     }
     updateActions(m_pCore->DbIf()->isDatabaseOpen());
 }
@@ -283,7 +297,7 @@ void LibWindow::deleteItem() {
     assert(m_pCore);
     log("LibWindow: delete item");
 }
-void LibWindow::newRectangle() {   
+void LibWindow::newRectangle() {
      assert(m_pCore);
     log("LibWindow: new rectangle");
 }
@@ -402,15 +416,13 @@ void LibWindow::reloadStyle() {
     QApplication::setStyle("WindowsVista");
     qapp->setStyleSheet(fileContents);
 
-
-
     // Nothing after this point works to update stylesheets after initialization
 //    this->setStyleSheet(fileContents);
 //    this->style()->unpolish(this);
 //    this->style()->polish(this);
 //    this->update();
 
-//    auto ch = findChildren<QWidget *>();
+//    auto ch = findChildren<QWidget *>();\
 //     //QApplication *app = dynamic_cast<QApplication *>(QApplication::instance());
 //     //QCommonStyle *style = dynamic_cast<QCommonStyle *>(app->style());
 //     for (QWidget *child : ch) {
@@ -422,23 +434,23 @@ void LibWindow::reloadStyle() {
 //     }
 
 }
+
+void LibWindow::mdiViewMode(bool vm) {
+    auto qmavm(static_cast<QMdiArea::ViewMode>(vm));
+    ui->mdiArea->setViewMode(qmavm);
+}
+void LibWindow::setDocMode(bool dm) {
+    ui->cbDocMode->setEnabled(dm);
+    if (dm)
+        tabDocMode(ui->cbDocMode->isChecked());
+}
+void LibWindow::tabDocMode(bool dm) {
+    ui->mdiArea->setDocumentMode(dm);
+}
+
 void LibWindow::changeEvent(QEvent *e) {
-    //if(!m_pLogger) return;
     if (e->type() == QEvent::WindowActivate && isActiveWindow())
         emit activated();
-    // std::string s(isActiveWindow() ? "active" : "not active");
-    // auto et(e->type());
-    // switch(et) {
-    //     case QEvent::ActivationChange:
-    //         log("Activation change: %x %s", this, s.c_str());
-    //         break;
-    //     case QEvent::WindowActivate:
-    //         log("Window activate %x %s", this, s.c_str());
-    //         break;
-    //     default:
-    //             log("event %d", et);
-    // }
-
 }
 
 void LibWindow::closeEvent(QCloseEvent *event) {
