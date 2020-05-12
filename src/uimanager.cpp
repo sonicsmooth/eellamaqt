@@ -161,6 +161,19 @@ ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
     return retval;
 }
 
+LibWindow *UIManager::activeLibWindow() {
+    return static_cast<LibWindow *>(QApplication::activeWindow());
+}
+QMainWindow *UIManager::activeMainWindow() {
+    return static_cast<QMainWindow *>(QApplication::activeWindow());
+}
+ClosingMDIWidget *UIManager::activeLibWidget() {
+    return static_cast<ClosingMDIWidget *>(activeLibWindow()->mdiArea()->activeSubWindow());
+}
+QMdiSubWindow *UIManager::activeMdiSubWindow() {
+    return activeLibWindow()->mdiArea()->activeSubWindow();
+}
+
 
 QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
@@ -168,7 +181,7 @@ QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullp
 }
 QAbstractItemModel *UIManager::makeLibTreeModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
-    return new QSqlTreeModel(QApplication::activeWindow(), db);
+    return new QSqlTreeModel(activeMainWindow(), db);
 }
 QAbstractItemModel *UIManager::makeLibTableModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
@@ -179,7 +192,7 @@ QAbstractItemView *UIManager::makeLibSymbolView(QAbstractItemModel *model/*, std
     QSqlTableModel *sqlModel(dynamic_cast<QSqlTableModel *>(model));
     if (!sqlModel)
         throw("Not a QSqlTableModel");
-    QAbstractItemView *view(new LibSymbolView(QApplication::activeWindow(), model, m_pCore, m_pLogger/*, fullpath)*/));
+    QAbstractItemView *view(new LibSymbolView(activeMainWindow(), model, m_pCore, m_pLogger/*, fullpath)*/));
     sqlModel->setTable("firsttable");
     sqlModel->setEditStrategy(QSqlTableModel::OnRowChange);
     sqlModel->select();
@@ -190,7 +203,7 @@ QAbstractItemView *UIManager::makeLibTreeView(QAbstractItemModel *model/*, std::
     QSqlTreeModel *sqlModel(dynamic_cast<QSqlTreeModel *>(model));
     if (!sqlModel)
         throw("Not a QSqlTreeModel");
-    QAbstractItemView *view(new LibTreeView(QApplication::activeWindow(), model, m_pCore, m_pLogger/*, fullpath*/));
+    QAbstractItemView *view(new LibTreeView(activeMainWindow(), model, m_pCore, m_pLogger/*, fullpath*/));
     // model->setTable("firsttable");
     // model->setEditStrategy(QSqlTableModel::OnRowChange);
     // model->select();
@@ -201,7 +214,7 @@ QAbstractItemView *UIManager::makeLibTableView(QAbstractItemModel *model/*, std:
     QSqlTableModel *sqlModel(dynamic_cast<QSqlTableModel *>(model));
     if (!sqlModel)
         throw("Not a QSqlTableModel");
-    QAbstractItemView *view(new LibTableView(QApplication::activeWindow(), model, m_pCore, m_pLogger/*, fullpath*/));
+    QAbstractItemView *view(new LibTableView(activeMainWindow(), model, m_pCore, m_pLogger/*, fullpath*/));
     sqlModel->setTable("firsttable");
     sqlModel->setEditStrategy(QSqlTableModel::OnRowChange);
     sqlModel->select();
@@ -228,7 +241,7 @@ ClosingMDIWidget *UIManager::makeMDILibWidget(QWidget *parent, QAbstractItemView
 }
 void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea area) {
     // Stick argument to right or left (or wherever), tabifying as necessary
-    QMainWindow *mw(static_cast<QMainWindow *>(QApplication::activeWindow()));
+    QMainWindow *mw(activeMainWindow());
     mw->addDockWidget(area, libDockWidget, Qt::Orientation::Horizontal);
 
     // Make this dockwidget stick to right and tabify if needed
@@ -278,7 +291,7 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     if (vt == ViewType::LIBSYMBOLVIEW) {
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
-        LibWindow *mw = static_cast<LibWindow *>(QApplication::activeWindow());
+        LibWindow *mw = activeLibWindow();
         assert(mw);
         auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
         model = selectopt ? (*selectopt).model : (this->*makeModelfm[vt])(dbif, fullpath);
@@ -300,7 +313,7 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
     //removeView(pw);
-    LibWindow *lw(dynamic_cast<LibWindow *>(QApplication::activeWindow()));
+    LibWindow *lw(activeLibWindow());
     lw->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() &&
                       selectWhere([lw](ConnView cv) -> bool {return cv.view && cv.mainWindow == lw;}));
 }
@@ -335,13 +348,13 @@ void UIManager::onMainWidgetClose(QWidget *w) {
         m_connViews.remove(*selectWhere(mdisw));
         cvlog(m_connViews, m_pLogger);
     }
-    LibWindow *mainWindow(dynamic_cast<LibWindow *>(QApplication::activeWindow()));
-    assert(mainWindow);
-    auto fn([mainWindow](ConnView cv) -> bool {
-        return cv.view && cv.mainWindow == mainWindow;
+    LibWindow *libWindow(activeLibWindow());
+    assert(libWindow);
+    auto fn([libWindow](ConnView cv) -> bool {
+        return cv.view && cv.mainWindow == libWindow;
     });
-    mainWindow->mdiArea()->activateNextSubWindow();
-    mainWindow->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() && selectWhere(fn));
+    libWindow->mdiArea()->activateNextSubWindow();
+    libWindow->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() && selectWhere(fn));
 }
 void UIManager::onMainWindowClose(QWidget *w) {
     // Make sure we're actually getting a LibWindow
@@ -423,7 +436,7 @@ void UIManager::closeWindow() {
     // but don't cause a seg fault when invoked by remaining windows.
     // TODO: send signal from either logger or text edit to clients
     // telling them to clear pointer.
-    QApplication::activeWindow()->close();
+    activeMainWindow()->close();
 };
 
 std::list<QMainWindow *> UIManager::mainWindows() {
@@ -438,10 +451,16 @@ void UIManager::duplicateSymbolView() {
     // Take current MDIWidget, extract the model, then extract the fullpath.
     // Create a new UI with fullpath.  This creates a new view and a new MDIWidget
     assert(m_pCore);
-    LibWindow *lw(static_cast<LibWindow *>(QApplication::activeWindow()));
+    LibWindow *lw(activeLibWindow());
     QMdiSubWindow *mdiWidget(lw->mdiArea()->activeSubWindow());
     assert(mdiWidget);
     auto [model, view, vt] = getModelViewFromWidget(mdiWidget);
     auto [fullpath, _x, _y] = getFullpathFromModel(model);
     openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW);
+}
+
+void UIManager::popOut() {
+    // Move current symbol view into new window
+    // This is a precursor to tear-away mdi subwindow
+    QMdiSubWindow *active;
 }

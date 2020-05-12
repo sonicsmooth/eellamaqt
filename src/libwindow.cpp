@@ -434,6 +434,12 @@ void LibWindow::mdiTabMode() {
     updateTabActions();
 }
 
+void LibWindow::popOut() {
+    // Initiates popout of current view widget
+    assert(m_pCore);
+    m_pCore->UIManager()->popOut();
+}
+
 void LibWindow::changeEvent(QEvent *e) {
     if (e->type() == QEvent::WindowActivate && isActiveWindow())
         emit activated();

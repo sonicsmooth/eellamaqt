@@ -20,6 +20,7 @@ public:
     virtual void newWindow() = 0;                      // Creates new top level window
     virtual void newWindow(LibCore *, ILogger *) = 0;  // Creates new top level window
     virtual void closeWindow() = 0; // Closes current top level window
+    virtual void popOut() = 0;
 };
 
 //IUIManager::~IUIManager() = default;

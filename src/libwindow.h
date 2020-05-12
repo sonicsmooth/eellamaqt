@@ -66,6 +66,7 @@ public:
     void helpAbout();
     void reloadStyle();
     void mdiTabMode();
+    void popOut();
 
     // Overloaded
     void changeEvent(QEvent *) override;

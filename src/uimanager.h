@@ -3,6 +3,7 @@
 
 #include "libcore.h"
 #include "iuimanager.h"
+#include "libwindow.h"
 #include "coreable.h"
 #include "loggable.h"
 #include "libtreeview.h"
@@ -82,6 +83,10 @@ private:
     ConnViews selectWheres(std::string);
     ConnViews selectWheres(QMainWindow *);
     ConnViews selectWheres(std::string, ViewType);
+    LibWindow *activeLibWindow();
+    QMainWindow *activeMainWindow();
+    ClosingMDIWidget *activeLibWidget();
+    QMdiSubWindow *activeMdiSubWindow();
 
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
@@ -99,7 +104,7 @@ private:
     void onMainWidgetClose(QWidget *);
     void onMainWindowClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
-    //void setMdiViewMode(QMdiArea::ViewMode);
+    
 
 public:
     UIManager(QObject * = nullptr);
@@ -112,6 +117,7 @@ public:
     void closeWindow() override; // Closes current top level window
     std::list<QMainWindow *> mainWindows(); // Returns list of main windows
     void duplicateSymbolView();
+    void popOut() override;;
 
 
 public slots:
