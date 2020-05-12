@@ -301,7 +301,7 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     // This happens when user clicks the close button
     //removeView(pw);
     LibWindow *lw(dynamic_cast<LibWindow *>(QApplication::activeWindow()));
-    lw->updateActions(m_pCore->DbIf()->isDatabaseOpen() && 
+    lw->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() &&
                       selectWhere([lw](ConnView cv) -> bool {return cv.view && cv.mainWindow == lw;}));
 }
 void UIManager::onMainWidgetClose(QWidget *w) {
@@ -341,7 +341,7 @@ void UIManager::onMainWidgetClose(QWidget *w) {
         return cv.view && cv.mainWindow == mainWindow;
     });
     mainWindow->mdiArea()->activateNextSubWindow();
-    mainWindow->updateActions(m_pCore->DbIf()->isDatabaseOpen() && selectWhere(fn));
+    mainWindow->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() && selectWhere(fn));
 }
 void UIManager::onMainWindowClose(QWidget *w) {
     // Make sure we're actually getting a LibWindow

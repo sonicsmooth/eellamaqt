@@ -19,75 +19,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>View Mode</string>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QRadioButton" name="rbSubWindow">
-           <property name="text">
-            <string>SubWindow</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="rbTabbed">
-           <property name="text">
-            <string>Tabbed</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbDocMode">
-           <property name="text">
-            <string>Document Mode</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QPushButton" name="pbTile">
-          <property name="text">
-           <string>Tile</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbCascade">
-          <property name="text">
-           <string>Cascade</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbPopout">
-          <property name="text">
-           <string>Pop out current</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QMdiArea" name="mdiArea">
         <property name="viewMode">
@@ -132,6 +64,7 @@
     <addaction name="separator"/>
     <addaction name="actionFileDeleteLib"/>
     <addaction name="actionCloseWindow"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -178,27 +111,30 @@
     <property name="title">
      <string>Views</string>
     </property>
-    <addaction name="actionNewWindow"/>
-    <addaction name="separator"/>
-    <addaction name="actionDuplicateSymbolView"/>
-    <addaction name="actionCloseSymbolView"/>
-    <addaction name="separator"/>
     <addaction name="actionLibTreeView"/>
     <addaction name="actionLibTableView"/>
+    <addaction name="separator"/>
+    <addaction name="actionPopOut"/>
+    <addaction name="actionDuplicateSymbolView"/>
+    <addaction name="actionCloseSymbolView"/>
    </widget>
-   <widget class="QMenu" name="menuMI">
+   <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>MDI</string>
+     <string>Window</string>
     </property>
-    <addaction name="actionSubWindow_View"/>
-    <addaction name="actionTabbed_View"/>
+    <addaction name="actionTabs"/>
+    <addaction name="separator"/>
+    <addaction name="actionCascade"/>
+    <addaction name="actionTile"/>
+    <addaction name="separator"/>
+    <addaction name="actionNewWindow"/>
    </widget>
    <addaction name="menuLibrarian"/>
    <addaction name="menuSymbols"/>
    <addaction name="menuLibrary"/>
    <addaction name="menuEdit"/>
    <addaction name="menuViews"/>
-   <addaction name="menuMI"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp_2"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -285,42 +221,6 @@
    </property>
    <property name="toolTip">
     <string>Save a copy, open new, close existing</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAsAndClose">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save As, Replace</string>
-   </property>
-   <property name="toolTip">
-    <string>Save a copy, open new, close existing</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAsAndOpen">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save As, Keep open</string>
-   </property>
-   <property name="toolTip">
-    <string>Save a copy, open new, keep existing open</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAsQuietly">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save Copy As</string>
-   </property>
-   <property name="toolTip">
-    <string>Save a copy, don't open new, keep existing open</string>
    </property>
   </action>
   <action name="actionFileRename">
@@ -628,7 +528,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Duplicate View</string>
+    <string>Duplicate</string>
    </property>
   </action>
   <action name="actionCloseSymbolView">
@@ -636,7 +536,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Close View</string>
+    <string>Close</string>
    </property>
   </action>
   <action name="actionLibTreeView">
@@ -689,14 +589,29 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionSubWindow_View">
+  <action name="actionTabs">
    <property name="text">
-    <string>SubWindow View</string>
+    <string>Show tabs</string>
    </property>
   </action>
-  <action name="actionTabbed_View">
+  <action name="actionCascade">
    <property name="text">
-    <string>Tabbed View</string>
+    <string>Cascade</string>
+   </property>
+  </action>
+  <action name="actionTile">
+   <property name="text">
+    <string>Tile</string>
+   </property>
+  </action>
+  <action name="actionPopOut">
+   <property name="text">
+    <string>Pop out</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>
@@ -704,7 +619,4 @@
   <include location="../application.qrc"/>
  </resources>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>

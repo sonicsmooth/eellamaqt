@@ -78,17 +78,11 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionCloseWindow, &QAction::triggered, this, &LibWindow::windowCloseWindow);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
     connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
-    connect(ui->rbTabbed, &QRadioButton::toggled, this, &LibWindow::mdiViewMode);
-    connect(ui->rbTabbed, &QRadioButton::toggled, this, &LibWindow::setDocMode);  // en/disables doc mode checkbox
-    connect(ui->cbDocMode, &QCheckBox::toggled, this, &LibWindow::tabDocMode); // en/disabled doc mode
-    connect(ui->pbTile, &QPushButton::clicked, [=]{ui->mdiArea->tileSubWindows();});
-    connect(ui->pbCascade, &QPushButton::clicked, [=]{ui->mdiArea->cascadeSubWindows();});
+    connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
+    connect(ui->actionTile, &QAction::triggered, [=]{ui->mdiArea->tileSubWindows();});
+    connect(ui->actionCascade, &QAction::triggered, [=]{ui->mdiArea->cascadeSubWindows();});
 
-
-    mdiViewMode(ui->rbTabbed->isChecked());
-    setDocMode(ui->rbTabbed->isChecked());
-    if (ui->rbTabbed->isChecked())
-        tabDocMode(ui->cbDocMode->isChecked());
+    updateTabActions();
 
     // This handles focusing on the dockwidgets and their content widgets
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
@@ -140,7 +134,7 @@ LibWindow::~LibWindow()
     delete ui;
 }
 
-void LibWindow::updateActions(bool en) {
+void LibWindow::updateLibActions(bool en) {
     ui->actionFileRename->setEnabled(en);
     ui->actionFileSaveAs->setEnabled(en);
     ui->actionFileCloseLib->setEnabled(en);
@@ -169,6 +163,14 @@ void LibWindow::updateActions(bool en) {
     ui->actionLibTreeView->setEnabled(en);
     ui->actionLibTableView->setEnabled(en);
 }
+void LibWindow::updateTabActions() {
+    // Set tabbed/normal menu text based on current mode
+    if (ui->mdiArea->viewMode() == QMdiArea::ViewMode::TabbedView)
+        ui->actionTabs->setText("Non-tabs");
+    else
+        ui->actionTabs->setText("Tabs");
+}
+
 void LibWindow::updateTitle() {
     setWindowTitle("Library Editor");
 }
@@ -208,7 +210,7 @@ void LibWindow::fileNewLib() {
     QString fullpath = currdir.filePath(libname_extended);
 
     m_pCore->newLib(fullpath.toStdString());
-    updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
@@ -227,7 +229,7 @@ void LibWindow::fileOpenLib() {
         }
 
     }
-    updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileSaveAs() {
@@ -244,7 +246,7 @@ void LibWindow::fileSaveAs() {
     } else {
         log("LibWindow::fileSaveAs: Canceled");
     }
-    updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileRename() {
@@ -264,7 +266,7 @@ void LibWindow::fileRename() {
     } else {
         log("LibWindow::fileRename: Canceled");
     }
-    updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileCloseLib() {
@@ -272,14 +274,14 @@ void LibWindow::fileCloseLib() {
     if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->closeActiveLib();
     }
-    updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
     if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->deleteActiveLib();
     }
-    updateActions(m_pCore->DbIf()->isDatabaseOpen());
+    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::newShape() {
     assert(m_pCore);
@@ -406,6 +408,7 @@ void LibWindow::windowCloseWindow() {
 void LibWindow::helpAbout() {
 
 }
+
 void LibWindow::reloadStyle() {
     // Set up style -- this only works at startup, not after!!
     QFile styleFile(":/ui/llamastyle.css");
@@ -415,37 +418,15 @@ void LibWindow::reloadStyle() {
     QApplication *qapp(dynamic_cast<QApplication *>(QApplication::instance()));
     QApplication::setStyle("WindowsVista");
     qapp->setStyleSheet(fileContents);
-
-    // Nothing after this point works to update stylesheets after initialization
-//    this->setStyleSheet(fileContents);
-//    this->style()->unpolish(this);
-//    this->style()->polish(this);
-//    this->update();
-
-//    auto ch = findChildren<QWidget *>();\
-//     //QApplication *app = dynamic_cast<QApplication *>(QApplication::instance());
-//     //QCommonStyle *style = dynamic_cast<QCommonStyle *>(app->style());
-//     for (QWidget *child : ch) {
-//        // child->style()->unpolish(child);
-//        child->setStyleSheet(fileContents);
-//        child->style()->unpolish(child);
-//        child->style()->polish(child);
-//        child->update();
-//     }
-
 }
 
-void LibWindow::mdiViewMode(bool vm) {
-    auto qmavm(static_cast<QMdiArea::ViewMode>(vm));
-    ui->mdiArea->setViewMode(qmavm);
-}
-void LibWindow::setDocMode(bool dm) {
-    ui->cbDocMode->setEnabled(dm);
-    if (dm)
-        tabDocMode(ui->cbDocMode->isChecked());
-}
-void LibWindow::tabDocMode(bool dm) {
-    ui->mdiArea->setDocumentMode(dm);
+void LibWindow::mdiTabMode() {
+    // Toggles view mode
+    if (ui->mdiArea->viewMode() == QMdiArea::ViewMode::TabbedView)
+        ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
+    else
+        ui->mdiArea->setViewMode(QMdiArea::ViewMode::TabbedView);
+    updateTabActions();
 }
 
 void LibWindow::changeEvent(QEvent *e) {

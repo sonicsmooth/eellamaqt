@@ -26,7 +26,8 @@ private:
 public:
     LibWindow(QWidget *parent = nullptr);
     ~LibWindow() override;
-    void updateActions(bool);
+    void updateLibActions(bool);
+    void updateTabActions();
     void updateTitle();
     void updateTitle(std::string);
     QMdiArea *mdiArea();
@@ -64,9 +65,7 @@ public:
     void windowCloseWindow();
     void helpAbout();
     void reloadStyle();
-    void mdiViewMode(bool);
-    void setDocMode(bool);
-    void tabDocMode(bool);
+    void mdiTabMode();
 
     // Overloaded
     void changeEvent(QEvent *) override;
