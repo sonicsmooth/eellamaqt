@@ -82,7 +82,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionTile, &QAction::triggered, [=]{ui->mdiArea->tileSubWindows();});
     connect(ui->actionCascade, &QAction::triggered, [=]{ui->mdiArea->cascadeSubWindows();});
 
-    updateTabActions();
+    updateLibActions(false);
 
     // This handles focusing on the dockwidgets and their content widgets
     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
@@ -158,10 +158,15 @@ void LibWindow::updateLibActions(bool en) {
     ui->actionNewPolygon->setEnabled(en);
     ui->actionNewPolyline->setEnabled(en);
     ui->actionNewRectangle->setEnabled(en);
+    ui->actionPopOutSymbolView->setEnabled(en);
     ui->actionDuplicateSymbolView->setEnabled(en);
     ui->actionCloseSymbolView->setEnabled(en);
     ui->actionLibTreeView->setEnabled(en);
     ui->actionLibTableView->setEnabled(en);
+    ui->actionTabs->setEnabled(en);
+    ui->actionCascade->setEnabled(en);
+    ui->actionTile->setEnabled(en);
+    updateTabActions();
 }
 void LibWindow::updateTabActions() {
     // Set tabbed/normal menu text based on current mode

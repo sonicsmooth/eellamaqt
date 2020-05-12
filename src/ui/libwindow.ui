@@ -114,7 +114,7 @@
     <addaction name="actionLibTreeView"/>
     <addaction name="actionLibTableView"/>
     <addaction name="separator"/>
-    <addaction name="actionPopOut"/>
+    <addaction name="actionPopOutSymbolView"/>
     <addaction name="actionDuplicateSymbolView"/>
     <addaction name="actionCloseSymbolView"/>
    </widget>
@@ -590,21 +590,33 @@
    </property>
   </action>
   <action name="actionTabs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Show tabs</string>
    </property>
   </action>
   <action name="actionCascade">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Cascade</string>
    </property>
   </action>
   <action name="actionTile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Tile</string>
    </property>
   </action>
-  <action name="actionPopOut">
+  <action name="actionPopOutSymbolView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Pop out</string>
    </property>
