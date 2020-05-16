@@ -174,7 +174,6 @@ QMdiSubWindow *UIManager::activeMdiSubWindow() {
     return activeLibWindow()->mdiArea()->activeSubWindow();
 }
 
-
 QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
     return new QSqlTableModel(this, db);
@@ -309,6 +308,23 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
 
     }
  }
+
+LibWindow *UIManager::duplicateActiveWindow() {
+    LibWindow *oldlw(activeLibWindow());
+    QMdiArea *oa(oldlw->mdiArea());
+    LibWindow *newlw(static_cast<LibWindow *>(newWindow()));
+    QMdiArea *na(newlw->mdiArea());
+    na->setActivationOrder(na->activationOrder());
+    na->setBackground(na->background());
+    na->setDocumentMode(na->documentMode());
+    na->setTabPosition(na->tabPosition());
+    na->setTabShape(na->tabShape());
+    na->setTabsClosable(na->tabsClosable());
+    na->setTabsMovable(na->tabsMovable());
+    na->setViewMode(na->viewMode());
+    return newlw;
+}
+
 void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
@@ -413,11 +429,11 @@ void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string new
     (void) dbif;
     log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
 }
-void UIManager::newWindow()  {
+void *UIManager::newWindow()  {
     // Creates new top level window using members from this UIManager instance
-    newWindow(core(), logger());
+    return newWindow(core(), logger());
 };
-void UIManager::newWindow(LibCore *core, ILogger *lgr)  {
+void *UIManager::newWindow(LibCore *core, ILogger *lgr)  {
     // Creates new top level window using given members
     LibWindow *w(new LibWindow());
     w->setCore(core);
@@ -427,6 +443,7 @@ void UIManager::newWindow(LibCore *core, ILogger *lgr)  {
     QObject::connect(w, &LibWindow::closing, this, &UIManager::onMainWindowClose);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);
+    return w;
 
 };
 void UIManager::closeWindow() {
@@ -459,8 +476,26 @@ void UIManager::duplicateSymbolView() {
     openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW);
 }
 
+
 void UIManager::popOut() {
     // Move current symbol view into new window
     // This is a precursor to tear-away mdi subwindow
-    QMdiSubWindow *active;
+    QMainWindow *mw(activeMainWindow());
+    QMdiSubWindow *w(static_cast<QMdiSubWindow *>(activeLibWidget()));
+    assert(w);
+    auto selectopt(selectWhere(w));
+    assert(selectopt);
+    ConnView cv(*selectopt);
+    m_connViews.remove(cv);
+    
+    LibWindow *newlw(duplicateActiveWindow());
+    newlw->mdiArea()->addSubWindow(w);
+    newlw->updateLibActions(true);
+    w->showMaximized();
+
+    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, w, newlw});
+
+
+    
+    
 }

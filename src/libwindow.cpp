@@ -70,6 +70,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
+    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &LibWindow::popOut);
     connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &LibWindow::viewNewSymbolView);
     connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::viewCloseSymbolView);
     connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::viewLibTreeView);
