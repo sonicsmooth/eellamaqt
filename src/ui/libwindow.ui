@@ -49,7 +49,7 @@
      <x>0</x>
      <y>0</y>
      <width>706</width>
-     <height>38</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">
@@ -58,11 +58,12 @@
     </property>
     <addaction name="actionFileNewLib"/>
     <addaction name="actionFileOpenLib"/>
+    <addaction name="actionOpen_recent"/>
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileRename"/>
     <addaction name="actionFileCloseLib"/>
-    <addaction name="separator"/>
     <addaction name="actionFileDeleteLib"/>
+    <addaction name="separator"/>
     <addaction name="actionCloseWindow"/>
     <addaction name="actionExit"/>
    </widget>
@@ -101,11 +102,12 @@
    </widget>
    <widget class="QMenu" name="menuLibrary">
     <property name="title">
-     <string>Lib Items</string>
+     <string>Library</string>
     </property>
     <addaction name="actionNewShape"/>
     <addaction name="actionInsertShape"/>
     <addaction name="actionNewSymbol"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuViews">
     <property name="title">
@@ -116,6 +118,7 @@
     <addaction name="separator"/>
     <addaction name="actionPopOutSymbolView"/>
     <addaction name="actionDuplicateSymbolView"/>
+    <addaction name="separator"/>
     <addaction name="actionCloseSymbolView"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -624,6 +627,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionOpen_recent">
+   <property name="text">
+    <string>Open recent</string>
    </property>
   </action>
  </widget>

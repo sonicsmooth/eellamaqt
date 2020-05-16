@@ -100,7 +100,6 @@ private:
     void openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
-    LibWindow *duplicateActiveWindow(); // duplicate without children
     void onDockWidgetClose(QWidget *);
     void onMainWidgetClose(QWidget *);
     void onMainWindowClose(QWidget *);
@@ -109,16 +108,18 @@ private:
 
 public:
     UIManager(QObject * = nullptr);
-
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
     void notifyDbRename(IDbIf *, std::string, std::string) override;
-    void *newWindow() override;                     // Creates new top level window
-    void *newWindow(LibCore *, ILogger *) override; // Creates new top level window
+    void *newWindow() override; // Creates new top level window
+    void *newWindow(LibCore *, ILogger *) override;
+    void *duplicateWindow() override; // duplicate active w/o children
+    void *duplicateWindow(void *) override; // duplicate given w/o children
     void closeWindow() override; // Closes current top level window
+    void closeWindow(void *) override; // Closes given window
     std::list<QMainWindow *> mainWindows(); // Returns list of main windows
-    void duplicateSymbolView();
-    void popOut() override;;
+    void duplicateMainView();
+    void popOutView() override;;
 
 
 public slots:

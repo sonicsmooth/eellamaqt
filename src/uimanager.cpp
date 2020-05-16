@@ -24,6 +24,7 @@
 #include <QSqlTableModel>
 #include <QSqlDatabase>
 #include <QItemSelection>
+#include <QPoint>
 
 #include <filesystem>
 #include <iterator>
@@ -186,7 +187,7 @@ QAbstractItemModel *UIManager::makeLibTableModel(IDbIf *dbif, std::string fullpa
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
     return new QSqlTableModel(this, db);
 }
-QAbstractItemView *UIManager::makeLibSymbolView(QAbstractItemModel *model/*, std::string fullpath*/) {
+QAbstractItemView *UIManager::makeLibSymbolView(QAbstractItemModel *model) {
     // Make sure we're getting the right type of model
     QSqlTableModel *sqlModel(dynamic_cast<QSqlTableModel *>(model));
     if (!sqlModel)
@@ -197,7 +198,7 @@ QAbstractItemView *UIManager::makeLibSymbolView(QAbstractItemModel *model/*, std
     sqlModel->select();
     return view;
 }
-QAbstractItemView *UIManager::makeLibTreeView(QAbstractItemModel *model/*, std::string fullpath*/) {
+QAbstractItemView *UIManager::makeLibTreeView(QAbstractItemModel *model) {
     // Make sure we're getting the right type of model
     QSqlTreeModel *sqlModel(dynamic_cast<QSqlTreeModel *>(model));
     if (!sqlModel)
@@ -208,7 +209,7 @@ QAbstractItemView *UIManager::makeLibTreeView(QAbstractItemModel *model/*, std::
     // model->select();
     return view;
 }
-QAbstractItemView *UIManager::makeLibTableView(QAbstractItemModel *model/*, std::string fullpath*/) {
+QAbstractItemView *UIManager::makeLibTableView(QAbstractItemModel *model) {
     // Make sure we're getting the right type of model
     QSqlTableModel *sqlModel(dynamic_cast<QSqlTableModel *>(model));
     if (!sqlModel)
@@ -308,23 +309,6 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
 
     }
  }
-
-LibWindow *UIManager::duplicateActiveWindow() {
-    LibWindow *oldlw(activeLibWindow());
-    QMdiArea *oa(oldlw->mdiArea());
-    LibWindow *newlw(static_cast<LibWindow *>(newWindow()));
-    QMdiArea *na(newlw->mdiArea());
-    na->setActivationOrder(oa->activationOrder());
-    na->setBackground(oa->background());
-    na->setDocumentMode(oa->documentMode());
-    na->setTabPosition(oa->tabPosition());
-    na->setTabShape(oa->tabShape());
-    na->setTabsClosable(oa->tabsClosable());
-    na->setTabsMovable(oa->tabsMovable());
-    na->setViewMode(oa->viewMode());
-    return newlw;
-}
-
 void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
@@ -392,13 +376,9 @@ void UIManager::onDockWidgetActivate(QWidget *pw) {
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
 }
-// void UIManager::setMdiViewMode(QMdiArea::ViewMode vm) {
-    
-// }
 
-//////////
+
 // PUBLIC
-//////////
 UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
@@ -440,12 +420,34 @@ void *UIManager::newWindow(LibCore *core, ILogger *lgr)  {
     w->setLogger(lgr);
     w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
+
     QObject::connect(w, &LibWindow::closing, this, &UIManager::onMainWindowClose);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);
     return w;
 
 };
+void *UIManager::duplicateWindow() {
+    LibWindow *oldlw(activeLibWindow());
+    QMdiArea *oa(oldlw->mdiArea());
+    LibWindow *newlw(static_cast<LibWindow *>(newWindow()));
+    QMdiArea *na(newlw->mdiArea());
+    na->setActivationOrder(oa->activationOrder());
+    na->setBackground(oa->background());
+    na->setDocumentMode(oa->documentMode());
+    na->setTabPosition(oa->tabPosition());
+    na->setTabShape(oa->tabShape());
+    na->setTabsClosable(oa->tabsClosable());
+    na->setTabsMovable(oa->tabsMovable());
+    na->setViewMode(oa->viewMode());
+    newlw->show();
+    newlw->move(oldlw->pos() + QPoint(50,50));
+    newlw->resize(oldlw->size());
+    return newlw;
+}
+void *UIManager::duplicateWindow(void *) {
+    return nullptr;
+}
 void UIManager::closeWindow() {
     // Closes current top level window
     // Not sure what happens to log window and textedit pointers
@@ -455,6 +457,10 @@ void UIManager::closeWindow() {
     // telling them to clear pointer.
     activeMainWindow()->close();
 };
+void UIManager::closeWindow(void *window) {
+    QWidget *widget(static_cast<QWidget *>(window));
+    widget->close();
+}
 
 std::list<QMainWindow *> UIManager::mainWindows() {
     std::set<QMainWindow *> set;
@@ -464,7 +470,7 @@ std::list<QMainWindow *> UIManager::mainWindows() {
 
 }
 
-void UIManager::duplicateSymbolView() {
+void UIManager::duplicateMainView() {
     // Take current MDIWidget, extract the model, then extract the fullpath.
     // Create a new UI with fullpath.  This creates a new view and a new MDIWidget
     assert(m_pCore);
@@ -475,9 +481,7 @@ void UIManager::duplicateSymbolView() {
     auto [fullpath, _x, _y] = getFullpathFromModel(model);
     openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW);
 }
-
-
-void UIManager::popOut() {
+void UIManager::popOutView() {
     // Move current symbol view into new window
     // This is a precursor to tear-away mdi subwindow
     //QMainWindow *mw(activeMainWindow());
@@ -490,7 +494,7 @@ void UIManager::popOut() {
     m_connViews.remove(cv);
     
     LibWindow *oldlw(activeLibWindow());
-    LibWindow *newlw(duplicateActiveWindow());
+    LibWindow *newlw(static_cast<LibWindow *>(duplicateWindow()));
     oldlw->mdiArea()->removeSubWindow(mdiWidget);
     newlw->mdiArea()->addSubWindow(mdiWidget);
     mdiWidget->showMaximized();

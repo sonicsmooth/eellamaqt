@@ -70,61 +70,59 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
-    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &LibWindow::popOut);
-    connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &LibWindow::viewNewSymbolView);
-    connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::viewCloseSymbolView);
-    connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::viewLibTreeView);
-    connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::viewLibTableView);
-    connect(ui->actionNewWindow, &QAction::triggered, this, &LibWindow::windowNewWindow);
-    connect(ui->actionCloseWindow, &QAction::triggered, this, &LibWindow::windowCloseWindow);
+    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &LibWindow::popOutView);
+    connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &LibWindow::duplicateMainView);
+    connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::closeMainView);
+    connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::toggleLibTreeView);
+    connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::toggleLibTableView);
+    connect(ui->actionNewWindow, &QAction::triggered, this, &LibWindow::newWindow);
+    connect(ui->actionCloseWindow, &QAction::triggered, this, &LibWindow::closeWindow);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
     connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
     connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
     connect(ui->actionTile, &QAction::triggered, [=]{ui->mdiArea->tileSubWindows();});
     connect(ui->actionCascade, &QAction::triggered, [=]{ui->mdiArea->cascadeSubWindows();});
 
-    connect(mdiArea(), &QMdiArea::subWindowActivated, [=]{log("subwindow activated");});
-
     updateLibActions(false);
 
     // This handles focusing on the dockwidgets and their content widgets
-    connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
-        // The goal is to get to the LibTreeWidget which has the dbConn.
-        // But the LibTreeWidget doesn't receive focus events; only the QTreeView
-        // and the ClosingDockWidget get focus events.  In the first case the
-        // LibTreeWidget is the parent of the QTreeView.  In the second case the
-        // LibTreeWidget is the content widget of the ClosingDockWidget.  We don't
-        // know which one we get here unless we try to cast it.
+//     connect(qApp, &QApplication::focusChanged, [&](QWidget* old, QWidget* now) {
+//         // The goal is to get to the LibTreeWidget which has the dbConn.
+//         // But the LibTreeWidget doesn't receive focus events; only the QTreeView
+//         // and the ClosingDockWidget get focus events.  In the first case the
+//         // LibTreeWidget is the parent of the QTreeView.  In the second case the
+//         // LibTreeWidget is the content widget of the ClosingDockWidget.  We don't
+//         // know which one we get here unless we try to cast it.
 
-        // ClosingDockWidget
-        // --- LibViewWidget (dbConn)
-        // ------ QTreeView
+//         // ClosingDockWidget
+//         // --- LibViewWidget (dbConn)
+//         // ------ QTreeView
 
-        // ClosingDockWidget
-        // --- LibViewWidget (no data)
-        // ------ QTableView
+//         // ClosingDockWidget
+//         // --- LibViewWidget (no data)
+//         // ------ QTableView
 
 
-        (void) old;
-        QDockWidget *qdw(dynamic_cast<QDockWidget *>(now));
-        LibClient *libc(dynamic_cast<LibClient *>(now));
-        //QTreeView *qtreev(dynamic_cast<QTreeView *>(now));
-        //QTableView *qtablev(dynamic_cast<QTableView *>(now));
+//         (void) old;
+//         QDockWidget *qdw(dynamic_cast<QDockWidget *>(now));
+//         LibClient *libc(dynamic_cast<LibClient *>(now));
+//         //QTreeView *qtreev(dynamic_cast<QTreeView *>(now));
+//         //QTableView *qtablev(dynamic_cast<QTableView *>(now));
 
-        if (qdw) {
-            libc = dynamic_cast<LibClient *>(qdw->widget());
-        }/* else if (qtreev) {
-            lvc = dynamic_cast<LibViewClient *>(qtreev->parentWidget());
-        } else if (qtablev) {
-            lvc = dynamic_cast<LibViewClient *>(qtablev->parentWidget());
-        } */
+//         if (qdw) {
+//             libc = dynamic_cast<LibClient *>(qdw->widget());
+//         }/* else if (qtreev) {
+//             lvc = dynamic_cast<LibViewClient *>(qtreev->parentWidget());
+//         } else if (qtablev) {
+//             lvc = dynamic_cast<LibViewClient *>(qtablev->parentWidget());
+//         } */
 
-        if (libc) {
-//            m_pCore->pushActiveDb(libc->dbConn());
-        }
+//         if (libc) {
+// //            m_pCore->pushActiveDb(libc->dbConn());
+//         }
 
-        // Might not assign lvw since there are other things getting focus
-    });
+//         // Might not assign lvw since there are other things getting focus
+//     });
 
     //ui->mdiArea->addSubWindow(new QTextEdit());
 
@@ -375,17 +373,17 @@ void LibWindow::editDelete() {
 //    m_pCore->deleteSymbol("Some symbol");
 }
 
-void LibWindow::viewNewSymbolView() {
+void LibWindow::duplicateMainView() {
     log("New Symbol View");
     assert(m_pCore);
     UIManager *uim(static_cast<UIManager *>(m_pCore->UIManager()));
-    uim->duplicateSymbolView();
+    uim->duplicateMainView();
 }
-void LibWindow::viewCloseSymbolView() {
+void LibWindow::closeMainView() {
     log("Close Symbol View");
 }
 
-void LibWindow::viewLibTreeView() {
+void LibWindow::toggleLibTreeView() {
     assert(m_pCore);
 //    log("LibWindow: view LibTreeView");
 //    if (m_pCore->activeDb()) {
@@ -393,7 +391,7 @@ void LibWindow::viewLibTreeView() {
 //        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
 //    }
 }
-void LibWindow::viewLibTableView() {
+void LibWindow::toggleLibTableView() {
     assert(m_pCore);
 //    log("LibWindow: view LibTableView");
 //    if (m_pCore->activeDb()) {
@@ -402,12 +400,12 @@ void LibWindow::viewLibTableView() {
 //    }
 }
 
-void LibWindow::windowNewWindow() {
+void LibWindow::newWindow() {
     assert(m_pCore);
-    m_pCore->UIManager()->newWindow();
+    m_pCore->UIManager()->duplicateWindow();
     static_cast<UIManager *>(m_pCore->UIManager())->mainWindows().back()->show();
 }
-void LibWindow::windowCloseWindow() {
+void LibWindow::closeWindow() {
     assert(m_pCore);
     m_pCore->UIManager()->closeWindow();
 }
@@ -437,10 +435,10 @@ void LibWindow::mdiTabMode() {
     updateTabActions();
 }
 
-void LibWindow::popOut() {
-    // Initiates popout of current view widget
+void LibWindow::popOutView() {
+    // Initiates popOutView of current view widget
     assert(m_pCore);
-    m_pCore->UIManager()->popOut();
+    m_pCore->UIManager()->popOutView();
 }
 
 void LibWindow::changeEvent(QEvent *e) {

@@ -57,16 +57,16 @@ public:
     void editCopy();
     void editPaste();
     void editDelete();
-    void viewNewSymbolView();
-    void viewCloseSymbolView();
-    void viewLibTreeView();
-    void viewLibTableView();
-    void windowNewWindow();
-    void windowCloseWindow();
+    void duplicateMainView();
+    void closeMainView();
+    void toggleLibTreeView();
+    void toggleLibTableView();
+    void newWindow(); 
+    void closeWindow();
     void helpAbout();
     void reloadStyle();
     void mdiTabMode();
-    void popOut();
+    void popOutView();
 
     // Overloaded
     void changeEvent(QEvent *) override;
