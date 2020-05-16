@@ -40,7 +40,7 @@ LibWindow::LibWindow(QWidget *parent)
 
     QPushButton *pb = new QPushButton(this);
     pb->setText("Push me");
-    //connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi", 1000);});
+    connect(pb, &QPushButton::clicked,[=](){statusBar()->showMessage("hi", 1000);});
     connect(pb, &QPushButton::clicked,[=](){m_pCore->newShape();});
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
@@ -82,6 +82,8 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
     connect(ui->actionTile, &QAction::triggered, [=]{ui->mdiArea->tileSubWindows();});
     connect(ui->actionCascade, &QAction::triggered, [=]{ui->mdiArea->cascadeSubWindows();});
+
+    connect(mdiArea(), &QMdiArea::subWindowActivated, [=]{log("subwindow activated");});
 
     updateLibActions(false);
 

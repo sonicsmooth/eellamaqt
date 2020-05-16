@@ -314,14 +314,14 @@ LibWindow *UIManager::duplicateActiveWindow() {
     QMdiArea *oa(oldlw->mdiArea());
     LibWindow *newlw(static_cast<LibWindow *>(newWindow()));
     QMdiArea *na(newlw->mdiArea());
-    na->setActivationOrder(na->activationOrder());
-    na->setBackground(na->background());
-    na->setDocumentMode(na->documentMode());
-    na->setTabPosition(na->tabPosition());
-    na->setTabShape(na->tabShape());
-    na->setTabsClosable(na->tabsClosable());
-    na->setTabsMovable(na->tabsMovable());
-    na->setViewMode(na->viewMode());
+    na->setActivationOrder(oa->activationOrder());
+    na->setBackground(oa->background());
+    na->setDocumentMode(oa->documentMode());
+    na->setTabPosition(oa->tabPosition());
+    na->setTabShape(oa->tabShape());
+    na->setTabsClosable(oa->tabsClosable());
+    na->setTabsMovable(oa->tabsMovable());
+    na->setViewMode(oa->viewMode());
     return newlw;
 }
 
@@ -480,20 +480,24 @@ void UIManager::duplicateSymbolView() {
 void UIManager::popOut() {
     // Move current symbol view into new window
     // This is a precursor to tear-away mdi subwindow
-    QMainWindow *mw(activeMainWindow());
-    QMdiSubWindow *w(static_cast<QMdiSubWindow *>(activeLibWidget()));
-    assert(w);
-    auto selectopt(selectWhere(w));
+    //QMainWindow *mw(activeMainWindow());
+
+    QMdiSubWindow *mdiWidget(static_cast<QMdiSubWindow *>(activeLibWidget()));
+    assert(mdiWidget);
+    auto selectopt(selectWhere(mdiWidget));
     assert(selectopt);
     ConnView cv(*selectopt);
     m_connViews.remove(cv);
     
+    LibWindow *oldlw(activeLibWindow());
     LibWindow *newlw(duplicateActiveWindow());
-    newlw->mdiArea()->addSubWindow(w);
-    newlw->updateLibActions(true);
-    w->showMaximized();
+    oldlw->mdiArea()->removeSubWindow(mdiWidget);
+    newlw->mdiArea()->addSubWindow(mdiWidget);
+    mdiWidget->showMaximized();
 
-    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, w, newlw});
+    newlw->updateLibActions(true);
+    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiWidget, newlw});
+    cvlog(m_connViews, m_pLogger);
 
 
     
