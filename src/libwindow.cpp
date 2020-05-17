@@ -132,6 +132,7 @@ LibWindow::LibWindow(QWidget *parent)
 
 LibWindow::~LibWindow()
 {
+    int z = 99;
     delete ui;
 }
 

@@ -1,19 +1,22 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <iostream>
+#include "ilogger.h"
+
+#include <QObject>
 #include <QTextEdit>
 #include <QString>
 
-#include "ilogger.h"
 
-class Logger : public ILogger {
+#include <iostream>
+
+class Logger : public QObject, public ILogger {
 private:
-	QTextEdit* m_pte; // how to separate Q classes from core?
+	QTextEdit* m_pte; // Logger does not own textedit
 public:
 	Logger() = default;
 	Logger(QTextEdit* pte) : m_pte(pte) {}
-	~Logger() override = default;
+	~Logger() override;;
 	QTextEdit* textEdit() { return m_pte; }
 	void setTextEdit(QTextEdit*);
     void vlog(const char *, va_list) override;
@@ -21,6 +24,8 @@ public:
 	void log(std::string) override;
     void log(std::stringstream &) override; // clears string when done
     void log(QString);
+public slots:
+	void nullifyLogger();
 };
 
 #endif

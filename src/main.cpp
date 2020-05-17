@@ -25,11 +25,8 @@ int main(int argc, char *argv[])
     //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
     LibCore core;
-    //LibWindow *pLibwin;
     QSQDbIf dbif;
     UIManager uim;
-    //QModelManager qmm;
-    //QViewManager qvm;
 
     // Show all default icons
     //AllIcons ai;
@@ -40,11 +37,20 @@ int main(int argc, char *argv[])
     QTextEdit *pte = new QTextEdit();
     pte->setFontFamily("Consolas");
     Logger logger(pte);
+
     ClosingDockWidget* pLogWidget = new ClosingDockWidget;
+    pLogWidget->setAttribute(Qt::WA_DeleteOnClose, true);
     pLogWidget->setWindowTitle("Log");
     pLogWidget->setWidget(pte);
-    auto fn = [&]() -> void {logger.setTextEdit(nullptr);};
-    QObject::connect(pLogWidget, &ClosingDockWidget::closing, fn);
+
+    //pte->setAttribute(Qt::WA_DeleteOnClose, true);
+    pLogWidget->setAttribute(Qt::WA_DeleteOnClose, true);
+
+    // If the text widget closes, then notify logger
+//    auto nullifyLogger([&](){
+//        logger.setTextEdit(nullptr);
+//    });
+    QObject::connect(pte, &QTextEdit::destroyed, &logger, &Logger::nullifyLogger);
 
     // Set up database interface
     dbif.setLogger(&logger);

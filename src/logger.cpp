@@ -4,7 +4,9 @@
 #include <memory>
 #include <cassert>
 
-
+Logger::~Logger() {
+    int a =5;
+}
 
 void Logger::setTextEdit(QTextEdit* pte) {
 	m_pte = pte;
@@ -26,7 +28,6 @@ void Logger::log(const char *fmt, ...) {
     va_start(args, fmt);
     vlog(fmt, args);
     va_end(args);
-
 }
 
 void Logger::log(std::string msg) {
@@ -48,3 +49,7 @@ void Logger::log(QString msg) {
         return;
     m_pte->append(msg);
  }
+
+void Logger::nullifyLogger() {
+    m_pte = nullptr;
+}

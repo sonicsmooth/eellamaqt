@@ -456,7 +456,7 @@ void UIManager::closeWindow() {
     // TODO: send signal from either logger or text edit to clients
     // telling them to clear pointer.
     activeMainWindow()->close();
-};
+}
 void UIManager::closeWindow(void *window) {
     QWidget *widget(static_cast<QWidget *>(window));
     widget->close();
