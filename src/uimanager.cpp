@@ -360,6 +360,9 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
         m_connViews.remove(*selectWhere(mdisw));
         cvlog(m_connViews, m_pLogger);
     }
+
+    // TODO: When lib is closed, make sure all mainwindows have updated menus
+    // TODO: not just the one that held the button that was clicked
     LibWindow *libWindow(activeLibWindow());
     assert(libWindow);
     auto fn([libWindow](ConnView cv) -> bool {
@@ -396,19 +399,13 @@ void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     }
 }
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
-    (void) dbif;
-    (void) fullpath;
-    // // Close all widgets that are downstream from fullpath
-    // // Suspend event before closing
-    // log("Notify close %s", fullpath.c_str());
-    // while (!m_connViews[fullpath].empty() &&
-    //        !m_connViews[fullpath].begin()->second.empty()) {
-    //     auto view(m_connViews[fullpath].begin()->second.front());
-    //     auto *cdw(static_cast<ClosingDockWidget *>(view->parentWidget()));
-    //     cdw->blockSignals(true);
-    //     cdw->close();
-    //     removeView(cdw);
-    // }
+    // Close windows after being notified that library has closed
+    ConnViews cvs(selectWheres(fullpath, ViewType::LIBSYMBOLVIEW));
+    for (auto cv : cvs) {
+        cv.subWidget->close();
+    }
+    
+    
 }
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
     (void) dbif;
@@ -508,6 +505,9 @@ void UIManager::popOutMainView() {
     LibWindow *newlw(static_cast<LibWindow *>(duplicateWindow()));
     newlw->show();
     oldlw->mdiArea()->removeSubWindow(mdiSubWindow);
+
+    // It seems that when you remove a subwindow from mdiArea, the remaining windows
+    // become unmaximized, so here we fix that if they had been previously maximized
     if (ismax) {
         QList<QMdiSubWindow *> lst(oldlw->mdiArea()->subWindowList());
         if (!lst.isEmpty())
@@ -515,13 +515,12 @@ void UIManager::popOutMainView() {
         mdiSubWindow->showMaximized();
     }
 
+    // Add the new one in the same maximized state as it was before popping out
     newlw->mdiArea()->addSubWindow(mdiSubWindow);
-    if (ismax) {
+    if (ismax)
         mdiSubWindow->showMaximized();
-    }
-    else {
+    else
         mdiSubWindow->showNormal();
-    }
     newlw->updateLibActions(true);
     m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiSubWindow, newlw});
     cvlog(m_connViews, m_pLogger);
