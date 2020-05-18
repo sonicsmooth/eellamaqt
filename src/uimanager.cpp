@@ -43,13 +43,13 @@ void ConnView::log(ILogger *lgr) {
                     viewType == ViewType::LIBFOOTPRINTVIEW ? "LibFootprintView" : "really invalid");
     std::string title(std::filesystem::path(fullpath).filename().string());
     lgr->log("%-19s  %-13s  0x%08x  0x%08x  0x%08x  0x%08x", 
-    title.c_str(), vts.c_str(), model, view, mdiWidget, mainWindow);
+    title.c_str(), vts.c_str(), model, view, subWidget, mainWindow);
 }
 
 void cvlog(ConnViews cvs, ILogger *lgr) {
     lgr->log("");
     lgr->log("%-19s  %-13s  %-10s  %-10s  %-10s  %-10s", 
-        "Fullpath","ViewType","Model","View","Widget","Mainwindow");
+        "Fullpath","ViewType","Model","View","SubWidget","Mainwindow");
     for (auto cv : cvs)
         cv.log(lgr);
 }
@@ -96,14 +96,14 @@ auto getFullpathFromModel(QAbstractItemModel *model) {
 std::optional<ConnView> UIManager::selectWhere(QDockWidget *w) {
     // Return first entry where fields match, else nullopt
     for (auto cv : m_connViews)
-        if (cv.mdiWidget == w)
+        if (cv.subWidget == w)
             return std::move(cv);
     return std::nullopt;
 }
 std::optional<ConnView> UIManager::selectWhere(QMdiSubWindow *w) {
     // Return first entry where fields match, else nullopt
     for (auto cv : m_connViews)
-        if (cv.mdiWidget == w)
+        if (cv.subWidget == w)
             return std::move(cv);
     return std::nullopt;
 }
@@ -299,7 +299,7 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         assert(view->model() == model);
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
-        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMainWidgetClose);
+        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiWidgetClose);
         mw->mdiArea()->addSubWindow(widget);
         widget->show();
         m_connViews.push_back({fullpath, vt, model, view, widget, mw});
@@ -317,7 +317,7 @@ void UIManager::onDockWidgetClose(QWidget *pw) {
     lw->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() &&
                       selectWhere([lw](ConnView cv) -> bool {return cv.view && cv.mainWindow == lw;}));
 }
-void UIManager::onMainWidgetClose(QWidget *w) {
+void UIManager::onMdiWidgetClose(QWidget *w) {
     // Make sure we're actually getting an MDIWidget
     // aka mainWidget informally, which is different from mainWindow informally
 
@@ -336,8 +336,8 @@ void UIManager::onMainWidgetClose(QWidget *w) {
     if (mainViews.size() == 1) {
         // nothing else found, so close all (aux) views and close library
         for (auto cv : selectWheres(fullpath)) {
-            cv.mdiWidget->blockSignals(true);
-            cv.mdiWidget->close();
+            cv.subWidget->blockSignals(true);
+            cv.subWidget->close();
             m_connViews.remove(cv);
             cvlog(m_connViews, m_pLogger);
         }
@@ -481,29 +481,33 @@ void UIManager::duplicateMainView() {
     auto [fullpath, _x, _y] = getFullpathFromModel(model);
     openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW);
 }
-void UIManager::popOutView() {
-    // Move current symbol view into new window
+void UIManager::popOutMainView() {
+    // Move current symbol or main QMdiSubWindow into new window
     // This is a precursor to tear-away mdi subwindow
-    //QMainWindow *mw(activeMainWindow());
 
-    QMdiSubWindow *mdiWidget(static_cast<QMdiSubWindow *>(activeLibWidget()));
-    assert(mdiWidget);
-    auto selectopt(selectWhere(mdiWidget));
+    QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
+    assert(mdiSubWindow);
+    auto selectopt(selectWhere(mdiSubWindow));
     assert(selectopt);
     ConnView cv(*selectopt);
     m_connViews.remove(cv);
     
     LibWindow *oldlw(activeLibWindow());
     LibWindow *newlw(static_cast<LibWindow *>(duplicateWindow()));
-    oldlw->mdiArea()->removeSubWindow(mdiWidget);
-    newlw->mdiArea()->addSubWindow(mdiWidget);
-    mdiWidget->showMaximized();
+    oldlw->mdiArea()->removeSubWindow(mdiSubWindow);
+    newlw->mdiArea()->addSubWindow(mdiSubWindow);
+    mdiSubWindow->showMaximized();
 
     newlw->updateLibActions(true);
-    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiWidget, newlw});
+    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiSubWindow, newlw});
     cvlog(m_connViews, m_pLogger);
-
-
-    
-    
+}
+void UIManager::closeMainView() {
+    // Closes current main QMdiSubWindow
+    QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
+    assert(mdiSubWindow);
+    auto selectopt(selectWhere(mdiSubWindow));
+    assert(selectopt);
+    mdiSubWindow->close();
+    m_connViews.remove(*selectopt);
 }

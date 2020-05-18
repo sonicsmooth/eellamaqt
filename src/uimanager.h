@@ -31,7 +31,7 @@ typedef struct connview {
     ViewType viewType;
     QAbstractItemModel *model;
     QAbstractItemView *view;
-    QWidget *mdiWidget;
+    QWidget *subWidget; // colud be QMdiSubWindow or QDockWidget
     QMainWindow *mainWindow;
     // operator== is used for removing a struct from m_connViews
     bool operator==(const struct connview& a) const
@@ -40,7 +40,7 @@ typedef struct connview {
                   a.viewType == this->viewType &&
                   a.model == this->model &&
                   a.view  == this->view &&
-                  a.mdiWidget == this->mdiWidget &&
+                  a.subWidget == this->subWidget &&
                   a.mainWindow == this->mainWindow);
     }
     void log(ILogger *);
@@ -101,13 +101,14 @@ private:
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
     void onDockWidgetClose(QWidget *);
-    void onMainWidgetClose(QWidget *);
+    void onMdiWidgetClose(QWidget *);
     void onMainWindowClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
     
 
 public:
     UIManager(QObject * = nullptr);
+    std::list<QMainWindow *> mainWindows(); // Returns list of main windows
     void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
     void notifyDbClose(IDbIf *, std::string) override;
     void notifyDbRename(IDbIf *, std::string, std::string) override;
@@ -117,10 +118,9 @@ public:
     void *duplicateWindow(void *) override; // duplicate given w/o children
     void closeWindow() override; // Closes current top level window
     void closeWindow(void *) override; // Closes given window
-    std::list<QMainWindow *> mainWindows(); // Returns list of main windows
-    void duplicateMainView();
-    void popOutView() override;;
-
+    void duplicateMainView() override;
+    void popOutMainView() override;
+    void closeMainView() override;
 
 public slots:
     //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);

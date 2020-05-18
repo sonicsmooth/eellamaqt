@@ -23,7 +23,9 @@ public:
     virtual void *duplicateWindow(void *) = 0;  // Dupes size/pos without children
     virtual void closeWindow() = 0; // Closes current top level window
     virtual void closeWindow(void *) = 0; // Closes given window
-    virtual void popOutView() = 0;
+    virtual void duplicateMainView() = 0;
+    virtual void popOutMainView() = 0;
+    virtual void closeMainView() = 0;
 };
 
 //IUIManager::~IUIManager() = default;

@@ -33,24 +33,17 @@ int main(int argc, char *argv[])
     //ai.show();
 
 
-    // Set up logger and its log window
+    // Set up logger and its log window, and notify when textEdit is destroyed
     QTextEdit *pte = new QTextEdit();
-    pte->setFontFamily("Consolas");
     Logger logger(pte);
+    QObject::connect(pte, &QTextEdit::destroyed, &logger, &Logger::nullifyLogger);
+    pte->setFontFamily("Consolas");
 
     ClosingDockWidget* pLogWidget = new ClosingDockWidget;
     pLogWidget->setAttribute(Qt::WA_DeleteOnClose, true);
     pLogWidget->setWindowTitle("Log");
-    pLogWidget->setWidget(pte);
+    pLogWidget->setWidget(pte); // pLogWidget owns textEdit
 
-    //pte->setAttribute(Qt::WA_DeleteOnClose, true);
-    pLogWidget->setAttribute(Qt::WA_DeleteOnClose, true);
-
-    // If the text widget closes, then notify logger
-//    auto nullifyLogger([&](){
-//        logger.setTextEdit(nullptr);
-//    });
-    QObject::connect(pte, &QTextEdit::destroyed, &logger, &Logger::nullifyLogger);
 
     // Set up database interface
     dbif.setLogger(&logger);

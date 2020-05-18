@@ -58,6 +58,7 @@ public:
     void editPaste();
     void editDelete();
     void duplicateMainView();
+    void popOutMainView();
     void closeMainView();
     void toggleLibTreeView();
     void toggleLibTableView();
@@ -66,7 +67,6 @@ public:
     void helpAbout();
     void reloadStyle();
     void mdiTabMode();
-    void popOutView();
 
     // Overloaded
     void changeEvent(QEvent *) override;

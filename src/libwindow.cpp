@@ -70,7 +70,7 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
     connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
     connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
-    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &LibWindow::popOutView);
+    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &LibWindow::popOutMainView);
     connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &LibWindow::duplicateMainView);
     connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::closeMainView);
     connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::toggleLibTreeView);
@@ -380,8 +380,14 @@ void LibWindow::duplicateMainView() {
     UIManager *uim(static_cast<UIManager *>(m_pCore->UIManager()));
     uim->duplicateMainView();
 }
+void LibWindow::popOutMainView() {
+    // Initiates popOutView of current view widget
+    assert(m_pCore);
+    m_pCore->UIManager()->popOutMainView();
+}
 void LibWindow::closeMainView() {
-    log("Close Symbol View");
+    assert(m_pCore);
+    m_pCore->UIManager()->closeMainView();
 }
 
 void LibWindow::toggleLibTreeView() {
@@ -436,11 +442,6 @@ void LibWindow::mdiTabMode() {
     updateTabActions();
 }
 
-void LibWindow::popOutView() {
-    // Initiates popOutView of current view widget
-    assert(m_pCore);
-    m_pCore->UIManager()->popOutView();
-}
 
 void LibWindow::changeEvent(QEvent *e) {
     if (e->type() == QEvent::WindowActivate && isActiveWindow())
