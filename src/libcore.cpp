@@ -54,7 +54,7 @@ void LibCore::openLib(std::string fullpath) {
         m_pDbIf->openDatabase(fullpath);
     }
     if (m_pUIManager)
-    m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
+        m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
 
 }
 

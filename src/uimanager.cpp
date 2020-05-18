@@ -284,7 +284,7 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
     QObject::connect(mw, &QMainWindow::tabifiedDockWidgetActivated, this, &UIManager::onDockWidgetActivate);
     QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
 }
-void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
+QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
 
@@ -299,25 +299,37 @@ void UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         assert(view->model() == model);
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
-        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiWidgetClose);
+        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
         mw->mdiArea()->addSubWindow(widget);
-        widget->show();
+        if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView)
+            widget->showMaximized();
+        else
+            widget->show();
         m_connViews.push_back({fullpath, vt, model, view, widget, mw});
         cvlog(m_connViews, m_pLogger);
+        return widget;
 
     } else {
 
     }
  }
+ void UIManager::onDockWidgetActivate(QWidget *pw) {
+    // For some reason this gets called twice when each tab is clicked
+    assert(m_pCore);
+    auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
+    auto [fullpath, _x, _y] = getFullpathFromModel(model);
+    log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
+    m_pCore->activateLib(fullpath);
+}
 void UIManager::onDockWidgetClose(QWidget *pw) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
-    //removeView(pw);
+    (void) pw;
     LibWindow *lw(activeLibWindow());
     lw->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() &&
-                      selectWhere([lw](ConnView cv) -> bool {return cv.view && cv.mainWindow == lw;}));
+                      selectWhere([lw](ConnView cv){return cv.view && cv.mainWindow == lw;}));
 }
-void UIManager::onMdiWidgetClose(QWidget *w) {
+void UIManager::onMdiSubWindowClose(QWidget *w) {
     // Make sure we're actually getting an MDIWidget
     // aka mainWidget informally, which is different from mainWindow informally
 
@@ -368,14 +380,6 @@ void UIManager::onMainWindowClose(QWidget *w) {
     m_connViews.remove(selectopt.front());
     cvlog(m_connViews, m_pLogger);
 }
-void UIManager::onDockWidgetActivate(QWidget *pw) {
-    // For some reason this gets called twice when each tab is clicked
-    assert(m_pCore);
-    auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
-    auto [fullpath, _x, _y] = getFullpathFromModel(model);
-    log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
-    m_pCore->activateLib(fullpath);
-}
 
 
 // PUBLIC
@@ -383,8 +387,8 @@ UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
     m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
-    m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
-    m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
+    //m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
+    //m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
 }
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     for (auto uit : m_defaultViewTypes) {
@@ -392,7 +396,8 @@ void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     }
 }
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
-    // (void) dbif;
+    (void) dbif;
+    (void) fullpath;
     // // Close all widgets that are downstream from fullpath
     // // Suspend event before closing
     // log("Notify close %s", fullpath.c_str());
@@ -412,25 +417,30 @@ void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string new
 void *UIManager::newWindow()  {
     // Creates new top level window using members from this UIManager instance
     return newWindow(core(), logger());
-};
+}
 void *UIManager::newWindow(LibCore *core, ILogger *lgr)  {
     // Creates new top level window using given members
     LibWindow *w(new LibWindow());
     w->setCore(core);
     w->setLogger(lgr);
     w->setAttribute(Qt::WA_DeleteOnClose);
-    w->show();
+    //w->show();
 
     QObject::connect(w, &LibWindow::closing, this, &UIManager::onMainWindowClose);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);
     return w;
 
-};
+}
 void *UIManager::duplicateWindow() {
-    LibWindow *oldlw(activeLibWindow());
-    QMdiArea *oa(oldlw->mdiArea());
+    // Duplicate the active window
+    return duplicateWindow(activeLibWindow());
+}
+void *UIManager::duplicateWindow(void *oldw) {
+    // Duplicate the given window
+    LibWindow *oldlw(static_cast<LibWindow *>(oldw));
     LibWindow *newlw(static_cast<LibWindow *>(newWindow()));
+    QMdiArea *oa(oldlw->mdiArea());
     QMdiArea *na(newlw->mdiArea());
     na->setActivationOrder(oa->activationOrder());
     na->setBackground(oa->background());
@@ -440,13 +450,9 @@ void *UIManager::duplicateWindow() {
     na->setTabsClosable(oa->tabsClosable());
     na->setTabsMovable(oa->tabsMovable());
     na->setViewMode(oa->viewMode());
-    newlw->show();
     newlw->move(oldlw->pos() + QPoint(50,50));
     newlw->resize(oldlw->size());
     return newlw;
-}
-void *UIManager::duplicateWindow(void *) {
-    return nullptr;
 }
 void UIManager::closeWindow() {
     // Closes current top level window
@@ -479,14 +485,20 @@ void UIManager::duplicateMainView() {
     assert(mdiWidget);
     auto [model, view, vt] = getModelViewFromWidget(mdiWidget);
     auto [fullpath, _x, _y] = getFullpathFromModel(model);
-    openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW);
+    QWidget * newWidget(openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW));
+    QMdiSubWindow *newMdiWidget(static_cast<QMdiSubWindow *>(newWidget));
+    if (mdiWidget->isMaximized())
+        newMdiWidget->showMaximized();
+
 }
 void UIManager::popOutMainView() {
     // Move current symbol or main QMdiSubWindow into new window
     // This is a precursor to tear-away mdi subwindow
+    // Keep maximized or non-maximized state in src and dst windows
 
     QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
     assert(mdiSubWindow);
+    bool ismax(mdiSubWindow->isMaximized());
     auto selectopt(selectWhere(mdiSubWindow));
     assert(selectopt);
     ConnView cv(*selectopt);
@@ -494,10 +506,22 @@ void UIManager::popOutMainView() {
     
     LibWindow *oldlw(activeLibWindow());
     LibWindow *newlw(static_cast<LibWindow *>(duplicateWindow()));
+    newlw->show();
     oldlw->mdiArea()->removeSubWindow(mdiSubWindow);
-    newlw->mdiArea()->addSubWindow(mdiSubWindow);
-    mdiSubWindow->showMaximized();
+    if (ismax) {
+        QList<QMdiSubWindow *> lst(oldlw->mdiArea()->subWindowList());
+        if (!lst.isEmpty())
+            lst.first()->showMaximized();
+        mdiSubWindow->showMaximized();
+    }
 
+    newlw->mdiArea()->addSubWindow(mdiSubWindow);
+    if (ismax) {
+        mdiSubWindow->showMaximized();
+    }
+    else {
+        mdiSubWindow->showNormal();
+    }
     newlw->updateLibActions(true);
     m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiSubWindow, newlw});
     cvlog(m_connViews, m_pLogger);

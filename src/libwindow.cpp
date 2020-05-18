@@ -173,9 +173,9 @@ void LibWindow::updateLibActions(bool en) {
 void LibWindow::updateTabActions() {
     // Set tabbed/normal menu text based on current mode
     if (ui->mdiArea->viewMode() == QMdiArea::ViewMode::TabbedView)
-        ui->actionTabs->setText("Non-tabs");
+        ui->actionTabs->setText("Show as subwindows");
     else
-        ui->actionTabs->setText("Tabs");
+        ui->actionTabs->setText("Show as tabs");
 }
 
 void LibWindow::updateTitle() {
@@ -232,7 +232,9 @@ void LibWindow::fileOpenLib() {
         QApplication::setActiveWindow(this); // shouldn't be necessary
         for (QString f : qfd.selectedFiles()) {
             m_pCore->openLib(f.toStdString());
-            QApplication::processEvents();
+            // this causes crash when opening multiple 
+            // mdi widgets maximized.
+            //QApplication::processEvents();
         }
 
     }
@@ -409,8 +411,8 @@ void LibWindow::toggleLibTableView() {
 
 void LibWindow::newWindow() {
     assert(m_pCore);
-    m_pCore->UIManager()->duplicateWindow();
-    static_cast<UIManager *>(m_pCore->UIManager())->mainWindows().back()->show();
+    QWidget *w(static_cast<QWidget *>(m_pCore->UIManager()->duplicateWindow()));
+    w->show();
 }
 void LibWindow::closeWindow() {
     assert(m_pCore);

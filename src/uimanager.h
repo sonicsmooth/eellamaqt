@@ -97,13 +97,13 @@ private:
     ClosingMDIWidget *makeMDILibWidget(QWidget *, QAbstractItemView *, std::string);
     ClosingDockWidget *makeCDWLibWidget(QWidget *, QAbstractItemView *, std::string);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right
-    void openUI(IDbIf *, std::string, ViewType); // opens named UI type
+    QWidget *openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
-    void onDockWidgetClose(QWidget *);
-    void onMdiWidgetClose(QWidget *);
-    void onMainWindowClose(QWidget *);
     void onDockWidgetActivate(QWidget *);
+    void onDockWidgetClose(QWidget *);
+    void onMdiSubWindowClose(QWidget *);
+    void onMainWindowClose(QWidget *);
     
 
 public:
