@@ -67,6 +67,8 @@ public:
     void helpAbout();
     void reloadStyle();
     void mdiTabMode();
+    void mdiTileSubWindows();
+    void mdiCascadeSubWindows();
 
     // Overloaded
     void changeEvent(QEvent *) override;

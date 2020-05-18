@@ -80,8 +80,8 @@ LibWindow::LibWindow(QWidget *parent)
     connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
     connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
     connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
-    connect(ui->actionTile, &QAction::triggered, [=]{ui->mdiArea->tileSubWindows();});
-    connect(ui->actionCascade, &QAction::triggered, [=]{ui->mdiArea->cascadeSubWindows();});
+    connect(ui->actionTile, &QAction::triggered, this, &LibWindow::mdiTileSubWindows);
+    connect(ui->actionCascade, &QAction::triggered, this, &LibWindow::mdiCascadeSubWindows);
 
     updateLibActions(false);
 
@@ -441,6 +441,17 @@ void LibWindow::mdiTabMode() {
         ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
     else
         ui->mdiArea->setViewMode(QMdiArea::ViewMode::TabbedView);
+    updateTabActions();
+}
+
+void LibWindow::mdiTileSubWindows() {
+    ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
+    ui->mdiArea->tileSubWindows();
+    updateTabActions();
+}
+void LibWindow::mdiCascadeSubWindows() {
+    ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
+    ui->mdiArea->cascadeSubWindows();
     updateTabActions();
 }
 
