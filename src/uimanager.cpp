@@ -319,8 +319,11 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
         QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
+        QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
         mw->mdiArea()->addSubWindow(widget);
-        if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView)
+        if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
+            (swl.size() > 0 && swl.first()->isMaximized() ||
+             swl.size() == 0))
             widget->showMaximized();
         else
             widget->show();
@@ -382,7 +385,8 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
 
     // We know that mainWindows are represented in m_connViews at least once
     // with INVALID ViewType Loop through mainWindows and if the list for these
-    // with not INVALID viewtype is empty, then disable that window's actions
+    // with not INVALID viewtype is empty, then disable that window's actions.
+    // This could probably be a separate function
     for (auto mwcv : selectWheres(ViewType::INVALID)) {
         if (!selectWhere([mwcv](ConnView cv){return cv.viewType != ViewType::INVALID &&
                                                     cv.mainWindow == mwcv.mainWindow;}))
