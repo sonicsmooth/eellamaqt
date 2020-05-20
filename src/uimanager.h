@@ -81,8 +81,11 @@ private:
     template <typename F>
     std::optional<ConnView> selectWhere(F&&);
     ConnViews selectWheres(std::string);
+    ConnViews selectWheres(ViewType);
     ConnViews selectWheres(QMainWindow *);
     ConnViews selectWheres(std::string, ViewType);
+    //template <typename F>
+    //ConnViews selectWheres(F&&);
     LibWindow *activeLibWindow();
     QMainWindow *activeMainWindow();
     ClosingMDIWidget *activeLibWidget();
@@ -91,9 +94,9 @@ private:
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTableModel(IDbIf *, std::string);
-    QAbstractItemView *makeLibSymbolView(QAbstractItemModel * /*, std::string*/);
-    QAbstractItemView *makeLibTreeView(QAbstractItemModel * /*, std::string*/);
-    QAbstractItemView *makeLibTableView(QAbstractItemModel * /*, std::string*/);
+    QAbstractItemView *makeLibSymbolView(QAbstractItemModel *);
+    QAbstractItemView *makeLibTreeView(QAbstractItemModel *);
+    QAbstractItemView *makeLibTableView(QAbstractItemModel *);
     ClosingMDIWidget *makeMDILibWidget(QWidget *, QAbstractItemView *, std::string);
     ClosingDockWidget *makeCDWLibWidget(QWidget *, QAbstractItemView *, std::string);
     void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right

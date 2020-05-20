@@ -128,7 +128,7 @@ std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt, QM
             return std::move(cv);
     return std::nullopt;
 }
-template<typename F>
+template <typename F>
 std::optional<ConnView> UIManager::selectWhere(F&& fn) {
     // Return first entry where predicate is true, else nullopt
     for (auto cv : m_connViews)
@@ -141,6 +141,15 @@ ConnViews UIManager::selectWheres(std::string conn) {
     ConnViews retval;
     for (auto cv: m_connViews)
         if(cv.fullpath == conn)
+            retval.push_back(cv);
+    return retval;
+}
+ConnViews UIManager::selectWheres(ViewType vt) {
+    // Go through each item in cvs and return list of matching entries
+    // List is empty if nothing is found
+    ConnViews retval;
+    for (auto cv: m_connViews)
+        if(cv.viewType == vt)
             retval.push_back(cv);
     return retval;
 }
@@ -161,6 +170,16 @@ ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
             retval.push_back(cv);
     return retval;
 }
+// template <typename F>
+// ConnViews UIManager::selectWheres(F&& fn) {
+//     // Go through each item in cvs and return list where fn(cv) is true
+//     // List is empty if nothing is found
+//     ConnViews retval;
+//     for (auto cv: m_connViews)
+//         if(fn(cv))
+//             retval.push_back(cv);
+//     return retval;
+// }
 
 LibWindow *UIManager::activeLibWindow() {
     return static_cast<LibWindow *>(QApplication::activeWindow());
@@ -287,7 +306,7 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
 QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
-
+    // TODO: Don't automatically maximize -- open based on viewmode
     if (vt == ViewType::LIBSYMBOLVIEW) {
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
@@ -361,15 +380,14 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
         cvlog(m_connViews, m_pLogger);
     }
 
-    // TODO: When lib is closed, make sure all mainwindows have updated menus
-    // TODO: not just the one that held the button that was clicked
-    LibWindow *libWindow(activeLibWindow());
-    assert(libWindow);
-    auto fn([libWindow](ConnView cv) -> bool {
-        return cv.view && cv.mainWindow == libWindow;
-    });
-    libWindow->mdiArea()->activateNextSubWindow();
-    libWindow->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() && selectWhere(fn));
+    // We know that mainWindows are represented in m_connViews at least once
+    // with INVALID ViewType Loop through mainWindows and if the list for these
+    // with not INVALID viewtype is empty, then disable that window's actions
+    for (auto mwcv : selectWheres(ViewType::INVALID)) {
+        if (!selectWhere([mwcv](ConnView cv){return cv.viewType != ViewType::INVALID &&
+                                                    cv.mainWindow == mwcv.mainWindow;}))
+            static_cast<LibWindow *>(mwcv.mainWindow)->updateLibActions(false);
+    }
 }
 void UIManager::onMainWindowClose(QWidget *w) {
     // Make sure we're actually getting a LibWindow
@@ -452,12 +470,12 @@ void *UIManager::duplicateWindow(void *oldw) {
     return newlw;
 }
 void UIManager::closeWindow() {
-    // Closes current top level window
-    // Not sure what happens to log window and textedit pointers
-    // when first mainwindow is closed.  They appear to stick around,
-    // but don't cause a seg fault when invoked by remaining windows.
-    // TODO: send signal from either logger or text edit to clients
-    // telling them to clear pointer.
+    // Closes current top level window As this and children are closed, they may
+    // also be destroyed if their WA_DeletOnClose property is set. If this is
+    // true, then it's possible that the textEdit object gets destroyed, leading
+    // to the Logger pointing to a ghost.  Main() should connect the destroyed
+    // signal from the textedit to the Logger telling Logger to reset its
+    // textedit pointer.
     activeMainWindow()->close();
 }
 void UIManager::closeWindow(void *window) {
@@ -527,6 +545,7 @@ void UIManager::popOutMainView() {
 }
 void UIManager::closeMainView() {
     // Closes current main QMdiSubWindow
+    // TODO: Make sure proper mdisubwindow is activated to close
     QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
     assert(mdiSubWindow);
     auto selectopt(selectWhere(mdiSubWindow));
