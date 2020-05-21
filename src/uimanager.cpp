@@ -35,6 +35,17 @@
 #include <functional>
 
 
+// Standalone functions
+LibWindow *activeLibWindow();
+QMainWindow *activeMainWindow();
+QMdiSubWindow *activeMdiSubWindow();
+template <typename T_WIDGET>
+auto modelViewFromWidget(T_WIDGET *pw);
+auto fullpathFromModel(QAbstractItemModel *model);
+std::string fullpathFromMdiSubWindow(QMdiSubWindow *);
+std::string fullpathFromActiveMdiSubWindow();
+
+
 void ConnView::log(ILogger *lgr) {
     std::string vts(viewType == ViewType::INVALID          ? "INVALID"          :
                     viewType == ViewType::LIBSYMBOLVIEW    ? "LibSymbolView"    :
@@ -58,9 +69,25 @@ void cvlog(ConnViews cvs, ILogger *lgr) {
 //////////
 // LOCAL
 //////////
+// TODO: returning final null is okay if the final fn call is legit
+LibWindow *activeLibWindow() {
+    return static_cast<LibWindow *>(QApplication::activeWindow());
+}
+QMainWindow *activeMainWindow() {
+    return static_cast<QMainWindow *>(QApplication::activeWindow());
+}
+QMdiSubWindow *activeMdiSubWindow() {
+    auto alw(activeLibWindow());
+    assert(alw);
+    auto mdia(alw->mdiArea());
+    assert(mdia);
+    return mdia->activeSubWindow();
+    //return activeLibWindow()->mdiArea()->activeSubWindow();
+}
 template <typename T_WIDGET>
-auto getModelViewFromWidget(T_WIDGET *pw) {
-    T_WIDGET *qdw(static_cast<T_WIDGET *>(pw));
+auto modelViewFromWidget(T_WIDGET *pw) {
+    // Attempt to cast model to different things to determine vt
+    T_WIDGET *qdw(static_cast<T_WIDGET *>(pw)); // TODO: necessary?
     QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
     QAbstractItemModel *model(view->model());
     ViewType vt(dynamic_cast<LibSymbolView *>(view) ? ViewType::LIBSYMBOLVIEW :
@@ -74,8 +101,7 @@ auto getModelViewFromWidget(T_WIDGET *pw) {
     };
     return retVals {model, view, vt};
 }
-auto getFullpathFromModel(QAbstractItemModel *model) {
-    // Attempt to cast model to different things to determine vt
+auto fullpathFromModel(QAbstractItemModel *model) {
     QSqlTreeModel *treeModel(dynamic_cast<QSqlTreeModel *>(model));
     QSqlTableModel *tableModel(dynamic_cast<QSqlTableModel *>(model));
     std::string fullpath(treeModel  ? treeModel->database().connectionName().toStdString():
@@ -88,7 +114,15 @@ auto getFullpathFromModel(QAbstractItemModel *model) {
     };
     return retVals {fullpath, treeModel, tableModel};
 }
-
+std::string fullpathFromMdiSubWindow(QMdiSubWindow *w){
+    assert(w);
+    auto [model, _v, vt] = modelViewFromWidget(w);
+    auto [fullpath, _x, _y] = fullpathFromModel(model);
+    return fullpath;
+}
+std::string fullpathFromActiveMdiSubWindow() {
+    return fullpathFromMdiSubWindow(activeMdiSubWindow());
+}
 
 //////////
 // PRIVATE
@@ -170,31 +204,7 @@ ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
             retval.push_back(cv);
     return retval;
 }
-// template <typename F>
-// ConnViews UIManager::selectWheres(F&& fn) {
-//     // Go through each item in cvs and return list where fn(cv) is true
-//     // List is empty if nothing is found
-//     ConnViews retval;
-//     for (auto cv: m_connViews)
-//         if(fn(cv))
-//             retval.push_back(cv);
-//     return retval;
-// }
 
-// TODO: Make these safer, ie do asserts between chain of calls
-// TODO: returning final null is okay if the final fn call is legit
-LibWindow *UIManager::activeLibWindow() {
-    return static_cast<LibWindow *>(QApplication::activeWindow());
-}
-QMainWindow *UIManager::activeMainWindow() {
-    return static_cast<QMainWindow *>(QApplication::activeWindow());
-}
-ClosingMDIWidget *UIManager::activeLibWidget() {
-    return static_cast<ClosingMDIWidget *>(activeLibWindow()->mdiArea()->activeSubWindow());
-}
-QMdiSubWindow *UIManager::activeMdiSubWindow() {
-    return activeLibWindow()->mdiArea()->activeSubWindow();
-}
 
 QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
@@ -339,8 +349,8 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
  void UIManager::onDockWidgetActivate(QWidget *pw) {
     // For some reason this gets called twice when each tab is clicked
     assert(m_pCore);
-    auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
-    auto [fullpath, _x, _y] = getFullpathFromModel(model);
+    auto [model, _v, vt] = modelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
+    auto [fullpath, _x, _y] = fullpathFromModel(model);
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
 }
@@ -356,11 +366,14 @@ void UIManager::onDockWidgetClose(QWidget *w) {
 }
 void UIManager::onMdiSubWindowActivate(QWidget *w){
     assert(m_pCore);
-    // TODO: disable warning for this on line. Qt documentation specifically
-    // says the value colud be 0. Doesn't say the value could be nullptr.  Of
-    // course these are the same, but we're trying to be correct here.
-    if (w == 0) return;
-    std::string fullpath(activeLibFullPath());
+    // TODO: disable warning for this one == 0 line. Qt documentation
+    // specifically says the value colud be 0. Doesn't say the value could be
+    // nullptr.  Of course these are the same, but we're trying to be correct
+    // here.
+    if (w == 0)
+        return;
+    QMdiSubWindow *sw(static_cast<QMdiSubWindow *>(w));
+    std::string fullpath(fullpathFromMdiSubWindow(sw));
     m_pCore->activateLib(fullpath);
 }
 void UIManager::onMdiSubWindowClose(QWidget *w) {
@@ -369,8 +382,8 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
 
     QMdiSubWindow *mdisw(dynamic_cast<QMdiSubWindow *>(w));
     assert(mdisw);
-    auto [model, _v, vt] = getModelViewFromWidget(static_cast<QMdiSubWindow *>(w));
-    auto [fullpath, _x, _y] = getFullpathFromModel(model);
+    auto [model, _v, vt] = modelViewFromWidget(static_cast<QMdiSubWindow *>(w));
+    auto [fullpath, _x, _y] = fullpathFromModel(model);
     assert(vt == ViewType::LIBSYMBOLVIEW);
 
     // Count total entries with this conn and vt.
@@ -516,8 +529,8 @@ void UIManager::duplicateMainView() {
     LibWindow *lw(activeLibWindow());
     QMdiSubWindow *mdiWidget(lw->mdiArea()->activeSubWindow());
     assert(mdiWidget);
-    auto [model, view, vt] = getModelViewFromWidget(mdiWidget);
-    auto [fullpath, _x, _y] = getFullpathFromModel(model);
+    auto [model, view, vt] = modelViewFromWidget(mdiWidget);
+    auto [fullpath, _x, _y] = fullpathFromModel(model);
     QWidget * newWidget(openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW));
     QMdiSubWindow *newMdiWidget(static_cast<QMdiSubWindow *>(newWidget));
     if (mdiWidget->isMaximized())
@@ -548,7 +561,7 @@ void UIManager::popOutMainView() {
         QList<QMdiSubWindow *> lst(oldlw->mdiArea()->subWindowList());
         if (!lst.isEmpty())
             lst.first()->showMaximized();
-        mdiSubWindow->showMaximized();
+        //mdiSubWindow->showMaximized();
     }
 
     // Add the new one in the same maximized state as it was before popping out
@@ -570,13 +583,4 @@ void UIManager::closeMainView() {
     sw->close();
     m_connViews.remove(*selectopt);
     cvlog(m_connViews, m_pLogger);
-}
-// TODO: change this to getFullpathFromActiveMdiSubWindow and getFullpathFromMdiSubWindow
-std::string UIManager::activeLibFullPath() {
-    QMdiSubWindow *mdisw(activeMdiSubWindow());
-    assert(mdisw);
-    auto [model, _v, vt] = getModelViewFromWidget(mdisw);
-    auto [fullpath, _x, _y] = getFullpathFromModel(model);
-    return fullpath;
-   
 }

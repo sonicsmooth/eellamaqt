@@ -26,7 +26,6 @@ public:
     virtual void duplicateMainView() = 0;
     virtual void popOutMainView() = 0;
     virtual void closeMainView() = 0;
-    virtual std::string activeLibFullPath() = 0;
 };
 
 //IUIManager::~IUIManager() = default;

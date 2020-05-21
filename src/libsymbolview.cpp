@@ -24,7 +24,7 @@ LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model) :
 
 }
 
-LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl /*, std::string connpath*/)
+LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl )
    /*: LibClient(pc, pl, connpath) */
     //m_model(model)
 {

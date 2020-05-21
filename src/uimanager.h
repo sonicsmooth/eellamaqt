@@ -48,6 +48,9 @@ typedef struct connview {
 typedef std::list<ConnView> ConnViews;
 void cvlog(ConnViews cvs, ILogger *lgr);
 
+
+
+
 // Why is this a QObject?
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
@@ -84,12 +87,6 @@ private:
     ConnViews selectWheres(ViewType);
     ConnViews selectWheres(QMainWindow *);
     ConnViews selectWheres(std::string, ViewType);
-    //template <typename F>
-    //ConnViews selectWheres(F&&);
-    LibWindow *activeLibWindow();
-    QMainWindow *activeMainWindow();
-    ClosingMDIWidget *activeLibWidget();
-    QMdiSubWindow *activeMdiSubWindow();
 
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
@@ -125,7 +122,6 @@ public:
     void duplicateMainView() override;
     void popOutMainView() override;
     void closeMainView() override;
-    std::string activeLibFullPath() override;
 
 public slots:
     //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);
