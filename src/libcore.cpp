@@ -178,7 +178,6 @@ void LibCore::activateLib(std::string fullpath) {
     assert(m_pDbIf);
     m_pDbIf->activateDatabase(fullpath);
 }
-
 void LibCore::newShape() {
 //     if (activeDb())
 //         log("LibCore: Creating a new shape in " + activeDb().value());

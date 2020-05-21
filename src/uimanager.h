@@ -105,6 +105,7 @@ private:
     //void removeView(QWidget *qw);
     void onDockWidgetActivate(QWidget *);
     void onDockWidgetClose(QWidget *);
+    void onMdiSubWindowActivate(QWidget *);
     void onMdiSubWindowClose(QWidget *);
     void onMainWindowClose(QWidget *);
     
@@ -124,6 +125,7 @@ public:
     void duplicateMainView() override;
     void popOutMainView() override;
     void closeMainView() override;
+    std::string activeLibFullPath() override;
 
 public slots:
     //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);

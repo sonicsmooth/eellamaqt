@@ -181,6 +181,8 @@ ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
 //     return retval;
 // }
 
+// TODO: Make these safer, ie do asserts between chain of calls
+// TODO: returning final null is okay if the final fn call is legit
 LibWindow *UIManager::activeLibWindow() {
     return static_cast<LibWindow *>(QApplication::activeWindow());
 }
@@ -306,7 +308,6 @@ void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea
 QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
-    // TODO: Don't automatically maximize -- open based on viewmode
     if (vt == ViewType::LIBSYMBOLVIEW) {
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
@@ -318,17 +319,17 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         assert(view->model() == model);
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
-        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
         QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
         mw->mdiArea()->addSubWindow(widget);
         if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
-            (swl.size() > 0 && swl.first()->isMaximized() ||
-             swl.size() == 0))
+            ((swl.size() > 0 && swl.first()->isMaximized()) ||
+             (swl.size() == 0)))
             widget->showMaximized();
         else
             widget->show();
         m_connViews.push_back({fullpath, vt, model, view, widget, mw});
         cvlog(m_connViews, m_pLogger);
+        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
         return widget;
 
     } else {
@@ -343,13 +344,24 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
 }
-void UIManager::onDockWidgetClose(QWidget *pw) {
+void UIManager::onDockWidgetClose(QWidget *w) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
-    (void) pw;
+    (void) w;
     LibWindow *lw(activeLibWindow());
+    // TODO: Make UIManager ignorant of DbIf.
+    // TODO: Call should just be m_pCore->isDatabaseOpen()
     lw->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() &&
                       selectWhere([lw](ConnView cv){return cv.view && cv.mainWindow == lw;}));
+}
+void UIManager::onMdiSubWindowActivate(QWidget *w){
+    assert(m_pCore);
+    // TODO: disable warning for this on line. Qt documentation specifically
+    // says the value colud be 0. Doesn't say the value could be nullptr.  Of
+    // course these are the same, but we're trying to be correct here.
+    if (w == 0) return;
+    std::string fullpath(activeLibFullPath());
+    m_pCore->activateLib(fullpath);
 }
 void UIManager::onMdiSubWindowClose(QWidget *w) {
     // Make sure we're actually getting an MDIWidget
@@ -421,11 +433,13 @@ void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     }
 }
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
-    // Close windows after being notified that library has closed
+    // Close QMdiSubWindows after being notified that library has closed
     ConnViews cvs(selectWheres(fullpath, ViewType::LIBSYMBOLVIEW));
     for (auto cv : cvs) {
         cv.subWidget->close();
     }
+    // TODO: activate next view??
+
     
     
 }
@@ -443,9 +457,9 @@ void *UIManager::newWindow(LibCore *core, ILogger *lgr)  {
     w->setCore(core);
     w->setLogger(lgr);
     w->setAttribute(Qt::WA_DeleteOnClose);
-    //w->show();
 
     QObject::connect(w, &LibWindow::closing, this, &UIManager::onMainWindowClose);
+    QObject::connect(w->mdiArea(), &QMdiArea::subWindowActivated, this, &UIManager::onMdiSubWindowActivate);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);
     return w;
@@ -549,11 +563,20 @@ void UIManager::popOutMainView() {
 }
 void UIManager::closeMainView() {
     // Closes current main QMdiSubWindow
-    // TODO: Make sure proper mdisubwindow is activated to close
-    QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
-    assert(mdiSubWindow);
-    auto selectopt(selectWhere(mdiSubWindow));
+    QMdiSubWindow *sw(activeMdiSubWindow());
+    assert(sw);
+    auto selectopt(selectWhere(sw));
     assert(selectopt);
-    mdiSubWindow->close();
+    sw->close();
     m_connViews.remove(*selectopt);
+    cvlog(m_connViews, m_pLogger);
+}
+// TODO: change this to getFullpathFromActiveMdiSubWindow and getFullpathFromMdiSubWindow
+std::string UIManager::activeLibFullPath() {
+    QMdiSubWindow *mdisw(activeMdiSubWindow());
+    assert(mdisw);
+    auto [model, _v, vt] = getModelViewFromWidget(mdisw);
+    auto [fullpath, _x, _y] = getFullpathFromModel(model);
+    return fullpath;
+   
 }
