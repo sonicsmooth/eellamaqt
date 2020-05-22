@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QTextEdit>
 #include <QString>
+#include <QEvent>
 
 
 #include <iostream>
@@ -24,6 +25,7 @@ public:
 	void log(std::string) override;
     void log(std::stringstream &) override; // clears string when done
     void log(QString);
+    void log(const QEvent *);
 public slots:
 	void nullifyLogger();
 };

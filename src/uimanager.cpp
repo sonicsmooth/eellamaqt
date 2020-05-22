@@ -372,6 +372,7 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // here.
     if (w == 0)
         return;
+    log("Activated 0x%x", w);
     QMdiSubWindow *sw(static_cast<QMdiSubWindow *>(w));
     std::string fullpath(fullpathFromMdiSubWindow(sw));
     m_pCore->activateLib(fullpath);
@@ -464,13 +465,14 @@ void *UIManager::newWindow()  {
     // Creates new top level window using members from this UIManager instance
     return newWindow(core(), logger());
 }
-void *UIManager::newWindow(LibCore *core, ILogger *lgr)  {
+void *UIManager::newWindow(LibCore *pcore, ILogger *plgr)  {
     // Creates new top level window using given members
-    LibWindow *w(new LibWindow());
-    w->setCore(core);
-    w->setLogger(lgr);
+    LibWindow *w(new LibWindow(nullptr, pcore, plgr));
+    //w->setCore(core);
+    //w->setLogger(lgr);
     w->setAttribute(Qt::WA_DeleteOnClose);
 
+    QObject::connect(w, &LibWindow::activated, [this, w]{log("LibWindow 0x%x activated", w);});
     QObject::connect(w, &LibWindow::closing, this, &UIManager::onMainWindowClose);
     QObject::connect(w->mdiArea(), &QMdiArea::subWindowActivated, this, &UIManager::onMdiSubWindowActivate);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});

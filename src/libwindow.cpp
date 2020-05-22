@@ -29,10 +29,11 @@
 #include <QMdiArea>
 
 
-
-LibWindow::LibWindow(QWidget *parent)
+LibWindow::LibWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     : QMainWindow(parent),
-    ui(new Ui::LibWindow)
+      Coreable(pcore),
+      Loggable(plgr),
+      ui(new Ui::LibWindow)
 {
     ui->setupUi(this);
 
@@ -456,9 +457,19 @@ void LibWindow::mdiCascadeSubWindows() {
 }
 
 
-void LibWindow::changeEvent(QEvent *e) {
-    if (e->type() == QEvent::WindowActivate && isActiveWindow())
-        emit activated();
+void LibWindow::changeEvent(QEvent *event) {
+//    if (m_pLogger)
+//        static_cast<Logger *>(m_pLogger)->log(event);
+    if (event->type() == QEvent::ActivationChange) {
+        //log("Event activate");
+        if (isActiveWindow()) {
+            //log("  isActiveWindow true");
+            emit activated();
+        } else {
+            //log(" isActiveWindow false");
+        }
+    }
+    QMainWindow::changeEvent(event);
 }
 
 void LibWindow::closeEvent(QCloseEvent *event) {

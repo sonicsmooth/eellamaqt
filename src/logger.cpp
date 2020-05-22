@@ -1,6 +1,8 @@
 
 #include "logger.h"
 #include <QString>
+#include <QEvent>
+#include <QMetaEnum>
 #include <memory>
 #include <cassert>
 
@@ -49,7 +51,18 @@ void Logger::log(QString msg) {
         return;
     m_pte->append(msg);
  }
-
+void Logger::log(const QEvent *ev) {
+    // Print out the event in human readable form
+    // from https://stackoverflow.com/questions/22535469/how-to-get-human-readable-event-type-from-qevent
+    if (m_pte == nullptr)
+        return;
+   static int eventEnumIndex = QEvent::staticMetaObject.indexOfEnumerator("Type");
+   QString name = QEvent::staticMetaObject.enumerator(eventEnumIndex).valueToKey(ev->type());
+      if (!name.isEmpty())
+          log(name);
+      else
+          log("%d", ev->type());
+}
 void Logger::nullifyLogger() {
     m_pte = nullptr;
 }

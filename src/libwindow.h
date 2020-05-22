@@ -24,7 +24,7 @@ private:
     Ui::LibWindow *ui;
 
 public:
-    LibWindow(QWidget *parent = nullptr);
+    LibWindow(QWidget *parent = nullptr, LibCore * = nullptr, ILogger * = nullptr);
     ~LibWindow() override;
     void updateLibActions(bool);
     void updateTabActions();
