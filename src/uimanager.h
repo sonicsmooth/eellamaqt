@@ -19,6 +19,7 @@
 #include <QAbstractItemView>
 #include <QStandardItemModel>
 #include <QAbstractItemView>
+#include <QTimer>
 
 #include <string>
 #include <map>
@@ -56,6 +57,7 @@ void cvlog(ConnViews cvs, ILogger *lgr);
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
 private:
+    QTimer m_hackTimer;
 
     std::map<ViewType, Qt::DockWidgetArea> dockWidgetAream = 
      {//{ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea},

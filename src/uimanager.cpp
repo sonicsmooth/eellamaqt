@@ -317,14 +317,17 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
     if (vt == ViewType::LIBSYMBOLVIEW) {
+        // Create or find appropriate model and view
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
         LibWindow *mw = activeLibWindow();
         assert(mw);
         auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
-        model = selectopt ? (*selectopt).model : (this->*makeModelfm[vt])(dbif, fullpath);
+        model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
         view = (this->*makeViewfm[vt])(model);
         assert(view->model() == model);
+        
+        // Create QMdiSubWindow and show properly
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
         QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
@@ -347,19 +350,12 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
         updateLibActions();
 
-        // Hack to activate current window
-        QTimer *tim = new QTimer();
-        tim->singleShot(10, [=]{
-            if (selectopt) {
-                QMainWindow *mw(selectopt->mainWindow);
-                log("Oneshot activating other 0x%08x", mw);
-                mw->activateWindow();
-                //mw->setFocus();
-            }
-           log("Oneshot activating 0x%08x", mw);
-           mw->activateWindow();
-           //mw->setFocus();
-        });
+        // Hack to activate current main window
+        // Select another window first, then select this one
+        m_hackTimer.singleShot(0, [=]{
+            if (selectopt)
+                selectopt->mainWindow->activateWindow();
+            mw->activateWindow();});
 
         return widget;
     } else {
@@ -499,7 +495,6 @@ void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
     for (auto cv : cvs) {
         cv.subWidget->close();
     }
-    // TODO: activate next view??
 }
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
     (void) dbif;
