@@ -222,7 +222,8 @@ void LibWindow::fileNewLib() {
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
     QDir home(QDir::home());
-    QFileDialog qfd(nullptr);//this);
+    log("File Open from 0x%08x", this);
+    QFileDialog qfd(this);
     // Set to /home/eellama libraries if it exists else home
     qfd.setDirectory(home.exists(GLibDir) ? home.filePath(GLibDir) : home);
     qfd.setFileMode(QFileDialog::ExistingFiles);
