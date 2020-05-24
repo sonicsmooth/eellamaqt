@@ -412,7 +412,18 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
     updateLibActions();
 
 }
-void UIManager::onMainWindowClose(QWidget *w) {
+void UIManager::onLibWindowActivate(QWidget *w) {
+    // Tell core which database to make active based on whatever subwindow is active
+    assert(m_pCore);
+    LibWindow *lw(static_cast<LibWindow *>(w));
+    QMdiSubWindow *sw(lw->mdiArea()->activeSubWindow());
+    if(sw) {
+        auto [model, _v, vt] = modelViewFromWidget(sw);
+        auto [fullpath, _x, _y] = fullpathFromModel(model);
+        m_pCore->DbIf()->activateDatabase(fullpath);
+    }
+}
+void UIManager::onLibWindowClose(QWidget *w) {
     // Make sure we're actually getting a LibWindow
     // aka mainWindow informally
     LibWindow *lw(dynamic_cast<LibWindow *>(w));
@@ -428,13 +439,7 @@ void UIManager::updateLibActions() {
     // Find mainwindows without any other associated views
     for (auto mwcv : selectWheres(ViewType::INVALID)) {
         LibWindow *lw(static_cast<LibWindow *>(mwcv.mainWindow));
-        ConnViews cvs(selectWheres(lw));
-        bool sz(cvs.size() > 1);
-        if (sz)
-            log("Setting 0x%08x to true", lw);
-        else
-            log("Setting 0x%08x to false", lw);
-        lw->updateLibActions(sz);
+        lw->updateLibActions(selectWheres(lw).size() > 1);
     }
 }
 
@@ -485,11 +490,8 @@ void *UIManager::newWindow(LibCore *pcore, ILogger *plgr)  {
     LibWindow *w(new LibWindow(nullptr, pcore, plgr));
     w->setAttribute(Qt::WA_DeleteOnClose);
 
-    QObject::connect(w, &LibWindow::activated, [this](LibWindow *w){
-        log("LibWindow 0x%x activated", w);
-        w->mdiArea()->activateNextSubWindow(); // Only activates with > 1 subwindows.
-    });
-    QObject::connect(w, &LibWindow::closing, this, &UIManager::onMainWindowClose);
+    QObject::connect(w, &LibWindow::activated, this, &UIManager::onLibWindowActivate);
+    QObject::connect(w, &LibWindow::closing, this, &UIManager::onLibWindowClose);
     QObject::connect(w->mdiArea(), &QMdiArea::subWindowActivated, this, &UIManager::onMdiSubWindowActivate);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);

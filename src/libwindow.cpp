@@ -83,8 +83,6 @@ LibWindow::LibWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
     connect(ui->actionTile, &QAction::triggered, this, &LibWindow::mdiTileSubWindows);
     connect(ui->actionCascade, &QAction::triggered, this, &LibWindow::mdiCascadeSubWindows);
-    connect(ui->actionActionsTrue, &QAction::triggered, [this](){updateLibActions(true);});
-    connect(ui->actionActionsFalse, &QAction::triggered, [this](){updateLibActions(false);});
 
     updateLibActions(false);
 
@@ -140,7 +138,6 @@ LibWindow::~LibWindow()
 }
 
 void LibWindow::updateLibActions(bool en) {
-    log("Up dateLibActions: 0x%08x", this);
     ui->actionFileRename->setEnabled(en);
     ui->actionFileSaveAs->setEnabled(en);
     ui->actionFileCloseLib->setEnabled(en);

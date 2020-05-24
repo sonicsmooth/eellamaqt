@@ -105,7 +105,8 @@ private:
 //    void onDockWidgetClose(QWidget *);
     void onMdiSubWindowActivate(QWidget *);
     void onMdiSubWindowClose(QWidget *);
-    void onMainWindowClose(QWidget *);
+    void onLibWindowActivate(QWidget *);
+    void onLibWindowClose(QWidget *);
     void updateLibActions();
     
 
