@@ -3,6 +3,7 @@
 #include <QString>
 #include <QEvent>
 #include <QMetaEnum>
+#include <QDebug>
 #include <memory>
 #include <cassert>
 
@@ -21,6 +22,7 @@ void Logger::vlog(const char *fmt, va_list argp) {
     std::unique_ptr<char> buff(new char [sz]);
     vsnprintf(buff.get(), sz, fmt, argp);
     m_pte->append(buff.get());
+    qDebug() << buff.get();
 }
 
 void Logger::log(const char *fmt, ...) {
@@ -36,12 +38,14 @@ void Logger::log(std::string msg) {
     if (m_pte == nullptr)
         return;
     m_pte->append(QString::fromStdString(msg));
+    qDebug() << QString::fromStdString(msg);
 }
 
 void Logger::log(std::stringstream & msg) {
     if (m_pte == nullptr)
         return;
     m_pte->append(QString::fromStdString(msg.str()));
+    qDebug() << QString::fromStdString(msg.str());
     // Clear stringstream when done
     msg.str(std::string());
 }
@@ -50,6 +54,7 @@ void Logger::log(QString msg) {
     if (m_pte == nullptr)
         return;
     m_pte->append(msg);
+    qDebug() << msg;
  }
 void Logger::log(const QEvent *ev) {
     // Print out the event in human readable form

@@ -45,6 +45,7 @@ typedef struct connview {
     }
     void log(ILogger *);
 } ConnView;
+
 typedef std::list<ConnView> ConnViews;
 void cvlog(ConnViews cvs, ILogger *lgr);
 
@@ -91,20 +92,21 @@ private:
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTableModel(IDbIf *, std::string);
-    QAbstractItemView *makeLibSymbolView(QAbstractItemModel *);
-    QAbstractItemView *makeLibTreeView(QAbstractItemModel *);
-    QAbstractItemView *makeLibTableView(QAbstractItemModel *);
-    ClosingMDIWidget *makeMDILibWidget(QWidget *, QAbstractItemView *, std::string);
-    ClosingDockWidget *makeCDWLibWidget(QWidget *, QAbstractItemView *, std::string);
-    void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right
+    QAbstractItemView  *makeLibSymbolView(QAbstractItemModel *);
+    QAbstractItemView  *makeLibTreeView(QAbstractItemModel *);
+    QAbstractItemView  *makeLibTableView(QAbstractItemModel *);
+    ClosingMDIWidget   *makeMDILibWidget(QWidget *, QWidget *, std::string);
+//    ClosingDockWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
+//    void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right
     QWidget *openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
-    void onDockWidgetActivate(QWidget *);
-    void onDockWidgetClose(QWidget *);
+//    void onDockWidgetActivate(QWidget *);
+//    void onDockWidgetClose(QWidget *);
     void onMdiSubWindowActivate(QWidget *);
     void onMdiSubWindowClose(QWidget *);
     void onMainWindowClose(QWidget *);
+    void updateLibActions();
     
 
 public:

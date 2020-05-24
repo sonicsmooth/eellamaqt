@@ -17,7 +17,7 @@ private:
 public:
 	Logger() = default;
 	Logger(QTextEdit* pte) : m_pte(pte) {}
-	~Logger() override;;
+    ~Logger() override;
 	QTextEdit* textEdit() { return m_pte; }
 	void setTextEdit(QTextEdit*);
     void vlog(const char *, va_list) override;

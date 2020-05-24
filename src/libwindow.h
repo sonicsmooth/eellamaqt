@@ -75,7 +75,7 @@ public:
     void closeEvent(QCloseEvent *) override;
 
     signals:
-    void activated() const;
+    void activated(LibWindow *) const;
     void closing(LibWindow *) const;
 
 

@@ -19,6 +19,7 @@
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 #include <QFileSystemModel>
+#include <QTimer>
 
 int main(int argc, char *argv[])
 {
@@ -62,6 +63,16 @@ int main(int argc, char *argv[])
     core.setDbIf(&dbif);
     core.setUIManager(&uim);
     core.setLogger(&logger);
+
+//    QApplication::processEvents();
+
+    // Debug test
+//    core.openLib("C:\\Users\\mschw\\EELLama Libraries\\NewLibrary.SchLib");
+//    LibWindow *w = static_cast<LibWindow *>(uim.newWindow());
+//    w->show();
+//    QApplication::processEvents();
+//    core.openLib("C:\\Users\\mschw\\EELLama Libraries\\NewLibrary09.SchLib");
+
 
     // Go!
      return app.exec();

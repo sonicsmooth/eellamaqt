@@ -83,6 +83,8 @@ LibWindow::LibWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
     connect(ui->actionTile, &QAction::triggered, this, &LibWindow::mdiTileSubWindows);
     connect(ui->actionCascade, &QAction::triggered, this, &LibWindow::mdiCascadeSubWindows);
+    connect(ui->actionActionsTrue, &QAction::triggered, [this](){updateLibActions(true);});
+    connect(ui->actionActionsFalse, &QAction::triggered, [this](){updateLibActions(false);});
 
     updateLibActions(false);
 
@@ -138,6 +140,7 @@ LibWindow::~LibWindow()
 }
 
 void LibWindow::updateLibActions(bool en) {
+    log("Up dateLibActions: 0x%08x", this);
     ui->actionFileRename->setEnabled(en);
     ui->actionFileSaveAs->setEnabled(en);
     ui->actionFileCloseLib->setEnabled(en);
@@ -218,28 +221,27 @@ void LibWindow::fileNewLib() {
     QString fullpath = currdir.filePath(libname_extended);
 
     m_pCore->newLib(fullpath.toStdString());
-    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::fileOpenLib() {
     assert(m_pCore);
     QDir home(QDir::home());
-    QFileDialog qfd(this);
+    QFileDialog qfd(nullptr);//this);
     // Set to /home/eellama libraries if it exists else home
     qfd.setDirectory(home.exists(GLibDir) ? home.filePath(GLibDir) : home);
     qfd.setFileMode(QFileDialog::ExistingFiles);
     qfd.setNameFilter("Any (*);;Library files (*.SchLib *.db)");
 
     if(qfd.exec()) {
-        QApplication::setActiveWindow(this); // shouldn't be necessary
+        // qt appears to lose active window after file dialog
+        // Appears related to https://www.qtcentre.org/threads/2950-ActiveWindow-changes-after-closing-QFileDialog
+        QApplication::setActiveWindow(this);
         for (QString f : qfd.selectedFiles()) {
             m_pCore->openLib(f.toStdString());
             // this causes crash when opening multiple 
             // mdi widgets maximized.
             //QApplication::processEvents();
         }
-
     }
-    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileSaveAs() {
@@ -256,7 +258,6 @@ void LibWindow::fileSaveAs() {
     } else {
         log("LibWindow::fileSaveAs: Canceled");
     }
-    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileRename() {
@@ -276,7 +277,6 @@ void LibWindow::fileRename() {
     } else {
         log("LibWindow::fileRename: Canceled");
     }
-    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 
 void LibWindow::fileCloseLib() {
@@ -284,14 +284,12 @@ void LibWindow::fileCloseLib() {
     if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->closeActiveLib();
     }
-    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::fileDeleteLib() {
     assert(m_pCore);
     if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->deleteActiveLib();
     }
-    updateLibActions(m_pCore->DbIf()->isDatabaseOpen());
 }
 void LibWindow::newShape() {
     assert(m_pCore);
@@ -464,7 +462,7 @@ void LibWindow::changeEvent(QEvent *event) {
         //log("Event activate");
         if (isActiveWindow()) {
             //log("  isActiveWindow true");
-            emit activated();
+            emit activated(this);
         } else {
             //log(" isActiveWindow false");
         }

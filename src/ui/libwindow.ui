@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>706</width>
+    <width>1482</width>
     <height>631</height>
    </rect>
   </property>
@@ -48,8 +48,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>706</width>
-     <height>25</height>
+     <width>1482</width>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">
@@ -185,6 +185,9 @@
    <addaction name="separator"/>
    <addaction name="actionHelpAbout"/>
    <addaction name="actionReloadStyle"/>
+   <addaction name="separator"/>
+   <addaction name="actionActionsTrue"/>
+   <addaction name="actionActionsFalse"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionFileNewLib">
@@ -632,6 +635,19 @@
   <action name="actionOpen_recent">
    <property name="text">
     <string>Open recent</string>
+   </property>
+  </action>
+  <action name="actionActionsTrue">
+   <property name="text">
+    <string>ActionsTrue</string>
+   </property>
+  </action>
+  <action name="actionActionsFalse">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>ActionsFalse</string>
    </property>
   </action>
  </widget>
