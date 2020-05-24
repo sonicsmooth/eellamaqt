@@ -26,6 +26,7 @@
 #include <QItemSelection>
 #include <QPoint>
 #include <QTextEdit>
+#include <QTimer>
 
 #include <filesystem>
 #include <iterator>
@@ -34,7 +35,8 @@
 #include <exception>
 #include <optional>
 #include <functional>
-
+// #include <thread>
+// #include <chrono>
 
 // Standalone functions
 LibWindow *activeLibWindow();
@@ -318,26 +320,47 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
         LibWindow *mw = activeLibWindow();
-//        assert(mw);
+        assert(mw);
         auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
         model = selectopt ? (*selectopt).model : (this->*makeModelfm[vt])(dbif, fullpath);
         view = (this->*makeViewfm[vt])(model);
-//        assert(view->model() == model);
+        assert(view->model() == model);
         std::string title(std::filesystem::path(fullpath).filename().string());
         ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
-//        int numSubWindows (mw->mdiArea()->subWindowList().size());
+        QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
         mw->mdiArea()->addSubWindow(widget);
-        widget->show();
-//        if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
-//            ((nsw > 0 && swl.first()->isMaximized()) || (nsw == 0)))
-//            widget->showMaximized();
-//        else
-//            widget->show();
+       if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
+           ((!swl.empty() && swl.first()->isMaximized()) || swl.empty()))
+           widget->showMaximized();
+       else
+           widget->show();
         widget->setFocus();
+
+        // Before adding this UI, find another top level window for below hack
+        selectopt = selectWhere([mw](ConnView cv) {
+            return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;
+        });
+
+        // Store new widget
         m_connViews.push_back({fullpath, vt, model, view, widget, mw});
         cvlog(m_connViews, m_pLogger);
         QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
         updateLibActions();
+
+        // Hack to activate current window
+        QTimer *tim = new QTimer();
+        tim->singleShot(10, [=]{
+            if (selectopt) {
+                QMainWindow *mw(selectopt->mainWindow);
+                log("Oneshot activating other 0x%08x", mw);
+                mw->activateWindow();
+                //mw->setFocus();
+            }
+           log("Oneshot activating 0x%08x", mw);
+           mw->activateWindow();
+           //mw->setFocus();
+        });
+
         return widget;
     } else {
         return nullptr;
@@ -415,6 +438,7 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
 void UIManager::onLibWindowActivate(QWidget *w) {
     // Tell core which database to make active based on whatever subwindow is active
     assert(m_pCore);
+    log("LibWindow Activated: 0x%08x", w);
     LibWindow *lw(static_cast<LibWindow *>(w));
     QMdiSubWindow *sw(lw->mdiArea()->activeSubWindow());
     if(sw) {
