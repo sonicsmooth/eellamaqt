@@ -3,7 +3,7 @@
 
 #include "libcore.h"
 #include "iuimanager.h"
-#include "libwindow.h"
+#include "docwindow.h"
 #include "coreable.h"
 #include "loggable.h"
 #include "libtreeview.h"
@@ -107,8 +107,8 @@ private:
 //    void onDockWidgetClose(QWidget *);
     void onMdiSubWindowActivate(QWidget *);
     void onMdiSubWindowClose(QWidget *);
-    void onLibWindowActivate(QWidget *);
-    void onLibWindowClose(QWidget *);
+    void onDocWindowActivate(QWidget *);
+    void onDocWindowClose(QWidget *);
     void updateLibActions();
     
 

@@ -19,11 +19,11 @@ SOURCES += \
     ../src/allicons.cpp \
     ../src/closingdockwidget.cpp \
     ../src/closingmdiwidget.cpp \
+    ../src/docwindow.cpp \
     ../src/libcore.cpp \
     ../src/libtableview.cpp \
     ../src/libtreeview.cpp \
     ../src/libsymbolview.cpp \
-    ../src/libwindow.cpp \
     ../src/loggable.cpp \
     ../src/logger.cpp \
     ../src/main.cpp \
@@ -40,6 +40,7 @@ HEADERS += \
     ../src/closingmdiwidget.h \
     ../src/connable.h \
     ../src/coreable.h \
+    ../src/docwindow.h \
     ../src/idbif.h \
     ../src/ilogger.h \
     ../src/iuimanager.h \
@@ -48,7 +49,6 @@ HEADERS += \
     ../src/libtableview.h \
     ../src/libtreeview.h \
     ../src/libsymbolview.h \
-    ../src/libwindow.h \
     ../src/loggable.h \
     ../src/logger.h \
     ../src/qdbif.h \
@@ -60,8 +60,8 @@ HEADERS += \
     ../src/mvtypes.h
 
 
-FORMS += \
-    ../src/ui/libwindow.ui \
+FORMS += \ \
+    ../src/ui/docwindow.ui
 
 RESOURCES += \
     ../src/application.qrc

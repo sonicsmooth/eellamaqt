@@ -1,5 +1,5 @@
-#ifndef LIBWINDOW_H
-#define LIBWINDOW_H
+#ifndef DocWindow_H
+#define DocWindow_H
 
 #include "libcore.h"
 #include "coreable.h"
@@ -14,18 +14,18 @@
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class LibWindow; }
+namespace Ui { class DocWindow; }
 QT_END_NAMESPACE
 
-class LibWindow : public QMainWindow, public Coreable, public Loggable
+class DocWindow : public QMainWindow, public Coreable, public Loggable
 {
     Q_OBJECT
 private:
-    Ui::LibWindow *ui;
+    Ui::DocWindow *ui;
 
 public:
-    LibWindow(QWidget *parent = nullptr, LibCore * = nullptr, ILogger * = nullptr);
-    ~LibWindow() override;
+    DocWindow(QWidget *parent = nullptr, LibCore * = nullptr, ILogger * = nullptr);
+    ~DocWindow() override;
     void updateLibActions(bool);
     void updateTabActions();
     void updateTitle();
@@ -75,11 +75,11 @@ public:
     void closeEvent(QCloseEvent *) override;
 
     signals:
-    void activated(LibWindow *) const;
-    void closing(LibWindow *) const;
+    void activated(DocWindow *) const;
+    void closing(DocWindow *) const;
 
 
 
 };
-#endif // LIBWINDOW_H
+#endif // DocWindow_H
 

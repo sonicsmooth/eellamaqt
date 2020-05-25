@@ -1,6 +1,6 @@
-#include "libwindow.h"
+#include "docwindow.h"
 #include "libtreeview.h"
-#include "ui_libwindow.h"
+#include "ui_docwindow.h"
 #include "closingdockwidget.h"
 #include "uimanager.h"
 #include "filesaveas.h"
@@ -29,11 +29,11 @@
 #include <QMdiArea>
 
 
-LibWindow::LibWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
+DocWindow::DocWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     : QMainWindow(parent),
       Coreable(pcore),
       Loggable(plgr),
-      ui(new Ui::LibWindow)
+      ui(new Ui::DocWindow)
 {
     ui->setupUi(this);
 
@@ -46,43 +46,43 @@ LibWindow::LibWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     statusBar()->showMessage("The message!", 1000);
     statusBar()->addPermanentWidget(pb);
 
-    connect(ui->actionFileNewLib, &QAction::triggered, this, &LibWindow::fileNewLib);
-    connect(ui->actionFileOpenLib, &QAction::triggered, this, &LibWindow::fileOpenLib);
-    connect(ui->actionFileSaveAs, &QAction::triggered, this, &LibWindow::fileSaveAs);
-    connect(ui->actionFileRename, &QAction::triggered, this, &LibWindow::fileRename);
-    connect(ui->actionFileCloseLib, &QAction::triggered, this, &LibWindow::fileCloseLib);
-    connect(ui->actionFileDeleteLib, &QAction::triggered, this, &LibWindow::fileDeleteLib);
-    connect(ui->actionNewShape, &QAction::triggered, this, &LibWindow::newShape);
-    connect(ui->actionInsertShape, &QAction::triggered, this, &LibWindow::insertShape);
-    connect(ui->actionNewSymbol, &QAction::triggered, this, &LibWindow::newSymbol);
-    connect(ui->actionNewRectangle, &QAction::triggered, this, &LibWindow::newRectangle);
-    connect(ui->actionNewLine, &QAction::triggered, this, &LibWindow::newLine);
-    connect(ui->actionNewText, &QAction::triggered, this, &LibWindow::newText);
-    connect(ui->actionNewCircle, &QAction::triggered, this, &LibWindow::newCircle);
-    connect(ui->actionNewArrow, &QAction::triggered, this, &LibWindow::newArrow);
-    connect(ui->actionNewPolygon, &QAction::triggered, this, &LibWindow::newPolygon);
-    connect(ui->actionNewPolyline, &QAction::triggered, this, &LibWindow::newPolyline);
-    connect(ui->actionNewPin, &QAction::triggered, this, &LibWindow::newPin);
-    connect(ui->actionEditUndo, &QAction::triggered, this, &LibWindow::editUndo);
-    connect(ui->actionEditRedo, &QAction::triggered, this, &LibWindow::editRedo);
-    connect(ui->actionEditMove, &QAction::triggered, this, &LibWindow::editMove);
-    connect(ui->actionEditRotate, &QAction::triggered, this, &LibWindow::editRotate);
-    connect(ui->actionEditCut, &QAction::triggered, this, &LibWindow::editCut);
-    connect(ui->actionEditCopy, &QAction::triggered, this, &LibWindow::editCopy);
-    connect(ui->actionEditPaste, &QAction::triggered, this, &LibWindow::editPaste);
-    connect(ui->actionEditDelete, &QAction::triggered, this, &LibWindow::editDelete);
-    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &LibWindow::popOutMainView);
-    connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &LibWindow::duplicateMainView);
-    connect(ui->actionCloseSymbolView, &QAction::triggered, this, &LibWindow::closeMainView);
-    connect(ui->actionLibTreeView, &QAction::triggered, this, &LibWindow::toggleLibTreeView);
-    connect(ui->actionLibTableView, &QAction::triggered, this, &LibWindow::toggleLibTableView);
-    connect(ui->actionNewWindow, &QAction::triggered, this, &LibWindow::newWindow);
-    connect(ui->actionCloseWindow, &QAction::triggered, this, &LibWindow::closeWindow);
-    connect(ui->actionHelpAbout, &QAction::triggered, this, &LibWindow::helpAbout);
-    connect(ui->actionReloadStyle, &QAction::triggered, this, &LibWindow::reloadStyle);
-    connect(ui->actionTabs, &QAction::triggered, this, &LibWindow::mdiTabMode);
-    connect(ui->actionTile, &QAction::triggered, this, &LibWindow::mdiTileSubWindows);
-    connect(ui->actionCascade, &QAction::triggered, this, &LibWindow::mdiCascadeSubWindows);
+    connect(ui->actionFileNewLib, &QAction::triggered, this, &DocWindow::fileNewLib);
+    connect(ui->actionFileOpenLib, &QAction::triggered, this, &DocWindow::fileOpenLib);
+    connect(ui->actionFileSaveAs, &QAction::triggered, this, &DocWindow::fileSaveAs);
+    connect(ui->actionFileRename, &QAction::triggered, this, &DocWindow::fileRename);
+    connect(ui->actionFileCloseLib, &QAction::triggered, this, &DocWindow::fileCloseLib);
+    connect(ui->actionFileDeleteLib, &QAction::triggered, this, &DocWindow::fileDeleteLib);
+    connect(ui->actionNewShape, &QAction::triggered, this, &DocWindow::newShape);
+    connect(ui->actionInsertShape, &QAction::triggered, this, &DocWindow::insertShape);
+    connect(ui->actionNewSymbol, &QAction::triggered, this, &DocWindow::newSymbol);
+    connect(ui->actionNewRectangle, &QAction::triggered, this, &DocWindow::newRectangle);
+    connect(ui->actionNewLine, &QAction::triggered, this, &DocWindow::newLine);
+    connect(ui->actionNewText, &QAction::triggered, this, &DocWindow::newText);
+    connect(ui->actionNewCircle, &QAction::triggered, this, &DocWindow::newCircle);
+    connect(ui->actionNewArrow, &QAction::triggered, this, &DocWindow::newArrow);
+    connect(ui->actionNewPolygon, &QAction::triggered, this, &DocWindow::newPolygon);
+    connect(ui->actionNewPolyline, &QAction::triggered, this, &DocWindow::newPolyline);
+    connect(ui->actionNewPin, &QAction::triggered, this, &DocWindow::newPin);
+    connect(ui->actionEditUndo, &QAction::triggered, this, &DocWindow::editUndo);
+    connect(ui->actionEditRedo, &QAction::triggered, this, &DocWindow::editRedo);
+    connect(ui->actionEditMove, &QAction::triggered, this, &DocWindow::editMove);
+    connect(ui->actionEditRotate, &QAction::triggered, this, &DocWindow::editRotate);
+    connect(ui->actionEditCut, &QAction::triggered, this, &DocWindow::editCut);
+    connect(ui->actionEditCopy, &QAction::triggered, this, &DocWindow::editCopy);
+    connect(ui->actionEditPaste, &QAction::triggered, this, &DocWindow::editPaste);
+    connect(ui->actionEditDelete, &QAction::triggered, this, &DocWindow::editDelete);
+    connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &DocWindow::popOutMainView);
+    connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &DocWindow::duplicateMainView);
+    connect(ui->actionCloseSymbolView, &QAction::triggered, this, &DocWindow::closeMainView);
+    connect(ui->actionLibTreeView, &QAction::triggered, this, &DocWindow::toggleLibTreeView);
+    connect(ui->actionLibTableView, &QAction::triggered, this, &DocWindow::toggleLibTableView);
+    connect(ui->actionNewWindow, &QAction::triggered, this, &DocWindow::newWindow);
+    connect(ui->actionCloseWindow, &QAction::triggered, this, &DocWindow::closeWindow);
+    connect(ui->actionHelpAbout, &QAction::triggered, this, &DocWindow::helpAbout);
+    connect(ui->actionReloadStyle, &QAction::triggered, this, &DocWindow::reloadStyle);
+    connect(ui->actionTabs, &QAction::triggered, this, &DocWindow::mdiTabMode);
+    connect(ui->actionTile, &QAction::triggered, this, &DocWindow::mdiTileSubWindows);
+    connect(ui->actionCascade, &QAction::triggered, this, &DocWindow::mdiCascadeSubWindows);
 
     updateLibActions(false);
 
@@ -131,13 +131,13 @@ LibWindow::LibWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
 }
 
 
-LibWindow::~LibWindow()
+DocWindow::~DocWindow()
 {
     int z = 99;
     delete ui;
 }
 
-void LibWindow::updateLibActions(bool en) {
+void DocWindow::updateLibActions(bool en) {
     ui->actionFileRename->setEnabled(en);
     ui->actionFileSaveAs->setEnabled(en);
     ui->actionFileCloseLib->setEnabled(en);
@@ -171,7 +171,7 @@ void LibWindow::updateLibActions(bool en) {
     ui->actionTile->setEnabled(en);
     updateTabActions();
 }
-void LibWindow::updateTabActions() {
+void DocWindow::updateTabActions() {
     // Set tabbed/normal menu text based on current mode
     if (ui->mdiArea->viewMode() == QMdiArea::ViewMode::TabbedView)
         ui->actionTabs->setText("Show as subwindows");
@@ -179,18 +179,18 @@ void LibWindow::updateTabActions() {
         ui->actionTabs->setText("Show as tabs");
 }
 
-void LibWindow::updateTitle() {
+void DocWindow::updateTitle() {
     setWindowTitle("Library Editor");
 }
-void LibWindow::updateTitle(std::string title) {
+void DocWindow::updateTitle(std::string title) {
     setWindowTitle(QString::fromStdString(title));
 }
-QMdiArea *LibWindow::mdiArea() {
+QMdiArea *DocWindow::mdiArea() {
     return ui->mdiArea;
 }
 
 
-void LibWindow::fileNewLib() {
+void DocWindow::fileNewLib() {
     // Check existing fies and add suffix if needed.  Finds first "open" spot between 00 and 99, inclusive
     assert(m_pCore);
     assert(m_pLogger);
@@ -219,7 +219,7 @@ void LibWindow::fileNewLib() {
 
     m_pCore->newLib(fullpath.toStdString());
 }
-void LibWindow::fileOpenLib() {
+void DocWindow::fileOpenLib() {
     assert(m_pCore);
     QDir home(QDir::home());
     log("File Open from 0x%08x", this);
@@ -242,7 +242,7 @@ void LibWindow::fileOpenLib() {
     }
 }
 
-void LibWindow::fileSaveAs() {
+void DocWindow::fileSaveAs() {
     //  Choose options, then call core
     assert(m_pCore);
     assert(m_pCore->DbIf()->isDatabaseOpen());
@@ -254,16 +254,16 @@ void LibWindow::fileSaveAs() {
             m_pCore->saveLib(m_pCore->DbIf()->activeDatabase().value(), fname, fsa.option());
         }
     } else {
-        log("LibWindow::fileSaveAs: Canceled");
+        log("DocWindow::fileSaveAs: Canceled");
     }
 }
 
-void LibWindow::fileRename() {
+void DocWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
     assert(m_pCore);
     assert(m_pCore->DbIf()->isDatabaseOpen());
-    //log("LibWindow::fileRename");
+    //log("DocWindow::fileRename");
     FileSaveAs frn(this, m_pCore->DbIf()->activeDatabase().value(),
                    static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
     if(frn.exec()) {
@@ -273,155 +273,155 @@ void LibWindow::fileRename() {
             m_pCore->saveLib(m_pCore->DbIf()->activeDatabase().value(), fname, option);
         }
     } else {
-        log("LibWindow::fileRename: Canceled");
+        log("DocWindow::fileRename: Canceled");
     }
 }
 
-void LibWindow::fileCloseLib() {
+void DocWindow::fileCloseLib() {
     assert(m_pCore);
     if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->closeActiveLib();
     }
 }
-void LibWindow::fileDeleteLib() {
+void DocWindow::fileDeleteLib() {
     assert(m_pCore);
     if (m_pCore->DbIf()->isDatabaseOpen()) {
         m_pCore->deleteActiveLib();
     }
 }
-void LibWindow::newShape() {
+void DocWindow::newShape() {
     assert(m_pCore);
-    log("LibWindow: new shape");
+    log("DocWindow: new shape");
 }
-void LibWindow::insertShape() {
+void DocWindow::insertShape() {
     assert(m_pCore);
-    log("LibWindow: insert shape");
+    log("DocWindow: insert shape");
 }
-void LibWindow::newSymbol() {
+void DocWindow::newSymbol() {
     assert(m_pCore);
-    log("LibWindow: new symbol");
+    log("DocWindow: new symbol");
 }
-void LibWindow::deleteItem() {
+void DocWindow::deleteItem() {
     assert(m_pCore);
-    log("LibWindow: delete item");
+    log("DocWindow: delete item");
 }
-void LibWindow::newRectangle() {
+void DocWindow::newRectangle() {
      assert(m_pCore);
-    log("LibWindow: new rectangle");
+    log("DocWindow: new rectangle");
 }
 
-void LibWindow::newLine() {
+void DocWindow::newLine() {
     assert(m_pCore);
-    log("LibWindow: new line");
+    log("DocWindow: new line");
 }
-void LibWindow::newText() {
+void DocWindow::newText() {
     assert(m_pCore);
-    log("LibWindow: new text");
+    log("DocWindow: new text");
 }
-void LibWindow::newCircle() {
+void DocWindow::newCircle() {
     assert(m_pCore);
-    log("LibWindow: new circle");
+    log("DocWindow: new circle");
 }
-void LibWindow::newArrow() {
+void DocWindow::newArrow() {
     assert(m_pCore);
-    log("LibWindow: new arrow");
+    log("DocWindow: new arrow");
 }
-void LibWindow::newPolygon() {
+void DocWindow::newPolygon() {
     assert(m_pCore);
-    log("LibWindow: new polygon");
+    log("DocWindow: new polygon");
 }
-void LibWindow::newPolyline() {
+void DocWindow::newPolyline() {
     assert(m_pCore);
-    log("LibWindow: new polyline");
+    log("DocWindow: new polyline");
 }
-void LibWindow::newPin() {
+void DocWindow::newPin() {
     assert(m_pCore);
-    log("LibWindow: new pin");
+    log("DocWindow: new pin");
 }
-void LibWindow::editUndo() {
+void DocWindow::editUndo() {
     assert(m_pCore);
-    log("LibWindow: edit undo");
+    log("DocWindow: edit undo");
 }
-void LibWindow::editRedo() {
+void DocWindow::editRedo() {
     assert(m_pCore);
-    log("LibWindow: edit redo");
+    log("DocWindow: edit redo");
 }
-void LibWindow::editMove() {
+void DocWindow::editMove() {
     assert(m_pCore);
-    log("LibWindow: edit move");
+    log("DocWindow: edit move");
 }
-void LibWindow::editRotate() {
+void DocWindow::editRotate() {
     assert(m_pCore);
-    log("LibWindow: edit rotate");
+    log("DocWindow: edit rotate");
 }
-void LibWindow::editCut() {
+void DocWindow::editCut() {
     assert(m_pCore);
-    log("LibWindow: edit cut");
+    log("DocWindow: edit cut");
 }
-void LibWindow::editCopy() {
+void DocWindow::editCopy() {
     assert(m_pCore);
-    log("LibWindow: edit copy");
+    log("DocWindow: edit copy");
 }
-void LibWindow::editPaste() {
+void DocWindow::editPaste() {
     assert(m_pCore);
-    log("LibWindow: edit paste");
+    log("DocWindow: edit paste");
 }
-void LibWindow::editDelete() {
+void DocWindow::editDelete() {
     assert(m_pCore);
-//    log("LibWindow: edit delete item from " + m_pCore->activeDb().value());
+//    log("DocWindow: edit delete item from " + m_pCore->activeDb().value());
 //    m_pCore->deleteShape("Some shape");
 //    m_pCore->deleteSymbol("Some symbol");
 }
 
-void LibWindow::duplicateMainView() {
+void DocWindow::duplicateMainView() {
     log("New Symbol View");
     assert(m_pCore);
     UIManager *uim(static_cast<UIManager *>(m_pCore->UIManager()));
     uim->duplicateMainView();
 }
-void LibWindow::popOutMainView() {
+void DocWindow::popOutMainView() {
     // Initiates popOutView of current view widget
     assert(m_pCore);
     m_pCore->UIManager()->popOutMainView();
 }
-void LibWindow::closeMainView() {
+void DocWindow::closeMainView() {
     assert(m_pCore);
     m_pCore->UIManager()->closeMainView();
 }
 
-void LibWindow::toggleLibTreeView() {
+void DocWindow::toggleLibTreeView() {
     assert(m_pCore);
-//    log("LibWindow: view LibTreeView");
+//    log("DocWindow: view LibTreeView");
 //    if (m_pCore->activeDb()) {
 //        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
 //        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
 //    }
 }
-void LibWindow::toggleLibTableView() {
+void DocWindow::toggleLibTableView() {
     assert(m_pCore);
-//    log("LibWindow: view LibTableView");
+//    log("DocWindow: view LibTableView");
 //    if (m_pCore->activeDb()) {
 //        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
 //        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
 //    }
 }
 
-void LibWindow::newWindow() {
+void DocWindow::newWindow() {
     assert(m_pCore);
     QWidget *w(static_cast<QWidget *>(m_pCore->UIManager()->duplicateWindow()));
     w->show();
 }
-void LibWindow::closeWindow() {
+void DocWindow::closeWindow() {
     assert(m_pCore);
     m_pCore->UIManager()->closeWindow();
 }
 
 
-void LibWindow::helpAbout() {
+void DocWindow::helpAbout() {
 
 }
 
-void LibWindow::reloadStyle() {
+void DocWindow::reloadStyle() {
     // Set up style -- this only works at startup, not after!!
     QFile styleFile(":/ui/llamastyle.css");
     styleFile.open(QIODevice::ReadOnly);
@@ -432,7 +432,7 @@ void LibWindow::reloadStyle() {
     qapp->setStyleSheet(fileContents);
 }
 
-void LibWindow::mdiTabMode() {
+void DocWindow::mdiTabMode() {
     // Toggles view mode
     if (ui->mdiArea->viewMode() == QMdiArea::ViewMode::TabbedView)
         ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
@@ -441,19 +441,19 @@ void LibWindow::mdiTabMode() {
     updateTabActions();
 }
 
-void LibWindow::mdiTileSubWindows() {
+void DocWindow::mdiTileSubWindows() {
     ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
     ui->mdiArea->tileSubWindows();
     updateTabActions();
 }
-void LibWindow::mdiCascadeSubWindows() {
+void DocWindow::mdiCascadeSubWindows() {
     ui->mdiArea->setViewMode(QMdiArea::ViewMode::SubWindowView);
     ui->mdiArea->cascadeSubWindows();
     updateTabActions();
 }
 
 
-void LibWindow::changeEvent(QEvent *event) {
+void DocWindow::changeEvent(QEvent *event) {
 //    if (m_pLogger)
 //        static_cast<Logger *>(m_pLogger)->log(event);
     if (event->type() == QEvent::ActivationChange) {
@@ -468,7 +468,7 @@ void LibWindow::changeEvent(QEvent *event) {
     QMainWindow::changeEvent(event);
 }
 
-void LibWindow::closeEvent(QCloseEvent *event) {
+void DocWindow::closeEvent(QCloseEvent *event) {
     ui->mdiArea->closeAllSubWindows();
     emit closing(this);
     QMainWindow::closeEvent(event);
