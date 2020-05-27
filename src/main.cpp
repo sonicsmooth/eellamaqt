@@ -1,5 +1,5 @@
 #include "libcore.h"
-#include "libwindow.h"
+#include "docwindow.h"
 #include "logger.h"
 #include "qdbif.h"
 #include "uimanager.h"
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     uim.setLogger(&logger);
     uim.newWindow();
     std::list<QMainWindow *> mainWindows(uim.mainWindows());
-    LibWindow *recentMainWindow(static_cast<LibWindow *>(mainWindows.back()));
+    DocWindow *recentMainWindow(static_cast<DocWindow *>(mainWindows.back()));
     recentMainWindow->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, pLogWidget);
     recentMainWindow->reloadStyle();
     recentMainWindow->show();

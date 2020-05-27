@@ -1,7 +1,7 @@
 #include "uimanager.h"
 #include "closingdockwidget.h"
 #include "closingmdiwidget.h"
-#include "libwindow.h"
+#include "docwindow.h"
 #include "connable.h"
 #include "mymodel.h"
 #include "libsymbolview.h"
@@ -39,7 +39,7 @@
 // #include <chrono>
 
 // Standalone functions
-LibWindow *activeLibWindow();
+DocWindow *activeLibWindow();
 QMainWindow *activeMainWindow();
 QMdiSubWindow *activeMdiSubWindow();
 template <typename T_WIDGET>
@@ -73,8 +73,8 @@ void cvlog(ConnViews cvs, ILogger *lgr) {
 // LOCAL
 //////////
 // TODO: returning final null is okay if the final fn call is legit
-LibWindow *activeLibWindow() {
-    LibWindow *lw(static_cast<LibWindow *>(QApplication::activeWindow()));
+DocWindow *activeLibWindow() {
+    DocWindow *lw(static_cast<DocWindow *>(QApplication::activeWindow()));
     assert(lw);
     return lw;
 }
@@ -320,7 +320,7 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         // Create or find appropriate model and view
         QAbstractItemModel *model(nullptr);
         QAbstractItemView *view(nullptr);
-        LibWindow *mw = activeLibWindow();
+        DocWindow *mw = activeLibWindow();
         assert(mw);
         auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
         model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
@@ -435,7 +435,7 @@ void UIManager::onLibWindowActivate(QWidget *w) {
     // Tell core which database to make active based on whatever subwindow is active
     assert(m_pCore);
     log("LibWindow Activated: 0x%08x", w);
-    LibWindow *lw(static_cast<LibWindow *>(w));
+    DocWindow *lw(static_cast<DocWindow *>(w));
     QMdiSubWindow *sw(lw->mdiArea()->activeSubWindow());
     if(sw) {
         auto [model, _v, vt] = modelViewFromWidget(sw);
@@ -446,7 +446,7 @@ void UIManager::onLibWindowActivate(QWidget *w) {
 void UIManager::onLibWindowClose(QWidget *w) {
     // Make sure we're actually getting a LibWindow
     // aka mainWindow informally
-    LibWindow *lw(dynamic_cast<LibWindow *>(w));
+    DocWindow *lw(dynamic_cast<DocWindow *>(w));
     // Make sure all 'mainWidget' (aka QMdiSubWindow) entries with this mainWindow in m_connViews are gone,
     // thus indicating that all QMdiSubWindows have been properly closed, the closing of each of which
     // removes their entry from m_connViews;
@@ -458,7 +458,7 @@ void UIManager::onLibWindowClose(QWidget *w) {
 void UIManager::updateLibActions() {
     // Find mainwindows without any other associated views
     for (auto mwcv : selectWheres(ViewType::INVALID)) {
-        LibWindow *lw(static_cast<LibWindow *>(mwcv.mainWindow));
+        DocWindow *lw(static_cast<DocWindow *>(mwcv.mainWindow));
         lw->updateLibActions(selectWheres(lw).size() > 1);
     }
 }
@@ -506,11 +506,11 @@ void *UIManager::newWindow()  {
 }
 void *UIManager::newWindow(LibCore *pcore, ILogger *plgr)  {
     // Creates new top level window using given members
-    LibWindow *w(new LibWindow(nullptr, pcore, plgr));
+    DocWindow *w(new DocWindow(nullptr, pcore, plgr));
     w->setAttribute(Qt::WA_DeleteOnClose);
 
-    QObject::connect(w, &LibWindow::activated, this, &UIManager::onLibWindowActivate);
-    QObject::connect(w, &LibWindow::closing, this, &UIManager::onLibWindowClose);
+    QObject::connect(w, &DocWindow::activated, this, &UIManager::onLibWindowActivate);
+    QObject::connect(w, &DocWindow::closing, this, &UIManager::onLibWindowClose);
     QObject::connect(w->mdiArea(), &QMdiArea::subWindowActivated, this, &UIManager::onMdiSubWindowActivate);
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);
@@ -523,8 +523,8 @@ void *UIManager::duplicateWindow() {
 }
 void *UIManager::duplicateWindow(void *oldw) {
     // Duplicate the given window
-    LibWindow *oldlw(static_cast<LibWindow *>(oldw));
-    LibWindow *newlw(static_cast<LibWindow *>(newWindow()));
+    DocWindow *oldlw(static_cast<DocWindow *>(oldw));
+    DocWindow *newlw(static_cast<DocWindow *>(newWindow()));
     QMdiArea *oa(oldlw->mdiArea());
     QMdiArea *na(newlw->mdiArea());
     na->setActivationOrder(oa->activationOrder());
@@ -564,7 +564,7 @@ void UIManager::duplicateMainView() {
     // Take current MDIWidget, extract the model, then extract the fullpath.
     // Create a new UI with fullpath.  This creates a new view and a new MDIWidget
     assert(m_pCore);
-    LibWindow *lw(activeLibWindow());
+    DocWindow *lw(activeLibWindow());
     QMdiSubWindow *mdiWidget(lw->mdiArea()->activeSubWindow());
     assert(mdiWidget);
     auto [model, view, vt] = modelViewFromWidget(mdiWidget);
@@ -588,8 +588,8 @@ void UIManager::popOutMainView() {
     ConnView cv(*selectopt);
     m_connViews.remove(cv);
     
-    LibWindow *oldlw(activeLibWindow());
-    LibWindow *newlw(static_cast<LibWindow *>(duplicateWindow()));
+    DocWindow *oldlw(activeLibWindow());
+    DocWindow *newlw(static_cast<DocWindow *>(duplicateWindow()));
     newlw->show();
     oldlw->mdiArea()->removeSubWindow(mdiSubWindow);
 

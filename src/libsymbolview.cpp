@@ -1,5 +1,5 @@
 #include "libsymbolview.h"
-#include "libwindow.h"
+#include "docwindow.h"
 
 #include <QWidget>
 #include <QAbstractItemModel>

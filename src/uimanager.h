@@ -3,7 +3,7 @@
 
 #include "libcore.h"
 #include "iuimanager.h"
-#include "libwindow.h"
+#include "docwindow.h"
 #include "coreable.h"
 #include "loggable.h"
 #include "libtreeview.h"
