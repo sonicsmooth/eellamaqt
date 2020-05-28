@@ -55,7 +55,6 @@ void LibCore::openLib(std::string fullpath) {
     }
     if (m_pUIManager)
         m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
-
 }
 
 
@@ -63,6 +62,7 @@ void LibCore::openLib(std::string fullpath) {
 void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) {
     // Typically called from the rename menu item
     // Should only be called with oldpath in activeDb list.
+    // Would be nice if there were a way to unroll if any error
     assert(m_pDbIf);
     try {
         m_pDbIf->saveDatabase(oldpath, newpath, opt);

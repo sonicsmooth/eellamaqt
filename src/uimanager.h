@@ -70,7 +70,7 @@ private:
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeModel},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableModel}};
 
-    typedef QAbstractItemView * (UIManager::*abstractViewFn)(QAbstractItemModel *);
+    typedef QAbstractItemView *(UIManager::*abstractViewFn)(QAbstractItemModel *);
     std::map<ViewType, abstractViewFn> makeViewfm = 
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolView},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},

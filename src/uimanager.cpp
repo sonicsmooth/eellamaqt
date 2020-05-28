@@ -387,17 +387,25 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // to be correct here.  This appears no to be a problem with MSVC, but Qt
     // Creator appears to use Clang as the realtime compiler in the background
     // which issues these warning in the IDE.
-    QMainWindow *mw(static_cast<QMainWindow *>(QObject::sender()->parent()->parent()));
+//    QMainWindow *mw(static_cast<QMainWindow *>(QObject::sender()->parent()->parent()));
     if (w == nullptr ) {
-        // log("all QMdiSubWindows deactivated from 0x%08x", mw);
-        // log("");
         return;
     }
-    log("onMdiSubWindowActivate QMdiSubWindow activated 0x%08x -> 0x%08x", w, mw);
+//    log("onMdiSubWindowActivate QMdiSubWindow activated 0x%08x -> 0x%08x", w, mw);
 //    log("");
     QMdiSubWindow *sw(static_cast<QMdiSubWindow *>(w));
     std::string fullpath(fullpathFromMdiSubWindow(sw));
-    log("Fullpath: %s", fullpath.c_str());
+    
+    // Check for integrity
+    auto selectopt(selectWhere(sw));
+    // Could be empty still when MDI window is first shown, before adding to
+    // m_connViews, I guess.
+    if (selectopt) { 
+        std::string fullpath2(selectopt->fullpath);
+        assert(fullpath == fullpath2);
+    }
+
+    //log("Fullpath: %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
 }
 void UIManager::onMdiSubWindowClose(QWidget *w) {
@@ -498,7 +506,31 @@ void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
 }
 void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
     (void) dbif;
-    log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
+    //log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
+    // Get the new database from dbif based on newpath
+    // Get all entries associated with oldpath from m_connViews
+    // Among entries, delete model and create new model to the new database
+    // For each entry, change m_connViews to show newpath
+    // For each entry, rename QMdiSubWidget title to newpath
+    QSqlDatabase newdb(static_cast<QSQDbIf *>(dbif)->database(newpath));
+    ConnViews dbcvs(selectWheres(oldpath));
+    std::list<QAbstractItemModel *> models;
+    for (auto cv : dbcvs) 
+        models.push_back(cv.model);
+    models.sort();
+    models.unique();
+    for (auto model : models)
+        delete model;
+    for (auto cv: dbcvs) {
+        m_connViews.remove(cv);
+        cv.fullpath = newpath;
+        cv.model = (this->*makeModelfm[cv.viewType])(dbif, newpath);
+        cv.view->setModel(cv.model);
+        std::string title(std::filesystem::path(newpath).filename().string());
+        cv.subWidget->setWindowTitle(QString::fromStdString(title));
+        m_connViews.push_back(cv);
+        cvlog(m_connViews, m_pLogger);
+    }
 }
 void *UIManager::newWindow()  {
     // Creates new top level window using members from this UIManager instance

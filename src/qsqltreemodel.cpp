@@ -32,5 +32,11 @@ QSqlTreeModel::QSqlTreeModel(QObject *parent, QSqlDatabase db) :
 }
 
 QSqlDatabase QSqlTreeModel::database() const {
+    // We don't store the database here, just the name, so we  get the actual
+    // database from the Qt system
     return QSqlDatabase::database(m_dbConnName);
+}
+
+void QSqlTreeModel::setDatabase(QSqlDatabase db) {
+    m_dbConnName = db.connectionName();
 }
