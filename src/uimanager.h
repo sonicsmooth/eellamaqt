@@ -94,9 +94,11 @@ private:
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTableModel(IDbIf *, std::string);
+    
     QAbstractItemView  *makeLibSymbolView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTreeView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTableView(QAbstractItemModel *);
+    
     ClosingMDIWidget   *makeMDILibWidget(QWidget *, QWidget *, std::string);
 //    ClosingDockWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
 //    void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right

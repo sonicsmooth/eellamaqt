@@ -316,20 +316,21 @@ ClosingMDIWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents
 QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
-    if (vt == ViewType::LIBSYMBOLVIEW) {
-        // Create or find appropriate model and view
-        QAbstractItemModel *model(nullptr);
-        QAbstractItemView *view(nullptr);
-        DocWindow *mw = activeLibWindow();
-        assert(mw);
-        auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
-        model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
-        view = (this->*makeViewfm[vt])(model);
-        assert(view->model() == model);
+    // Create or find appropriate model and view
+    QWidget *widget(nullptr); // Return widget
+    QAbstractItemModel *model(nullptr);
+    QAbstractItemView *view(nullptr);
+    DocWindow *mw = activeLibWindow();
+    assert(mw);
+    auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
+    model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
+    view = (this->*makeViewfm[vt])(model);
+    assert(view->model() == model);
+    std::string title(std::filesystem::path(fullpath).filename().string());
         
+    if (vt == ViewType::LIBSYMBOLVIEW) {
         // Create QMdiSubWindow and show properly
-        std::string title(std::filesystem::path(fullpath).filename().string());
-        ClosingMDIWidget *widget(makeMDILibWidget(nullptr, view, title));
+        widget = makeMDILibWidget(nullptr, view, title);
         QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
         mw->mdiArea()->addSubWindow(widget);
        if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
@@ -338,29 +339,33 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
        else
            widget->show();
         widget->setFocus();
+        QObject::connect(static_cast<ClosingMDIWidget *>(widget), 
+        &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
 
         // Before adding this UI, find another top level window for below hack
         selectopt = selectWhere([mw](ConnView cv) {
             return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;
         });
 
-        // Store new widget
-        m_connViews.push_back({fullpath, vt, model, view, widget, mw});
-        cvlog(m_connViews, m_pLogger);
-        QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
-        updateLibActions();
-
         // Hack to activate current main window
         // Select another window first, then select this one
-        m_hackTimer.singleShot(0, [=]{
-            if (selectopt)
+        if (selectopt)
+            m_hackTimer.singleShot(0, [=]{
                 selectopt->mainWindow->activateWindow();
-            mw->activateWindow();});
+                mw->activateWindow();
+                });
 
-        return widget;
-    } else {
-        return nullptr;
+    } else if (vt == ViewType::LibTreeView) {
+        // Creat ClosingDockWidget and show properly
+        widget = makeLibTreeView()
     }
+
+    // Store new widget
+    m_connViews.push_back({fullpath, vt, model, view, widget, mw});
+    cvlog(m_connViews, m_pLogger);
+    updateLibActions();
+    return widget;
+
  }
 //void UIManager::onDockWidgetActivate(QWidget *pw) {
 //    // For some reason this gets called twice when each tab is clicked
