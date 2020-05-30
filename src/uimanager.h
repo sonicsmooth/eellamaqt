@@ -53,16 +53,11 @@ void cvlog(ConnViews cvs, ILogger *lgr);
 
 
 
-// Why is this a QObject?
+// This a QObject so it can participate in signals/slots
 class UIManager : public QObject, public IUIManager, public Coreable, public Loggable
 {
 private:
     QTimer m_hackTimer;
-
-    std::map<ViewType, Qt::DockWidgetArea> dockWidgetAream = 
-     {//{ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea},
-      {ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
-      {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
     
     typedef QAbstractItemModel *(UIManager::*abstractModelFn)(IDbIf *, std::string);
     std::map<ViewType, abstractModelFn> makeModelfm = 
@@ -75,6 +70,23 @@ private:
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolView},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
+
+    typedef QWidget *(UIManager::*widgetFactoryFn)(QWidget *, QWidget *, std::string);
+    std::map<ViewType, widgetFactoryFn> makeWidgetfm =
+    {{ViewType::LIBSYMBOLVIEW, &UIManager::makeMDILibWidget},
+     {ViewType::LIBTREEVIEW, &UIManager::makeCDWLibWidget},
+     {ViewType::LIBTABLEVIEW, &UIManager::makeCDWLibWidget}};
+
+    typedef void (UIManager::*attachFn)(DocWindow *, QWidget *);
+    std::map<ViewType, attachFn> attachWidgetfm =
+    {{ViewType::LIBSYMBOLVIEW, &UIManager::attachMDISubWindow},
+     {ViewType::LIBTREEVIEW, &UIManager::attachDockWidget},
+     {ViewType::LIBTABLEVIEW, &UIManager::attachDockWidget}};
+
+    std::map<ViewType, Qt::DockWidgetArea> dockWidgetAreaMap = 
+     {//{ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea},
+      {ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
+      {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
 
     std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
@@ -99,14 +111,17 @@ private:
     QAbstractItemView  *makeLibTreeView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTableView(QAbstractItemModel *);
     
-    ClosingMDIWidget   *makeMDILibWidget(QWidget *, QWidget *, std::string);
-//    ClosingDockWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
+    QWidget *makeMDILibWidget(QWidget *, QWidget *, std::string);
+    QWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
+    void attachMDISubWindow(DocWindow *, QWidget *);
+    void attachDockWidget(DocWindow *, QWidget *);
+
 //    void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right
     QWidget *openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
-//    void onDockWidgetActivate(QWidget *);
-//    void onDockWidgetClose(QWidget *);
+    void onDockWidgetActivate(QWidget *);
+    void onDockWidgetClose(QWidget *);
     void onMdiSubWindowActivate(QWidget *);
     void onMdiSubWindowClose(QWidget *);
     void onLibWindowActivate(QWidget *);

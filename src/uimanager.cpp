@@ -90,10 +90,10 @@ QMdiSubWindow *activeMdiSubWindow() {
     return mdia->activeSubWindow();
 }
 template <typename T_WIDGET>
-auto modelViewFromWidget(T_WIDGET *pw) {
+auto modelViewFromWidget(T_WIDGET *containerWidget) {
     // Attempt to cast model to different things to determine vt
-    T_WIDGET *qdw(static_cast<T_WIDGET *>(pw)); // TODO: necessary?
-    QAbstractItemView *view(static_cast<QAbstractItemView *>(qdw->widget()));
+    //T_WIDGET *qdw(static_cast<T_WIDGET *>(containerWidget)); // TODO: necessary?
+    QAbstractItemView *view(static_cast<QAbstractItemView *>(containerWidget->widget()));
     QAbstractItemModel *model(view->model());
     ViewType vt(dynamic_cast<LibSymbolView *>(view) ? ViewType::LIBSYMBOLVIEW :
                 dynamic_cast<LibTreeView *>(view) ? ViewType::LIBTREEVIEW :
@@ -248,143 +248,153 @@ QAbstractItemView *UIManager::makeLibTableView(QAbstractItemModel *model) {
    sqlModel->select();
    return view;
 }
-//ClosingDockWidget *UIManager::makeCDWLibWidget(QWidget *parent, QWidget *contents, std::string title) {
-//    view->setMaximumWidth(1000);
-//    view->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
-//    ClosingDockWidget* libDockWidget(new ClosingDockWidget(parent));
-//    view->setFocusProxy(libDockWidget); // doesn't seem to do anything
-//    libDockWidget->setFocusPolicy(Qt::StrongFocus); // accepts focus by tabbing or clicking
-//    libDockWidget->setWidget(contents);
-//    libDockWidget->setWindowTitle(QString::fromStdString(title));
-//    return libDockWidget;
-//}
-ClosingMDIWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, std::string title) {
-   contents->setMaximumWidth(1000);
+QWidget *UIManager::makeCDWLibWidget(QWidget *parent, QWidget *contents, std::string title) {
+    //view->setMaximumWidth(1000);
+    contents->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
+    ClosingDockWidget* libDockWidget(new ClosingDockWidget(parent));
+    contents->setFocusProxy(libDockWidget); // doesn't seem to do anything
+    libDockWidget->setFocusPolicy(Qt::StrongFocus); // accepts focus by tabbing or clicking
+    libDockWidget->setWidget(contents);
+    libDockWidget->setWindowTitle(QString::fromStdString(title));
+    return libDockWidget;
+}
+QWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, std::string title) {
+   //contents->setMaximumWidth(1000);
    contents->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
    ClosingMDIWidget* widget(new ClosingMDIWidget(parent));
    widget->setWidget(contents);
    widget->setWindowTitle(QString::fromStdString(title));
    widget->setAttribute(Qt::WA_DeleteOnClose);
+   QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
    return widget;
 }
 //void UIManager::dockLibView(ClosingDockWidget *libDockWidget, Qt::DockWidgetArea area) {
-//    // Stick argument to right or left (or wherever), tabifying as necessary
-//    QMainWindow *mw(activeMainWindow());
-//    mw->addDockWidget(area, libDockWidget, Qt::Orientation::Horizontal);
 
-//    // Make this dockwidget stick to right and tabify if needed
-//    // Get all ClosingDockWidgets and ignore those that are either floating or not in the
-//    // right dock area, then tabify on top of the first one remaining
-//    QList<ClosingDockWidget *> cdws0(mw->findChildren<ClosingDockWidget *>());
-//    QList<ClosingDockWidget *> cdws; // working copy
-//    for (auto const & cdw : cdws0) {
-//        if (mw->dockWidgetArea(cdw) == area && !cdw->isFloating()) {
-//            cdws.push_back(cdw);
-//        }
-//    }
 
-//    // Add to existing right ClosingDockWidget and raise
-//    if (cdws.length() > 1) {
-//        mw->tabifyDockWidget(cdws.first(), libDockWidget);
-//        mw->blockSignals(true);
-//        libDockWidget->setVisible(true);
-//        libDockWidget->setFocus();
-//        libDockWidget->raise();
-//        mw->blockSignals(false);
-//    }
+
+
+//}
+
+
+void UIManager::attachMDISubWindow(DocWindow *mw, QWidget *widget) {
+    assert(mw);
+    assert(widget);
+    QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
+    mw->mdiArea()->addSubWindow(widget);
+    if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
+        ((!swl.empty() && swl.first()->isMaximized()) || swl.empty()))
+        widget->showMaximized();
+    else
+        widget->show();
+
+    // Before adding this UI, find another top level window for below hack
+    auto selectopt (selectWhere([mw](ConnView cv) {
+        return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;
+    }));
+
+    // Hack to activate current main window
+    // Select another window first, then select this one
+    if (selectopt)
+        m_hackTimer.singleShot(0, [=]{
+            selectopt->mainWindow->activateWindow();
+            mw->activateWindow();});
+}
+void UIManager::attachDockWidget(DocWindow *mw, QWidget *widget) {
+    assert(mw);
+    ClosingDockWidget *cdw(dynamic_cast<ClosingDockWidget *>(widget));
+    assert(cdw);
+
+    // Extract viewtype and determine dock area
+    auto [_m, _v, vt] (modelViewFromWidget(cdw));
+    Qt::DockWidgetArea area(dockWidgetAreaMap[vt]);
+    mw->addDockWidget(area, cdw);
+
+    // Make this dockwidget stick to right and tabify if needed
+    // Get all ClosingDockWidgets and ignore those that are either floating or not in the
+    // correct dock area, then tabify on top of the first one remaining
+    QList<ClosingDockWidget *> cdwlst0(mw->findChildren<ClosingDockWidget *>());
+    QList<ClosingDockWidget *> cdwlst; // working copy
+    for (auto const & cdw : cdwlst0)
+        if (mw->dockWidgetArea(cdw) == area && !cdw->isFloating())
+            cdwlst.push_back(cdw);
+    // Add to existing right ClosingDockWidget and raise
+    if (cdwlst.length() > 1) {
+        mw->tabifyDockWidget(cdwlst.first(), cdw);
+        mw->blockSignals(true);
+        cdw->setVisible(true);
+        cdw->setFocus();
+        cdw->raise();
+        mw->blockSignals(false);
+    }
 
 //    // Resize to fixed width; start with needed lists
 //    QList<QDockWidget *> qdws; // a base-classier cast-down version of ClosingDockWidget
 //    QList<int> qdww; // the widths for QDockWidget
-//    for (auto const & cdw : cdws) {
+//    for (auto const & cdw : cdwlst) {
 //        qdww.push_back(100);
 //        qdws.push_back(static_cast<QDockWidget *>(cdw));
 //    }
 //    mw->resizeDocks(qdws, qdww, Qt::Orientation::Horizontal);
 
-//    // Send close signal somewhere. When all dockwindows with the same
-//    // string are closed, UIManager calls core to close library.
-//    // For some reason these connect calls are active *before* the raise() call above,
-//    // so when raise is called, the onDockWidgetActive gets called.  The callback for this
-//    // refers to m_openLibTreeWidgets which has not yet been updated with the libDockWidget, so
-//    // the assert fails.  Therefore the parentMW signals are blocked above so this
-//    // callback doesn't get called.`
-//    QObject::connect(mw, &QMainWindow::tabifiedDockWidgetActivated, this, &UIManager::onDockWidgetActivate);
-//    QObject::connect(libDockWidget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
-//}
+    // Send close signal somewhere. When all dockwindows with the same
+    // string are closed, UIManager calls core to close library.
+    // For some reason these connect calls are active *before* the raise() call above,
+    // so when raise is called, the onDockWidgetActive gets called.  The callback for this
+    // refers to m_openLibTreeWidgets which has not yet been updated with the libDockWidget, so
+    // the assert fails.  Therefore the parentMW signals are blocked above so this
+    // callback doesn't get called.`
+    QObject::connect(cdw, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
+
+
+
+}
+
+
 // TODO: Add ability to open some type of UI other than model/view, eg text window, browser, etc.
 QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
+
+    // Find active main window
+    DocWindow *mw(activeLibWindow());
+
     // Create or find appropriate model and view
-    QWidget *widget(nullptr); // Return widget
     QAbstractItemModel *model(nullptr);
     QAbstractItemView *view(nullptr);
-    DocWindow *mw = activeLibWindow();
-    assert(mw);
-    auto selectopt(selectWhere(fullpath, vt)); // selects the model in any window
+    auto selectopt(selectWhere(fullpath, vt)); // selects first entry with model to fullpath
     model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
     view = (this->*makeViewfm[vt])(model);
-    assert(view->model() == model);
+
+    // Make new widget and attach
     std::string title(std::filesystem::path(fullpath).filename().string());
-        
-    if (vt == ViewType::LIBSYMBOLVIEW) {
-        // Create QMdiSubWindow and show properly
-        widget = makeMDILibWidget(nullptr, view, title);
-        QList<QMdiSubWindow *> swl(mw->mdiArea()->subWindowList());
-        mw->mdiArea()->addSubWindow(widget);
-       if (mw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
-           ((!swl.empty() && swl.first()->isMaximized()) || swl.empty()))
-           widget->showMaximized();
-       else
-           widget->show();
-        widget->setFocus();
-        QObject::connect(static_cast<ClosingMDIWidget *>(widget), 
-        &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
-
-        // Before adding this UI, find another top level window for below hack
-        selectopt = selectWhere([mw](ConnView cv) {
-            return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;
-        });
-
-        // Hack to activate current main window
-        // Select another window first, then select this one
-        if (selectopt)
-            m_hackTimer.singleShot(0, [=]{
-                selectopt->mainWindow->activateWindow();
-                mw->activateWindow();
-                });
-
-    } else if (vt == ViewType::LibTreeView) {
-        // Creat ClosingDockWidget and show properly
-        widget = makeLibTreeView()
-    }
+    QWidget *widget((this->*makeWidgetfm[vt])(nullptr, view, title));
+    (this->*attachWidgetfm[vt])(mw, widget);
 
     // Store new widget
     m_connViews.push_back({fullpath, vt, model, view, widget, mw});
     cvlog(m_connViews, m_pLogger);
     updateLibActions();
     return widget;
-
  }
-//void UIManager::onDockWidgetActivate(QWidget *pw) {
-//    // For some reason this gets called twice when each tab is clicked
-//    assert(m_pCore);
-//    auto [model, _v, vt] = modelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
-//    auto [fullpath, _x, _y] = fullpathFromModel(model);
-//    log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
-//    m_pCore->activateLib(fullpath);
-//}
-//void UIManager::onDockWidgetClose(QWidget *w) {
-//    // Remove the view from list and allow library to be closed
-//    // This happens when user clicks the close button
-//    (void) w;
+void UIManager::onDockWidgetActivate(QWidget *pw) {
+    // For some reason this gets called twice when each tab is clicked
+    assert(m_pCore);
+    auto [model, _v, vt] = modelViewFromWidget(static_cast<QMdiSubWindow *>(pw));
+    auto [fullpath, _x, _y] = fullpathFromModel(model);
+    log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
+    m_pCore->activateLib(fullpath);
+}
+void UIManager::onDockWidgetClose(QWidget *w) {
+    // Remove the view from list and allow library to be closed
+    // This happens when user clicks the close button
+    (void) w;
+    log("OnDockWidgetClose");
 //    LibWindow *lw(activeLibWindow());
 //    // TODO: Make UIManager ignorant of DbIf.
 //    // TODO: Call should just be m_pCore->isDatabaseOpen()
 //    lw->updateLibActions(m_pCore->DbIf()->isDatabaseOpen() &&
 //                      selectWhere([lw](ConnView cv){return cv.view && cv.mainWindow == lw;}));
-//}
+}
 void UIManager::onMdiSubWindowActivate(QWidget *w){
     assert(m_pCore);
     // Qt documentation specifically says the value could be 0. Doesn't say the
@@ -392,12 +402,9 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // to be correct here.  This appears no to be a problem with MSVC, but Qt
     // Creator appears to use Clang as the realtime compiler in the background
     // which issues these warning in the IDE.
-//    QMainWindow *mw(static_cast<QMainWindow *>(QObject::sender()->parent()->parent()));
     if (w == nullptr ) {
         return;
     }
-//    log("onMdiSubWindowActivate QMdiSubWindow activated 0x%08x -> 0x%08x", w, mw);
-//    log("");
     QMdiSubWindow *sw(static_cast<QMdiSubWindow *>(w));
     std::string fullpath(fullpathFromMdiSubWindow(sw));
     
@@ -410,7 +417,6 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
         assert(fullpath == fullpath2);
     }
 
-    //log("Fullpath: %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
 }
 void UIManager::onMdiSubWindowClose(QWidget *w) {
@@ -486,15 +492,13 @@ void UIManager::updateLibActions() {
 
 
 
-
-
 // PUBLIC
 UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
     m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
-    //m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
-    //m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
+    m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
+    m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
 }
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
     for (auto uit : m_defaultViewTypes) {
@@ -549,6 +553,8 @@ void *UIManager::newWindow(LibCore *pcore, ILogger *plgr)  {
     QObject::connect(w, &DocWindow::activated, this, &UIManager::onLibWindowActivate);
     QObject::connect(w, &DocWindow::closing, this, &UIManager::onLibWindowClose);
     QObject::connect(w->mdiArea(), &QMdiArea::subWindowActivated, this, &UIManager::onMdiSubWindowActivate);
+    QObject::connect(w, &QMainWindow::tabifiedDockWidgetActivated, this, &UIManager::onDockWidgetActivate);
+
     m_connViews.push_back({"", ViewType::INVALID, nullptr, nullptr, nullptr, w});
     cvlog(m_connViews, m_pLogger);
     return w;
@@ -559,7 +565,7 @@ void *UIManager::duplicateWindow() {
     return duplicateWindow(activeLibWindow());
 }
 void *UIManager::duplicateWindow(void *oldw) {
-    // Duplicate the given window
+    // Duplicate the given window without children
     DocWindow *oldlw(static_cast<DocWindow *>(oldw));
     DocWindow *newlw(static_cast<DocWindow *>(newWindow()));
     QMdiArea *oa(oldlw->mdiArea());
@@ -577,7 +583,7 @@ void *UIManager::duplicateWindow(void *oldw) {
     return newlw;
 }
 void UIManager::closeWindow() {
-    // Closes current top level window As this and children are closed, they may
+    // Closes current top level window. As this and children are closed, they may
     // also be destroyed if their WA_DeletOnClose property is set. If this is
     // true, then it's possible that the textEdit object gets destroyed, leading
     // to the Logger pointing to a ghost.  Main() should connect the destroyed
