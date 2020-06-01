@@ -35,14 +35,21 @@ typedef struct connview {
     QWidget *subWidget; // colud be QMdiSubWindow or QDockWidget
     QMainWindow *mainWindow;
     // operator== is used for removing a struct from m_connViews
-    bool operator==(const struct connview& a) const
-    {
+    bool operator==(const struct connview& a) const  {
          return ( a.fullpath == this->fullpath && 
                   a.viewType == this->viewType &&
                   a.model == this->model &&
                   a.view  == this->view &&
                   a.subWidget == this->subWidget &&
                   a.mainWindow == this->mainWindow);
+    }
+    bool operator!=(const struct connview& a) const  {
+         return ( a.fullpath != this->fullpath ||
+                  a.viewType != this->viewType ||
+                  a.model != this->model ||
+                  a.view  != this->view ||
+                  a.subWidget != this->subWidget ||
+                  a.mainWindow != this->mainWindow);
     }
     void log(ILogger *);
 } ConnView;
@@ -90,23 +97,24 @@ private:
 
     std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
-    std::optional<ConnView> selectWhere(QDockWidget *);
-    std::optional<ConnView> selectWhere(QMdiSubWindow *);
-    std::optional<ConnView> selectWhere(QMainWindow *);
+    std::optional<ConnView> selectWhere(const QWidget *);
+    //std::optional<ConnView> selectWhere(const QMdiSubWindow *);
+    std::optional<ConnView> selectWhere(const QMainWindow *);
+    std::optional<ConnView> selectWhere(ViewType);
     std::optional<ConnView> selectWhere(std::string, ViewType);
-    std::optional<ConnView> selectWhere(std::string, ViewType, QMainWindow *);
-    // From https://stackoverflow.com/questions/40844622/use-a-lambda-as-a-parameter-for-a-c-function
-    template <typename F>
-    std::optional<ConnView> selectWhere(F&&);
+    std::optional<ConnView> selectWhere(std::string, ViewType, const QMainWindow *);
+    std::optional<ConnView> selectWhere(const std::function<bool (const ConnView &)> &);
     ConnViews selectWheres(std::string);
     ConnViews selectWheres(ViewType);
-    ConnViews selectWheres(QMainWindow *);
+    ConnViews selectWheres(const QWidget *);
+    ConnViews selectWheres(const QMainWindow *);
+    ConnViews selectWheres(const DocWindow *);
     ConnViews selectWheres(std::string, ViewType);
+    ConnViews selectWheres(const std::function<bool(const ConnView &)> &);
 
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
     QAbstractItemModel *makeLibTableModel(IDbIf *, std::string);
-    
     QAbstractItemView  *makeLibSymbolView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTreeView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTableView(QAbstractItemModel *);
@@ -116,16 +124,15 @@ private:
     void attachMDISubWindow(DocWindow *, QWidget *);
     void attachDockWidget(DocWindow *, QWidget *);
 
-//    void dockLibView(ClosingDockWidget *, Qt::DockWidgetArea); // moves libview to left or right
     QWidget *openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
-    void onDockWidgetActivate(QWidget *);
-    void onDockWidgetClose(QWidget *);
+    void onDocWindowActivate(QWidget *);
+    void onDocWindowClose(QWidget *);
     void onMdiSubWindowActivate(QWidget *);
     void onMdiSubWindowClose(QWidget *);
-    void onLibWindowActivate(QWidget *);
-    void onLibWindowClose(QWidget *);
+    void onDockWidgetActivate(QWidget *);
+    void onDockWidgetClose(QWidget *);
     void updateLibActions();
     
 

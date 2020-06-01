@@ -14,6 +14,7 @@ class ClosingDockWidget : public QDockWidget
     Q_OBJECT
 public:
     explicit ClosingDockWidget(QWidget * = nullptr);
+    ~ClosingDockWidget() override;
     void closeEvent(QCloseEvent *) override;
 
 signals:

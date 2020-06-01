@@ -9,20 +9,26 @@
 
 
 #include <QApplication>
-#include <QFrame>
-#include <QHBoxLayout>
 #include <QTextEdit>
-#include <QFont>
-#include <QDockWidget>
-#include <QMessageBox>
-#include <QTreeView>
-#include <QStandardItemModel>
-#include <QItemSelectionModel>
-#include <QFileSystemModel>
-#include <QTimer>
+#include <QDebug>
+
+#include <functional>
+
+
+void testfun(std::string s) {
+    qDebug("std::string");
+}
+void testfun(const std::function<void(int)> & f) {
+    qDebug("F f");
+
+}
 
 int main(int argc, char *argv[])
 {
+    int x = 5;
+    testfun("hi");
+    testfun([x](int y){qDebug() << "inside" << x;});
+
     //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
     LibCore core;

@@ -7,6 +7,9 @@ ClosingDockWidget::ClosingDockWidget(QWidget *parent) : QDockWidget(parent)
 
 }
 
+ClosingDockWidget::~ClosingDockWidget() {
+    qDebug("ClosingDockWidget::~ClosingDockWidget");
+}
 void ClosingDockWidget::closeEvent(QCloseEvent *event) {
     // The receiver gets a pointer to the just-now-closing dock widget
     // Please don't do anything dumb with the pointer.  Mostly it's
