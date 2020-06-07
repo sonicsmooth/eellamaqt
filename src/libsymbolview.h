@@ -11,21 +11,23 @@
 
 #include <string>
 
-class LibSymbolView : public LibClient, public QAbstractItemView
+class LibSymbolView : /*public LibClient, */public QAbstractItemView
 {
 private:
     QModelIndex m_index;
+    //QAbstractItemModel *m_model;
 public:
     LibSymbolView(QWidget * = nullptr);
     LibSymbolView(QWidget * = nullptr, QAbstractItemModel * = nullptr);
-    LibSymbolView(QWidget * = nullptr, QAbstractItemModel * = nullptr, LibCore * = nullptr, ILogger * = nullptr, std::string = std::string());
+    LibSymbolView(QWidget * = nullptr, QAbstractItemModel * = nullptr, LibCore * = nullptr, ILogger * = nullptr/*, std::string = std::string()*/);
     void paintEvent(QPaintEvent *event) override;
 
     // Reimplemented public functions
     QModelIndex	indexAt(const QPoint &) const  override;
     void keyboardSearch(const QString &) override;
     void scrollTo(const QModelIndex &, QAbstractItemView::ScrollHint hint = EnsureVisible)  override;
-    void setModel(QAbstractItemModel *) override;
+    //void setModel(QAbstractItemModel *) override;
+    //QAbstractItemModel *model() const;
     void setSelectionModel(QItemSelectionModel *) override;
     int	sizeHintForColumn(int) const override;
     int	sizeHintForRow(int) const override;

@@ -14,6 +14,7 @@ private:
 public:
     QSqlTreeModel(QObject *, QSqlDatabase db);
     QSqlDatabase database() const;
+    void setDatabase(QSqlDatabase);
 };
 
 #endif // QSQLTREEMODEL_H

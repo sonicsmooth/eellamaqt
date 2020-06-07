@@ -1,9 +1,18 @@
 #include "ilogger.h"
 #include "loggable.h"
 
-Loggable::Loggable(ILogger *lgr) : m_pLogger(lgr) {};
-void Loggable::setLogger(ILogger *lgr) {m_pLogger = lgr;};
-ILogger *Loggable::logger() const {return m_pLogger;};
+Loggable::Loggable(ILogger *lgr) : m_pLogger(lgr) {
+
+}
+Loggable::~Loggable() {
+    int x = 12;
+}
+void Loggable::setLogger(ILogger *lgr) {
+    m_pLogger = lgr;
+}
+ILogger *Loggable::logger() const {
+    return m_pLogger;
+}
 
 void Loggable::log(const char *fmt, ...) {
     if (m_pLogger) {

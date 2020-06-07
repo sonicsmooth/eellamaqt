@@ -8,7 +8,8 @@
 #include <QMainWindow>
 #include <QString>
 #include <QMdiArea>
-
+#include <QEvent>
+#include <QCloseEvent>
 #include <any>
 
 
@@ -16,16 +17,17 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class LibWindow; }
 QT_END_NAMESPACE
 
-class LibWindow : public QMainWindow, public Coreable, public Loggable
+class DocWindow : public QMainWindow, public Coreable, public Loggable
 {
     Q_OBJECT
 private:
     Ui::LibWindow *ui;
 
 public:
-    LibWindow(QWidget *parent = nullptr);
-    ~LibWindow() override;
-    void updateActions(bool);
+    DocWindow(QWidget *parent = nullptr, LibCore * = nullptr, ILogger * = nullptr);
+    ~DocWindow() override;
+    void updateLibActions(bool);
+    void updateTabActions();
     void updateTitle();
     void updateTitle(std::string);
     QMdiArea *mdiArea();
@@ -55,13 +57,29 @@ public:
     void editCopy();
     void editPaste();
     void editDelete();
-    void viewLibTreeView();
-    void viewLibTableView();
+    void duplicateMainView();
+    void popOutMainView();
+    void closeMainView();
+    void toggleLibTreeView();
+    void toggleLibTableView();
+    void newWindow(); 
+    void closeWindow();
     void helpAbout();
     void reloadStyle();
+    void mdiTabMode();
+    void mdiTileSubWindows();
+    void mdiCascadeSubWindows();
 
+    // Overloaded
+    void changeEvent(QEvent *) override;
+    void closeEvent(QCloseEvent *) override;
+
+    signals:
+    void activated(DocWindow *) const;
+    void closing(DocWindow *) const;
 
 
 
 };
 #endif // LIBWINDOW_H
+

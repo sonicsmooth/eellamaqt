@@ -18,7 +18,7 @@ public:
 //    void retarget(std::string *);
 
 signals:
-    void *closing(ClosingMDIWidget *) const;
+    void closing(ClosingMDIWidget *) const;
 
 public slots:
 };

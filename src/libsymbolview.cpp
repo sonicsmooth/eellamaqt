@@ -1,5 +1,5 @@
 #include "libsymbolview.h"
-#include "libwindow.h"
+#include "docwindow.h"
 
 #include <QWidget>
 #include <QAbstractItemModel>
@@ -13,21 +13,22 @@
 
 
 LibSymbolView::LibSymbolView(QWidget *parent) :
-    LibSymbolView(parent, nullptr, nullptr, nullptr, std::string())
+    LibSymbolView(parent, nullptr, nullptr, nullptr/*, std::string()*/)
 {
 
 }
 
 LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model) :
-    LibSymbolView(parent, model, nullptr, nullptr, std::string())
+    LibSymbolView(parent, model, nullptr, nullptr/*, std::string()*/)
 {
 
 }
 
-LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl, std::string connpath) :
-    LibClient(pc, pl, connpath)
-    {
-
+LibSymbolView::LibSymbolView(QWidget *parent, QAbstractItemModel *model, LibCore *pc, ILogger *pl )
+   /*: LibClient(pc, pl, connpath) */
+    //m_model(model)
+{
+    setModel(model);
 }
 
 void LibSymbolView::paintEvent(QPaintEvent *event) {
@@ -45,9 +46,6 @@ void LibSymbolView::keyboardSearch(const QString &search) {
 
 }
 void LibSymbolView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)  {
-
-}
-void LibSymbolView::setModel(QAbstractItemModel *model) {
 
 }
 void LibSymbolView::setSelectionModel(QItemSelectionModel *selectionModel) {

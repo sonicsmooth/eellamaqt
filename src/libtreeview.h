@@ -6,12 +6,12 @@
 #include <QAbstractItemModel>
 #include <string>
 
-class LibTreeView : public QTreeView, public LibClient
+class LibTreeView : public QTreeView /*, public LibClient*/
 {
 public:
     LibTreeView(QWidget * = nullptr);
     LibTreeView(QWidget * = nullptr, QAbstractItemModel * = nullptr);
-    LibTreeView(QWidget * = nullptr, QAbstractItemModel * = nullptr, LibCore * = nullptr, ILogger * = nullptr, std::string = std::string());
+    LibTreeView(QWidget * = nullptr, QAbstractItemModel * = nullptr, LibCore * = nullptr, ILogger * = nullptr/*, std::string = std::string()*/);
 };
 
 

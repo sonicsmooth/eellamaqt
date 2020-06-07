@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>706</width>
+    <width>1091</width>
     <height>631</height>
    </rect>
   </property>
@@ -19,11 +19,23 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QMdiArea" name="mdiArea">
         <property name="viewMode">
-         <enum>QMdiArea::TabbedView</enum>
+         <enum>QMdiArea::SubWindowView</enum>
+        </property>
+        <property name="documentMode">
+         <bool>true</bool>
+        </property>
+        <property name="tabsClosable">
+         <bool>true</bool>
+        </property>
+        <property name="tabsMovable">
+         <bool>true</bool>
+        </property>
+        <property name="tabShape">
+         <enum>QTabWidget::Rounded</enum>
         </property>
        </widget>
       </item>
@@ -36,8 +48,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>706</width>
-     <height>38</height>
+     <width>1091</width>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrarian">
@@ -46,11 +58,14 @@
     </property>
     <addaction name="actionFileNewLib"/>
     <addaction name="actionFileOpenLib"/>
+    <addaction name="actionOpen_recent"/>
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileRename"/>
     <addaction name="actionFileCloseLib"/>
-    <addaction name="separator"/>
     <addaction name="actionFileDeleteLib"/>
+    <addaction name="separator"/>
+    <addaction name="actionCloseWindow"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -87,11 +102,12 @@
    </widget>
    <widget class="QMenu" name="menuLibrary">
     <property name="title">
-     <string>Lib Items</string>
+     <string>Library</string>
     </property>
     <addaction name="actionNewShape"/>
     <addaction name="actionInsertShape"/>
     <addaction name="actionNewSymbol"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuViews">
     <property name="title">
@@ -99,12 +115,29 @@
     </property>
     <addaction name="actionLibTreeView"/>
     <addaction name="actionLibTableView"/>
+    <addaction name="separator"/>
+    <addaction name="actionPopOutSymbolView"/>
+    <addaction name="actionDuplicateSymbolView"/>
+    <addaction name="separator"/>
+    <addaction name="actionCloseSymbolView"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionTabs"/>
+    <addaction name="separator"/>
+    <addaction name="actionCascade"/>
+    <addaction name="actionTile"/>
+    <addaction name="separator"/>
+    <addaction name="actionNewWindow"/>
    </widget>
    <addaction name="menuLibrarian"/>
    <addaction name="menuSymbols"/>
    <addaction name="menuLibrary"/>
    <addaction name="menuEdit"/>
    <addaction name="menuViews"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp_2"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -152,6 +185,7 @@
    <addaction name="separator"/>
    <addaction name="actionHelpAbout"/>
    <addaction name="actionReloadStyle"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionFileNewLib">
@@ -191,42 +225,6 @@
    </property>
    <property name="toolTip">
     <string>Save a copy, open new, close existing</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAsAndClose">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save As, Replace</string>
-   </property>
-   <property name="toolTip">
-    <string>Save a copy, open new, close existing</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAsAndOpen">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save As, Keep open</string>
-   </property>
-   <property name="toolTip">
-    <string>Save a copy, open new, keep existing open</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAsQuietly">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/document-save-as.png</normaloff>:/actions/document-save-as.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save Copy As</string>
-   </property>
-   <property name="toolTip">
-    <string>Save a copy, don't open new, keep existing open</string>
    </property>
   </action>
   <action name="actionFileRename">
@@ -529,13 +527,20 @@
     <string>Delete selection</string>
    </property>
   </action>
-  <action name="actionHelpAbout">
-   <property name="icon">
-    <iconset resource="../application.qrc">
-     <normaloff>:/actions/help-about.png</normaloff>:/actions/help-about.png</iconset>
+  <action name="actionDuplicateSymbolView">
+   <property name="enabled">
+    <bool>false</bool>
    </property>
    <property name="text">
-    <string>About</string>
+    <string>Duplicate</string>
+   </property>
+  </action>
+  <action name="actionCloseSymbolView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Close</string>
    </property>
   </action>
   <action name="actionLibTreeView">
@@ -543,7 +548,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Lib Tree View</string>
+    <string>Enable Tree View</string>
    </property>
    <property name="toolTip">
     <string>Open tree view for current library</string>
@@ -554,7 +559,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Lib Table View</string>
+    <string>Enable Table View</string>
    </property>
    <property name="toolTip">
     <string>Open table view for active library</string>
@@ -567,6 +572,67 @@
    </property>
    <property name="text">
     <string>Reload Style</string>
+   </property>
+  </action>
+  <action name="actionNewWindow">
+   <property name="text">
+    <string>New Window</string>
+   </property>
+  </action>
+  <action name="actionCloseWindow">
+   <property name="text">
+    <string>Close Window</string>
+   </property>
+  </action>
+  <action name="actionHelpAbout">
+   <property name="icon">
+    <iconset resource="../application.qrc">
+     <normaloff>:/actions/help-about.png</normaloff>:/actions/help-about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionTabs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Show tabs</string>
+   </property>
+  </action>
+  <action name="actionCascade">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Cascade</string>
+   </property>
+  </action>
+  <action name="actionTile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Tile</string>
+   </property>
+  </action>
+  <action name="actionPopOutSymbolView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Pop out</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionOpen_recent">
+   <property name="text">
+    <string>Open recent</string>
    </property>
   </action>
  </widget>

@@ -14,15 +14,17 @@
 
 class Loggable {
     public:
-        ILogger *m_pLogger;
         Loggable(ILogger * = nullptr);
+        ~Loggable();
+
+        ILogger *m_pLogger;
         void setLogger(ILogger *);
         ILogger *logger() const;
+        
         // Just forward log to embedded logger
         void log(const char *, ...);
         void log(std::string);
         void log(std::stringstream &); // clears string when done
-//        void log(QString);
 };
 
 

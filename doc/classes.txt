@@ -44,17 +44,110 @@ EEAbstractDatabase
 QSqlDatabase
 EEQDatabase : EEAbstractDatabase, QSqlDatabase
 
-maps...
-tablemodel(lib1): tableview1, tableview2
-treemodel(lib1): treeview1, treeview2
+A conn can have multiple main views per main window
+A conn have a single aux view of each type per main window, shared with other conns.
+A conn can have at most one of each type of model
 
-{:conn1 {TREEVIEW {:view1 -> treemodel
-                   :view2 -> treemodel
-		 TABLEVIEW {:view3 -> tablemodel
-		            :view4 -> tablemodel}}}
- :conn2 ... }					
+Each row represents a particular view and widget, so it can be opened/closed, shown/hidden, dragged, etc.
+The view and the widget are tied together, and at most one per type per main window.
+So when user selects a different document, the view points to that model.
+
+CONN   MVTYPE  MODEL         VIEW            SELECTED  WIDGET          WINDOW
+-----  ------  ------------  -------------   --------  ------          -----
+NULL   NULL    NULL          NULL            FALSE     NULL            mainwindow1 -- empty main window
+conn1  MAIN    mainmodel_c1  mainview1_c1w1  FALSE     MDIWidget1_w1   mainwindow1 -- c1 first main view in mainwindow1
+conn1  MAIN    mainmodel_c1  mainview2_c1w1  FALSE     MDIWidget2_w1   mainwindow1 -- c1 second main view in mainwindow1
+conn1  MAIN    mainmodel_c1  mainview3_c1w2  FALSE     MDIWidget3_w2   mainwindow2 -- c1 first main view in mainwindow2
+conn1  MAIN    mainmodel_c1  mainview4_c1w2  TRUE      MDIWidget4_w2   mainwindow2 -- c1 second main view in mainwindow2
+conn1  TREE    treemodel_c1  treeview_w1     FALSE     dockWidget1_w1  mainwindow1 -- c1 only treeview in mainwindow1
+conn1  TREE    treemodel_c1  treeview_w2     FALSE     dockWidget2_w2  mainwindow2 -- c1 only treeview in mainwindow2
+									      
+conn2  MAIN    mainmodel_c2  mainview5_c2w1  FALSE     MDIWidget5_w1   mainwindow1 -- c2 first main view in main window1
+conn2  MAIN    mainmodel_c2  mainview6_c2w2  FALSE     MDIWidget6_w2   mainwindow2 -- c2 first main view in main window2
+conn2  TREE    treemodel_c1  treeview_w1     FALSE     dockWidget1_w1  mainwindow1 -- c2 only treeview in mainwindow1
+conn2  TREE    treemodel_c1  treeview_w2     FALSE     dockWidget2_w2  mainwindow2 -- c2 only treeview in mainwindow2
+
+some verification fns:
+	count(selected) == 1
+	views and widgets are matched 1:1 and are unique
+	There is exactly one main model for each conn
+	There is at most one aux model for each conn
+	Every model has at least one view
+
+openUI
+	window = main window associated with only TRUE selected
+	model = .model from selectWhere(`CONN`==fullpath, MVTYPE==vt) OR new vt model(fullpath)
+	ViewType == LibSymbolView? -> Make new main view
+		view = new view(mainmodel)
+		widget = new mdiWidget(mainview)
+		window->addMDIWidget(widget)
+		INSERT(conn, vt, model, view, true, widget, window)
+	Else -> Make or reuse aux view
+		view,widget = .view,.widget from selectWhere(`CONN`==fullpath, MVTYPE==vt, mainwindow==window)
+		if found -> we already have views in this windows for this database
+			selectWhere(SELECTED==true).selected = FALSE
+			found entry.selected = true
+			return
+		else -> look for view in this window
+			view,widget = .view,.widget from selectWhere(`MVTYPE`==vt, mainwindow=window)
+			if found -> regg.ubjdixuihccptp..kyjtkbcchduiguse this view/widget combo
+				view->setModel(model)
+				DELETE found entry (verify model from this entry still has at least mainview)
+			else -> new view/widget combo
+				view = new view(model)
+				widget = new ClosingDockWidget(view)
+				window->dockWidget(widget)
+			INSERT(fullpath, vt, model, view, true, widget, window)
+		widget->show();
+		
+onMDIWidgetClose 
+	// If another main widget with this conn is still open in any window, 
+	//   delete entry
+	// If no other main widget open, then
+	//   close all aux widgets with this conn, delete all entries with this conn, delete model, close lib
+	// let MDI system choose next window and update aux widgets to match,
+	entry = selectWhere(widget == widget)
+	verify entry.view == dockwidget->widget()
+	verify entry.model == dockwidget->widget()->model()
+
+	// Find where else we are using the model and main widget
+	model = .model from selectWhere(conn=fullpath, type==LibSymbolView)
+	if found
+		DELETE entry
+	else -> nothing else found
+		selectWheres(conn==fullpath)
+		DELETE all entries
+		delete entry.model
+		core->closeLibNoGui
+	mdi->activateNextSubWindow, or mdi->subWindowList
+	Find next main entry, selected = true, others = false, raise widget, show aux views that are still open
+		(use onMDIWidgetActivated to do this)
+	no need for m_pCore->activate or any sort of ordered list in dbif
+	
+onDockWidgetClose
+	DELETE selectWheres()..???????
+	
+	
+User clicks on main view
+	All aux views for that conn in the same mainwindow are selected and shown
+	
+User clicks on auxI view
+	Nothing special, as the main view associated with the same conn was already selected
+
+User closes aux view
+	delete row where `conn`==conn1 && MVTYPE=='TREE' && mainwindow==current window
+	verify only one of these
+	verify that select `widget` where `conn`==conn1 && MVTYPE=='TREE' returns empty
+	
+User closes main view
+	If it's the last main view, then close conn() (above)
+	Otherwise close main widget and main view.
+	
 
 
+						   
+	
+		
 
 LibTreeView:
 Shows each lib item which can open revealing contents.

@@ -169,18 +169,18 @@ void QSQDbIf::saveDatabase(std::string oldpath, std::string newpath, DupOptions 
         break;
     }
 }
-std::optional<std::string> QSQDbIf::activeDatabase() const {
-    // Returns either the string of the active db or null option
-    // if there is no active db
-    return m_activeDb.size() ? std::optional<std::string>{m_activeDb.front()} :
-                               std::nullopt;
-}
-void QSQDbIf::activateDatabase(std::string fullpath) {
-    if (!isDatabaseOpen(fullpath))
-        throw("Database must be open before it can be activated");
-    else
-        pushActiveDb(fullpath);
-}
+ std::optional<std::string> QSQDbIf::activeDatabase() const {
+     // Returns either the string of the active db or null option
+     // if there is no active db
+     return m_activeDb.size() ? std::optional<std::string>{m_activeDb.front()} :
+                                std::nullopt;
+ }
+ void QSQDbIf::activateDatabase(std::string fullpath) {
+     if (!isDatabaseOpen(fullpath))
+         throw("Database must be open before it can be activated");
+     else
+         pushActiveDb(fullpath);
+ }
 
 void QSQDbIf::closeDatabase(std::string fullpath) {
     QString dbname(QString::fromStdString(fullpath));
