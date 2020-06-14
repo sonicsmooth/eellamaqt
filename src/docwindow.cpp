@@ -252,7 +252,7 @@ void DocWindow::fileSaveAs() {
             m_pCore->saveLib(m_pCore->DbIf()->activeDatabase().value(), fname, fsa.option());
         }
     } else {
-        log("LibWindow::fileSaveAs: Canceled");
+        log("DocWindow::fileSaveAs: Canceled");
     }
 }
 void DocWindow::fileRename() {
@@ -260,7 +260,7 @@ void DocWindow::fileRename() {
     // or closing, renaming, then opening again
     assert(m_pCore);
     assert(m_pCore->DbIf()->isDatabaseOpen());
-    //log("LibWindow::fileRename");
+    //log("DocWindow::fileRename");
     FileSaveAs frn(this, m_pCore->DbIf()->activeDatabase().value(),
                    static_cast<Logger *>(m_pLogger), FileSaveAs::Mode::RENAME);
     if(frn.exec()) {
@@ -270,7 +270,7 @@ void DocWindow::fileRename() {
             m_pCore->saveLib(m_pCore->DbIf()->activeDatabase().value(), fname, option);
         }
     } else {
-        log("LibWindow::fileRename: Canceled");
+        log("DocWindow::fileRename: Canceled");
     }
 }
 void DocWindow::fileCloseLib() {
@@ -287,83 +287,83 @@ void DocWindow::fileDeleteLib() {
 }
 void DocWindow::newShape() {
     assert(m_pCore);
-    log("LibWindow: new shape");
+    log("DocWindow: new shape");
 }
 void DocWindow::insertShape() {
     assert(m_pCore);
-    log("LibWindow: insert shape");
+    log("DocWindow: insert shape");
 }
 void DocWindow::newSymbol() {
     assert(m_pCore);
-    log("LibWindow: new symbol");
+    log("DocWindow: new symbol");
 }
 void DocWindow::deleteItem() {
     assert(m_pCore);
-    log("LibWindow: delete item");
+    log("DocWindow: delete item");
 }
 void DocWindow::newRectangle() {
      assert(m_pCore);
-    log("LibWindow: new rectangle");
+    log("DocWindow: new rectangle");
 }
 void DocWindow::newLine() {
     assert(m_pCore);
-    log("LibWindow: new line");
+    log("DocWindow: new line");
 }
 void DocWindow::newText() {
     assert(m_pCore);
-    log("LibWindow: new text");
+    log("DocWindow: new text");
 }
 void DocWindow::newCircle() {
     assert(m_pCore);
-    log("LibWindow: new circle");
+    log("DocWindow: new circle");
 }
 void DocWindow::newArrow() {
     assert(m_pCore);
-    log("LibWindow: new arrow");
+    log("DocWindow: new arrow");
 }
 void DocWindow::newPolygon() {
     assert(m_pCore);
-    log("LibWindow: new polygon");
+    log("DocWindow: new polygon");
 }
 void DocWindow::newPolyline() {
     assert(m_pCore);
-    log("LibWindow: new polyline");
+    log("DocWindow: new polyline");
 }
 void DocWindow::newPin() {
     assert(m_pCore);
-    log("LibWindow: new pin");
+    log("DocWindow: new pin");
 }
 void DocWindow::editUndo() {
     assert(m_pCore);
-    log("LibWindow: edit undo");
+    log("DocWindow: edit undo");
 }
 void DocWindow::editRedo() {
     assert(m_pCore);
-    log("LibWindow: edit redo");
+    log("DocWindow: edit redo");
 }
 void DocWindow::editMove() {
     assert(m_pCore);
-    log("LibWindow: edit move");
+    log("DocWindow: edit move");
 }
 void DocWindow::editRotate() {
     assert(m_pCore);
-    log("LibWindow: edit rotate");
+    log("DocWindow: edit rotate");
 }
 void DocWindow::editCut() {
     assert(m_pCore);
-    log("LibWindow: edit cut");
+    log("DocWindow: edit cut");
 }
 void DocWindow::editCopy() {
     assert(m_pCore);
-    log("LibWindow: edit copy");
+    log("DocWindow: edit copy");
 }
 void DocWindow::editPaste() {
     assert(m_pCore);
-    log("LibWindow: edit paste");
+    log("DocWindow: edit paste");
 }
 void DocWindow::editDelete() {
     assert(m_pCore);
-//    log("LibWindow: edit delete item from " + m_pCore->activeDb().value());
+//    log("DocWindow: edit delete item from " + m_pCore->activeDb().value());
 //    m_pCore->deleteShape("Some shape");
 //    m_pCore->deleteSymbol("Some symbol");
 }
@@ -386,7 +386,7 @@ void DocWindow::closeMainView() {
 
 void DocWindow::toggleLibTreeView() {
     assert(m_pCore);
-//    log("LibWindow: view LibTreeView");
+//    log("DocWindow: view LibTreeView");
 //    if (m_pCore->activeDb()) {
 //        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
 //        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
@@ -394,7 +394,7 @@ void DocWindow::toggleLibTreeView() {
 }
 void DocWindow::toggleLibTableView() {
     assert(m_pCore);
-//    log("LibWindow: view LibTableView");
+//    log("DocWindow: view LibTableView");
 //    if (m_pCore->activeDb()) {
 //        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
 //        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
