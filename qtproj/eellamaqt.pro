@@ -56,12 +56,12 @@ HEADERS += \
     ../src/saveoptions.h \
     ../src/uimanager.h \
     ../src/filesaveas.h \
-    ../src/mymodel.h \ \
+    ../src/mymodel.h \
     ../src/mvtypes.h
 
 
 FORMS += \
-    ../src/ui/libwindow.ui \
+    ../src/ui/docwindow.ui
 
 RESOURCES += \
     ../src/application.qrc

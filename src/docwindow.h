@@ -14,14 +14,14 @@
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class LibWindow; }
+namespace Ui { class DocWindow; }
 QT_END_NAMESPACE
 
 class DocWindow : public QMainWindow, public Coreable, public Loggable
 {
     Q_OBJECT
 private:
-    Ui::LibWindow *ui;
+    Ui::DocWindow *ui;
 
 public:
     DocWindow(QWidget *parent = nullptr, LibCore * = nullptr, ILogger * = nullptr);
@@ -81,5 +81,5 @@ public:
 
 
 };
-#endif // LIBWINDOW_H
+#endif // DOCWINDOW_H
 

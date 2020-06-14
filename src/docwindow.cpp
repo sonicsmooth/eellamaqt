@@ -1,6 +1,6 @@
 #include "docwindow.h"
 #include "libtreeview.h"
-#include "ui_libwindow.h"
+#include "ui_docwindow.h"
 #include "closingdockwidget.h"
 #include "uimanager.h"
 #include "filesaveas.h"
@@ -33,7 +33,7 @@ DocWindow::DocWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     : QMainWindow(parent),
       Coreable(pcore),
       Loggable(plgr),
-      ui(new Ui::LibWindow)
+      ui(new Ui::DocWindow)
 {
     ui->setupUi(this);
 
@@ -131,9 +131,7 @@ DocWindow::DocWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
 }
 
 
-DocWindow::~DocWindow()
-{
-    int z = 99;
+DocWindow::~DocWindow() {
     delete ui;
 }
 
@@ -257,7 +255,6 @@ void DocWindow::fileSaveAs() {
         log("LibWindow::fileSaveAs: Canceled");
     }
 }
-
 void DocWindow::fileRename() {
     // Rename -- effectively fileSaveAsAndClose followed by deleting old one,
     // or closing, renaming, then opening again
@@ -276,7 +273,6 @@ void DocWindow::fileRename() {
         log("LibWindow::fileRename: Canceled");
     }
 }
-
 void DocWindow::fileCloseLib() {
     assert(m_pCore);
     if (m_pCore->DbIf()->isDatabaseOpen()) {
@@ -309,7 +305,6 @@ void DocWindow::newRectangle() {
      assert(m_pCore);
     log("LibWindow: new rectangle");
 }
-
 void DocWindow::newLine() {
     assert(m_pCore);
     log("LibWindow: new line");
