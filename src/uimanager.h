@@ -151,6 +151,7 @@ public:
     void duplicateMainView() override;
     void popOutMainView() override;
     void closeMainView() override;
+    bool viewTypeExists(ViewType, const DocWindow *);
 
 public slots:
     //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);

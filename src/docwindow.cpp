@@ -164,12 +164,13 @@ void DocWindow::updateLibActions(bool en) {
     ui->actionPopOutSymbolView->setEnabled(en);
     ui->actionDuplicateSymbolView->setEnabled(en);
     ui->actionCloseSymbolView->setEnabled(en);
-    ui->actionLibTreeView->setEnabled(en);
-    ui->actionLibTableView->setEnabled(en);
+    //ui->actionLibTreeView->setEnabled(en);
+    //ui->actionLibTableView->setEnabled(en);
     ui->actionTabs->setEnabled(en);
     ui->actionCascade->setEnabled(en);
     ui->actionTile->setEnabled(en);
     updateTabActions();
+    updateViewEnables();
 }
 void DocWindow::updateTabActions() {
     // Set tabbed/normal menu text based on current mode
@@ -177,6 +178,15 @@ void DocWindow::updateTabActions() {
         ui->actionTabs->setText("Show as subwindows");
     else
         ui->actionTabs->setText("Show as tabs");
+}
+void DocWindow::updateViewEnables() {
+    assert(m_pCore);
+    UIManager *uim(static_cast<UIManager *>(m_pCore->UIManager()));
+    if (!uim) return;
+    bool ltrvex(uim->viewTypeExists(ViewType::LIBTREEVIEW, this));
+    bool ltbvex(uim->viewTypeExists(ViewType::LIBTABLEVIEW, this));
+    ui->actionLibTreeView->setEnabled(!ltrvex);
+    ui->actionLibTableView->setEnabled(!ltbvex);
 }
 
 void DocWindow::updateTitle() {
@@ -389,21 +399,22 @@ void DocWindow::closeMainView() {
     m_pCore->UIManager()->closeMainView();
 }
 
+// TODO: use types for these toggles
 void DocWindow::toggleLibTreeView() {
     assert(m_pCore);
-//    log("LibWindow: view LibTreeView");
-//    if (m_pCore->activeDb()) {
-//        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-//        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
-//    }
+    log("LibWindow: view LibTreeView");
+    UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
+    IDbIf dbif (m_pCore->DbIf());
+    std::string fullpath(m_pcore->activeDb().value());
+    mgr->openUI(dbif, fullpath, UIType::LIBTREEVIEW);
 }
 void DocWindow::toggleLibTableView() {
     assert(m_pCore);
-//    log("LibWindow: view LibTableView");
-//    if (m_pCore->activeDb()) {
-//        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-//        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
-//    }
+   log("LibWindow: view LibTableView");
+   if (m_pCore->activeDb()) {
+       UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
+       mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
+   }
 }
 
 void DocWindow::newWindow() {
