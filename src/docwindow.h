@@ -11,7 +11,7 @@
 #include <QEvent>
 #include <QCloseEvent>
 #include <any>
-
+#include <list>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class DocWindow; }
@@ -28,6 +28,7 @@ public:
     ~DocWindow() override;
     void updateLibActions(bool);
     void updateTabActions();
+    void updateViewEnables();
     void updateTitle();
     void updateTitle(std::string);
     QMdiArea *mdiArea();
