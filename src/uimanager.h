@@ -104,6 +104,16 @@ private:
     std::optional<ConnView> selectWhere(std::string, ViewType);
     std::optional<ConnView> selectWhere(std::string, ViewType, const QMainWindow *);
     std::optional<ConnView> selectWhere(const std::function<bool (const ConnView &)> &);
+    template <typename Arg>
+    ConnViews selectWhere_ext(ConnViews&&, Arg);
+    template <typename Arg, typename... Args>
+    ConnViews selectWhere_ext(ConnViews&&, Arg, Args... );
+    template <typename... Args>
+    std::optional<ConnView> selectWhere_ext(Args... );
+    template <typename... Args>
+    ConnViews selectWheres_ext(Args... );
+    
+    
     ConnViews selectWheres(std::string);
     ConnViews selectWheres(ViewType);
     ConnViews selectWheres(const QWidget *);
@@ -151,6 +161,7 @@ public:
     void duplicateMainView() override;
     void popOutMainView() override;
     void closeMainView() override;
+    void enableSubView(ViewType) override;
     bool viewTypeExists(ViewType, const DocWindow *);
 
 public slots:

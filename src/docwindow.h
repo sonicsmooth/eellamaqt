@@ -22,6 +22,7 @@ class DocWindow : public QMainWindow, public Coreable, public Loggable
     Q_OBJECT
 private:
     Ui::DocWindow *ui;
+    void toggleSubView(ViewType);
 
 public:
     DocWindow(QWidget *parent = nullptr, LibCore * = nullptr, ILogger * = nullptr);
@@ -61,8 +62,8 @@ public:
     void duplicateMainView();
     void popOutMainView();
     void closeMainView();
-    void toggleLibTreeView();
-    void toggleLibTableView();
+    void toggleDocTreeView();
+    void toggleDocTableView();
     void newWindow(); 
     void closeWindow();
     void helpAbout();

@@ -74,8 +74,8 @@ DocWindow::DocWindow(QWidget *parent, LibCore *pcore, ILogger *plgr)
     connect(ui->actionPopOutSymbolView, &QAction::triggered, this, &DocWindow::popOutMainView);
     connect(ui->actionDuplicateSymbolView, &QAction::triggered, this, &DocWindow::duplicateMainView);
     connect(ui->actionCloseSymbolView, &QAction::triggered, this, &DocWindow::closeMainView);
-    connect(ui->actionLibTreeView, &QAction::triggered, this, &DocWindow::toggleLibTreeView);
-    connect(ui->actionLibTableView, &QAction::triggered, this, &DocWindow::toggleLibTableView);
+    connect(ui->actionLibTreeView, &QAction::triggered, this, &DocWindow::toggleDocTreeView);
+    connect(ui->actionLibTableView, &QAction::triggered, this, &DocWindow::toggleDocTableView);
     connect(ui->actionNewWindow, &QAction::triggered, this, &DocWindow::newWindow);
     connect(ui->actionCloseWindow, &QAction::triggered, this, &DocWindow::closeWindow);
     connect(ui->actionHelpAbout, &QAction::triggered, this, &DocWindow::helpAbout);
@@ -183,8 +183,10 @@ void DocWindow::updateViewEnables() {
     if (!uim) return;
     bool ltrvex(uim->viewTypeExists(ViewType::LIBTREEVIEW, this));
     bool ltbvex(uim->viewTypeExists(ViewType::LIBTABLEVIEW, this));
-    ui->actionLibTreeView->setEnabled(!ltrvex);
-    ui->actionLibTableView->setEnabled(!ltbvex);
+    ui->actionLibTreeView->setEnabled(true);
+    ui->actionLibTableView->setEnabled(true);
+    //ui->actionLibTreeView->setEnabled(!ltrvex);
+    //ui->actionLibTableView->setEnabled(!ltbvex);
 }
 
 void DocWindow::updateTitle() {
@@ -395,37 +397,21 @@ void DocWindow::closeMainView() {
 }
 
 // TODO: use types for these toggles
-void DocWindow::toggleLibTreeView() {
-    assert(m_pCore);
-<<<<<<< HEAD
-//    log("DocWindow: view LibTreeView");
-//    if (m_pCore->activeDb()) {
-//        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-//        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTREEVIEW);
-//    }
+void DocWindow::toggleDocTreeView() {
+    log("LibWindow::toggleDocTreeView");
+    toggleSubView(ViewType::LIBTREEVIEW);
 }
-void DocWindow::toggleLibTableView() {
+void DocWindow::toggleDocTableView() {
+    log("LibWindow::toggleDocTableView");
+    toggleSubView(ViewType::LIBTABLEVIEW);
+}
+void DocWindow::toggleSubView(ViewType vt) {
     assert(m_pCore);
-//    log("DocWindow: view LibTableView");
-//    if (m_pCore->activeDb()) {
-//        UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-//        //mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
-//    }
-=======
-    log("LibWindow: view LibTreeView");
+    log("LibWindow::toggleSubView");
     UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-    IDbIf dbif (m_pCore->DbIf());
-    std::string fullpath(m_pcore->activeDb().value());
-    mgr->openUI(dbif, fullpath, UIType::LIBTREEVIEW);
-}
-void DocWindow::toggleLibTableView() {
-    assert(m_pCore);
-   log("LibWindow: view LibTableView");
-   if (m_pCore->activeDb()) {
-       UIManager *mgr = dynamic_cast<UIManager *>(m_pCore->UIManager());
-       mgr->openUI(m_pCore->activeDb().value(), UIType::LIBTABLEVIEW);
-   }
->>>>>>> f276fd7d9e3dbcc802d7a5cbbf9f92286f8c201b
+    IDbIf *dbif (m_pCore->DbIf());
+    std::string fullpath(dbif->activeDatabase().value());
+    mgr->enableSubView(vt);
 }
 
 void DocWindow::newWindow() {

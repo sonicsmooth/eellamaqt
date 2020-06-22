@@ -3,6 +3,7 @@
 
 #include "idbif.h"
 #include "ilogger.h"
+#include "mvtypes.h"
 
 #include <string>
 
@@ -26,6 +27,7 @@ public:
     virtual void duplicateMainView() = 0;
     virtual void popOutMainView() = 0;
     virtual void closeMainView() = 0;
+    virtual void enableSubView(ViewType) = 0;
 };
 
 //IUIManager::~IUIManager() = default;

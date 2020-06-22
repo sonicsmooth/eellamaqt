@@ -164,6 +164,84 @@ std::optional<ConnView> UIManager::selectWhere(const std::function<bool (const C
             return std::move(cv);
     return std::nullopt;
 }
+
+// This is the generic base case, must be specialized
+template<typename Arg>
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, Arg arg) {
+    (void) cvs;
+    (void) arg;
+    log("Single selectWhere_ext, shouldn't be called directly");
+    throw("Wrong function call");
+}
+template<> // specialization
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, std::string arg) {
+    ConnViews retval;
+    for (auto cv: cvs)
+        if(cv.fullpath == arg) retval.push_back(cv);
+    return retval;
+}
+template<> // specialization
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, ViewType arg) {
+    ConnViews retval;
+    for (auto cv: cvs)
+        if(cv.viewType == arg) retval.push_back(cv);
+    return retval;
+}
+template<> // specialization
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QAbstractItemModel *arg) {
+    ConnViews retval;
+    for (auto cv: cvs)
+        if(cv.model == arg) retval.push_back(cv);
+    return retval;
+}
+template<> // specialization
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QAbstractItemView *arg) {
+    ConnViews retval;
+    for (auto cv: cvs)
+        if(cv.view == arg) retval.push_back(cv);
+    return retval;
+}
+template<> // specialization
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QWidget *arg) {
+    ConnViews retval;
+    for (auto cv: cvs)
+        if(cv.subWidget == arg) retval.push_back(cv);
+    return retval;
+}
+template<> // specialization
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QMainWindow *arg) {
+    ConnViews retval;
+    for (auto cv: cvs)
+        if(cv.mainWindow == arg) retval.push_back(cv);
+    return retval;
+}
+
+// This is the internal recursive case
+template <typename Arg, typename... Args>
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, Arg firstarg, Args... restargs) {
+    ConnViews cvs2(selectWhere_ext(std::move(cvs), firstarg));
+    if (cvs2.size())
+        return selectWhere_ext(std::move(cvs2), restargs...);
+    else
+        return cvs2;
+}
+
+// This case gets called from the client code for single searches
+template <typename... Args>
+std::optional<ConnView> UIManager::selectWhere_ext(Args... allargs) {
+    ConnViews cvs(selectWhere_ext(std::move(m_connViews), allargs...));
+    if (cvs.size())
+        return std::move(cvs.front());
+    else
+        return std::nullopt;
+}
+
+// This case gets called from the client code for list searches
+template <typename... Args>
+ConnViews UIManager::selectWheres_ext(Args... allargs) {
+    return selectWhere_ext(std::move(m_connViews), allargs...);
+}
+
 // Return list of matching entries, else empty list
 ConnViews UIManager::selectWheres(std::string conn) {
     ConnViews retval;
@@ -213,12 +291,6 @@ ConnViews UIManager::selectWheres(const std::function<bool (const ConnView &)> &
         if(fn(cv))
             retval.push_back(cv);
     return retval;
-}
-bool UIManager::viewTypeExists(ViewType vt, const DocWindow *dw) {
-    ConnViews cvs(selectWheres([vt,dw](ConnView cv) {
-        return cv.viewType == vt && cv.mainWindow == dw;}));
-    assert(cvs.size() <= 1);
-    return cvs.size() == 1;
 }
 QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
@@ -671,4 +743,21 @@ void UIManager::closeMainView() {
     sw->close();
     m_connViews.remove(*selectopt);
     cvlog(m_connViews, m_pLogger);
+}
+bool UIManager::viewTypeExists(ViewType vt, const DocWindow *dw) {
+    ConnViews cvs(selectWheres([vt,dw](ConnView cv) {
+        return cv.viewType == vt && cv.mainWindow == dw;}));
+    assert(cvs.size() <= 1);
+    return cvs.size() == 1;
+}
+void UIManager::enableSubView(ViewType vt) {
+    log("UIManager::enableSubView");
+    // If this view is already selected, then log warning and return
+    if(selectWhere_ext(vt, activeWindow<QMainWindow *>())) {
+        log("Should not get here");
+        return;
+    }
+        
+
+
 }
