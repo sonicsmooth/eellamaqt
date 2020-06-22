@@ -127,36 +127,36 @@ std::string fullpathFromActiveMdiSubWindow() {
 // PRIVATE
 //////////
 // Return first entry where fields match, else nullopt
-std::optional<ConnView> UIManager::selectWhere(const QWidget *w) {
-    for (auto cv : m_connViews)
-        if (cv.subWidget == w)
-            return std::move(cv);
-    return std::nullopt;
-}
-std::optional<ConnView> UIManager::selectWhere(const QMainWindow *mw) {
-    for (auto cv : m_connViews)
-        if (cv.mainWindow == mw)
-            return std::move(cv);
-    return std::nullopt;
-}
-std::optional<ConnView> UIManager::selectWhere(ViewType vt) {
-    for (auto cv : m_connViews)
-        if (cv.viewType == vt)
-            return std::move(cv);
-    return std::nullopt;
-}
-std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt) {
-    for (auto cv : m_connViews)
-        if (cv.fullpath == conn && cv.viewType == vt)
-            return std::move(cv);
-    return std::nullopt;
-}
-std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt, const QMainWindow *mw) {
-    for (auto cv : m_connViews)
-        if (cv.fullpath == conn && cv.viewType == vt && cv.mainWindow==mw)
-            return std::move(cv);
-    return std::nullopt;
-}
+//std::optional<ConnView> UIManager::selectWhere(const QWidget *w) {
+//    for (auto cv : m_connViews)
+//        if (cv.subWidget == w)
+//            return std::move(cv);
+//    return std::nullopt;
+//}
+//std::optional<ConnView> UIManager::selectWhere(const QMainWindow *mw) {
+//    for (auto cv : m_connViews)
+//        if (cv.mainWindow == mw)
+//            return std::move(cv);
+//    return std::nullopt;
+//}
+//std::optional<ConnView> UIManager::selectWhere(ViewType vt) {
+//    for (auto cv : m_connViews)
+//        if (cv.viewType == vt)
+//            return std::move(cv);
+//    return std::nullopt;
+//}
+//std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt) {
+//    for (auto cv : m_connViews)
+//        if (cv.fullpath == conn && cv.viewType == vt)
+//            return std::move(cv);
+//    return std::nullopt;
+//}
+//std::optional<ConnView> UIManager::selectWhere(std::string conn, ViewType vt, const QMainWindow *mw) {
+//    for (auto cv : m_connViews)
+//        if (cv.fullpath == conn && cv.viewType == vt && cv.mainWindow==mw)
+//            return std::move(cv);
+//    return std::nullopt;
+//}
 std::optional<ConnView> UIManager::selectWhere(const std::function<bool (const ConnView &)> & fn) {
     // Return first entry where predicate is true, else nullopt
     for (auto cv : m_connViews)
@@ -166,13 +166,16 @@ std::optional<ConnView> UIManager::selectWhere(const std::function<bool (const C
 }
 
 // This is the generic base case, must be specialized
-template<typename Arg>
-ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, Arg arg) {
-    (void) cvs;
-    (void) arg;
-    log("Single selectWhere_ext, shouldn't be called directly");
-    throw("Wrong function call");
-}
+// By keeping this commented, we can force a linker error
+// if the fn is called with an arg for which there is no
+// specialization
+//template<typename Arg>
+//ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, Arg arg) {
+//    (void) cvs;
+//    (void) arg;
+//    log("Single selectWhere_ext, shouldn't be called directly");
+//    throw("Wrong function call");
+//}
 template<> // specialization
 ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, std::string arg) {
     ConnViews retval;
@@ -188,28 +191,28 @@ ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, ViewType arg) {
     return retval;
 }
 template<> // specialization
-ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QAbstractItemModel *arg) {
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, const QAbstractItemModel *arg) {
     ConnViews retval;
     for (auto cv: cvs)
         if(cv.model == arg) retval.push_back(cv);
     return retval;
 }
 template<> // specialization
-ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QAbstractItemView *arg) {
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, const QAbstractItemView *arg) {
     ConnViews retval;
     for (auto cv: cvs)
         if(cv.view == arg) retval.push_back(cv);
     return retval;
 }
 template<> // specialization
-ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QWidget *arg) {
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, const QWidget *arg) {
     ConnViews retval;
     for (auto cv: cvs)
         if(cv.subWidget == arg) retval.push_back(cv);
     return retval;
 }
 template<> // specialization
-ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, QMainWindow *arg) {
+ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, const QMainWindow *arg) {
     ConnViews retval;
     for (auto cv: cvs)
         if(cv.mainWindow == arg) retval.push_back(cv);
@@ -242,49 +245,6 @@ ConnViews UIManager::selectWheres_ext(Args... allargs) {
     return selectWhere_ext(std::move(m_connViews), allargs...);
 }
 
-// Return list of matching entries, else empty list
-ConnViews UIManager::selectWheres(std::string conn) {
-    ConnViews retval;
-    for (auto cv: m_connViews)
-        if(cv.fullpath == conn)
-            retval.push_back(cv);
-    return retval;
-}
-ConnViews UIManager::selectWheres(ViewType vt) {
-    ConnViews retval;
-    for (auto cv: m_connViews)
-        if(cv.viewType == vt)
-            retval.push_back(cv);
-    return retval;
-}
-ConnViews UIManager::selectWheres(const QWidget *w) {
-    ConnViews retval;
-    for (auto cv: m_connViews)
-        if(cv.subWidget == w)
-            retval.push_back(cv);
-    return retval;
-}
-ConnViews UIManager::selectWheres(const QMainWindow *mw) {
-    ConnViews retval;
-    for (auto cv: m_connViews)
-        if(cv.mainWindow == mw)
-            retval.push_back(cv);
-    return retval;
-}
-ConnViews UIManager::selectWheres(const DocWindow *dw) {
-    ConnViews retval;
-    for (auto cv: m_connViews)
-        if(cv.mainWindow == dw)
-            retval.push_back(cv);
-    return retval;
-}
-ConnViews UIManager::selectWheres(std::string conn, ViewType vt) {
-    ConnViews retval;
-    for (auto cv: m_connViews)
-        if(cv.fullpath == conn && cv.viewType == vt)
-            retval.push_back(cv);
-    return retval;
-}
 ConnViews UIManager::selectWheres(const std::function<bool (const ConnView &)> & fn) {
     ConnViews retval;
     for (auto cv: m_connViews)
@@ -358,9 +318,10 @@ QWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, std::st
    return widget;
 }
 
-void UIManager::attachMDISubWindow(DocWindow *dw, QWidget *widget) {
-    assert(dw);
+void UIManager::attachMDISubWindow(QMainWindow *mw, QWidget *widget) {
+    assert(mw);
     assert(widget);
+    DocWindow *dw(static_cast<DocWindow *>(mw));
     QList<QMdiSubWindow *> swl(dw->mdiArea()->subWindowList());
     dw->mdiArea()->addSubWindow(widget);
     if (dw->mdiArea()->viewMode() == QMdiArea::ViewMode::SubWindowView &&
@@ -370,8 +331,8 @@ void UIManager::attachMDISubWindow(DocWindow *dw, QWidget *widget) {
         widget->show();
 
     // Before adding this UI, find another top level window for below hack
-    auto selectopt (selectWhere([dw](ConnView cv) {
-        return cv.viewType == ViewType::INVALID && cv.mainWindow != dw;
+    auto selectopt (selectWhere([mw](ConnView cv) {
+        return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;
     }));
 
     // Hack to activate current main window
@@ -381,13 +342,13 @@ void UIManager::attachMDISubWindow(DocWindow *dw, QWidget *widget) {
             selectopt->mainWindow->activateWindow();
             dw->activateWindow();});
 }
-void UIManager::attachDockWidget(DocWindow *dw, QWidget *widget) {
-    assert(dw);
+void UIManager::attachDockWidget(QMainWindow *mw, QWidget *widget) {
+    assert(mw);
     ClosingDockWidget *cdw(dynamic_cast<ClosingDockWidget *>(widget));
     assert(cdw);
 
     // Find entry for new widget; there should be only one
-    auto newselect(selectWhere(widget));
+    auto newselect(selectWhere_ext(static_cast<const QWidget *>(widget)));
     std::string newpath(newselect->fullpath);
     ViewType newvt(newselect->viewType);
 
@@ -398,11 +359,11 @@ void UIManager::attachDockWidget(DocWindow *dw, QWidget *widget) {
     // Remove any previous dockwidget matching this type but not this fullpath
     for (ConnView oldselect : oldselects) {
         log("Removing %s at 0x%08x", oldselect.fullpath.c_str(), oldselect.subWidget);
-        dw->removeDockWidget(static_cast<QDockWidget *>(oldselect.subWidget));
+        mw->removeDockWidget(static_cast<QDockWidget *>(oldselect.subWidget));
         QObject::disconnect(oldselect.subWidget, nullptr, nullptr, nullptr);
     }
     log("Adding %s 0x%08x == 0x%08x", newpath.c_str(), newselect->subWidget, cdw);
-    dw->addDockWidget(dockWidgetAreaMap[newvt], cdw);
+    mw->addDockWidget(dockWidgetAreaMap[newvt], cdw);
     cdw->show();
     QObject::connect(cdw, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
 }
@@ -416,17 +377,17 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // Create or find appropriate model and view
     QAbstractItemModel *model(nullptr);
     QAbstractItemView *view(nullptr);
-    auto selectopt(selectWhere(fullpath, vt)); // selects first entry with fullpath and viewtype
+    auto selectopt(selectWhere_ext(fullpath, vt)); // selects first entry with fullpath and viewtype
     model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
     view = (this->*makeViewfm[vt])(model);
 
     // Make new widget, store, and attach
-    DocWindow *dw(activeWindow<DocWindow *>()); // active main window
+    QMainWindow *mw(activeWindow<QMainWindow *>()); // active main window
     std::string title(std::filesystem::path(fullpath).filename().string());
     QWidget *widget((this->*makeWidgetfm[vt])(nullptr, view, title));
-    m_connViews.push_back({fullpath, vt, model, view, widget, dw});
+    m_connViews.push_back({fullpath, vt, model, view, widget, mw});
     cvlog(m_connViews, m_pLogger);
-    (this->*attachWidgetfm[vt])(dw, widget);
+    (this->*attachWidgetfm[vt])(mw, widget);
 
     updateLibActions();
     return widget;
@@ -444,15 +405,14 @@ void UIManager::onDocWindowActivate(QWidget *w) {
     }
 }
 void UIManager::onDocWindowClose(QWidget *w) {
-    // Make sure we're actually getting a DocWindow aka QMainWindow
-    DocWindow *dw(dynamic_cast<DocWindow *>(w));
+    const QMainWindow *mw(static_cast<const QMainWindow *>(w));
     // Make sure this DocWindow is the only entry, thus indicating that all
     // QMdiSubWindows and all subwidgets have been properly closed, the closing
     // of each of which should have happened already automatically, and which
     // removes their entry from m_connViews.  The assertion can fail if for
     // example there are subviews in a mainwindow with no associated main (or
     // doc) view, which happens when there is a bug.
-    ConnViews cvs(selectWheres(dw));
+    ConnViews cvs(selectWheres_ext(mw));
     assert(cvs.size() == 1);
     m_connViews.remove(cvs.front());
     cvlog(m_connViews, m_pLogger);
@@ -463,18 +423,12 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // the tree and model views with the current one
 
     // QMdiSubWindow can be activated with no QMainWindow active.
-    DocWindow *dw(activeWindow<DocWindow *>());
-    if (!w || !dw) // this can happen legitimately
+    QMainWindow *mw(activeWindow<QMainWindow *>());
+    if (!w || !mw) // this can happen legitimately
         return;
 
-    // This fails sometimes, not sure why
-    //QMdiSubWindow *sw(static_cast<QMdiSubWindow *>(w));
-    //auto [model, _v, vt] = modelViewFromWidget(sw);
-    //auto [fullpath, _x, _y] = fullpathFromModel(model);
-    //assert(model && _v && vt != ViewType::INVALID);
-
     // Find entry for this QMdiSubWindow, empty on init
-    auto selectopt(selectWhere(w));
+    auto selectopt(selectWhere_ext(static_cast<const QWidget *>(w)));
     if (!selectopt)
         return;
 
@@ -491,7 +445,7 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // TODO: only attach if there is one already attached
     // (Re) attach relevant dock widgets
     for (auto cv : cvs) {
-        (this->*attachWidgetfm[cv.viewType])(dw, cv.subWidget);
+        (this->*attachWidgetfm[cv.viewType])(mw, cv.subWidget);
     }
 
     assert(m_pCore);
@@ -510,10 +464,10 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
     // Count total entries with this conn and vt.
     // case 0: error; 1: close all entries with fullpath,
     // else: remove just the one with this conn, vt, and mainwindow
-    ConnViews mainViews(selectWheres(fullpath, vt));
+    ConnViews mainViews(selectWheres_ext(fullpath, vt));
     assert(mainViews.size());
     if (mainViews.size() == 1) {  // nothing else found, so close all (aux) views and close library
-        for (auto cv : selectWheres(fullpath)) {
+        for (auto cv : selectWheres_ext(fullpath)) {
             cv.subWidget->blockSignals(true); // Not necessarily what we want
             cv.subWidget->close();
             m_connViews.remove(cv);
@@ -522,7 +476,7 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
         log("UIManager::onMainWidgetClose Closing lib %s", fullpath.c_str());
         m_pCore->closeLibNoGui(fullpath);
     } else { // Other mainviews found, so just delete this entry
-        m_connViews.remove(*selectWhere(mdisw));
+        m_connViews.remove(*selectWhere_ext(static_cast<const QWidget *>(w)));
     }
     cvlog(m_connViews, m_pLogger);
     updateLibActions();
@@ -532,7 +486,7 @@ void UIManager::onDockWidgetActivate(QWidget *w) {
     // For some reason this gets called twice when each tab is clicked
     assert(m_pCore);
     assert(w);
-    auto [model, _v, vt] = modelViewFromWidget(static_cast<QDockWidget *>(w));
+    auto [model, _v, vt] = modelViewFromWidget(static_cast<const QDockWidget *>(w));
     auto [fullpath, _x, _y] = fullpathFromModel(model);
     log("UIManager::OnDockWidgetActivate: activated %s", fullpath.c_str());
     m_pCore->activateLib(fullpath);
@@ -542,7 +496,7 @@ void UIManager::onDockWidgetClose(QWidget *w) {
     // This happens when user clicks the close button
     assert(w);
     log("OnDockWidgetClose");
-    ConnViews cvs(selectWheres(w));
+    ConnViews cvs(selectWheres_ext(static_cast<const QWidget *>(w)));
     assert(cvs.size() == 1); // Should only be one dockwidget of this type
     m_connViews.remove(cvs.front());
     cvlog(m_connViews, m_pLogger);
@@ -551,9 +505,10 @@ void UIManager::onDockWidgetClose(QWidget *w) {
 }
 void UIManager::updateLibActions() {
     // Find mainwindows without any other associated views
-    for (auto mwcv : selectWheres(ViewType::INVALID)) {
+    for (auto mwcv : selectWheres_ext(ViewType::INVALID)) {
         DocWindow *dw(static_cast<DocWindow *>(mwcv.mainWindow));
-        dw->updateLibActions(selectWheres(dw).size() > 1);
+        const QMainWindow *mw(mwcv.mainWindow);
+        dw->updateLibActions(selectWheres_ext(mw).size() > 1);
     }
 }
 
@@ -577,7 +532,7 @@ void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
 void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
     // Close QMdiSubWindows after being notified that library has closed
     (void) dbif;
-    ConnViews cvs(selectWheres(fullpath, ViewType::LIBSYMBOLVIEW));
+    ConnViews cvs(selectWheres_ext(fullpath, ViewType::LIBSYMBOLVIEW));
     for (auto cv : cvs) {
         cv.subWidget->close();
     }
@@ -591,7 +546,7 @@ void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string new
     // For each entry, change m_connViews to show newpath
     // For each entry, rename QMdiSubWidget title to newpath
     QSqlDatabase newdb(static_cast<QSQDbIf *>(dbif)->database(newpath));
-    ConnViews dbcvs(selectWheres(oldpath));
+    ConnViews dbcvs(selectWheres_ext(oldpath));
     std::list<QAbstractItemModel *> models;
     for (auto cv : dbcvs)
         models.push_back(cv.model);
@@ -696,7 +651,7 @@ void UIManager::popOutMainView() {
     QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
     assert(mdiSubWindow);
     bool ismax(mdiSubWindow->isMaximized());
-    auto selectopt(selectWhere(mdiSubWindow));
+    auto selectopt(selectWhere_ext(static_cast<const QWidget *>(mdiSubWindow)));
     assert(selectopt);
     ConnView cv(*selectopt);
     m_connViews.remove(cv);
@@ -738,26 +693,27 @@ void UIManager::closeMainView() {
     // Closes current main QMdiSubWindow
     QMdiSubWindow *sw(activeMdiSubWindow());
     assert(sw);
-    auto selectopt(selectWhere(sw));
+    auto selectopt(selectWhere_ext(static_cast<const QWidget *>(sw)));
     assert(selectopt);
     sw->close();
     m_connViews.remove(*selectopt);
     cvlog(m_connViews, m_pLogger);
 }
 bool UIManager::viewTypeExists(ViewType vt, const DocWindow *dw) {
-    ConnViews cvs(selectWheres([vt,dw](ConnView cv) {
-        return cv.viewType == vt && cv.mainWindow == dw;}));
+//    ConnViews cvs(selectWheres([vt,dw](ConnView cv) {
+//        return cv.viewType == vt && cv.mainWindow == dw;}));
+    ConnViews cvs(selectWheres_ext(vt, static_cast<const QMainWindow *>(dw)));
     assert(cvs.size() <= 1);
     return cvs.size() == 1;
 }
 void UIManager::enableSubView(ViewType vt) {
     log("UIManager::enableSubView");
     // If this view is already selected, then log warning and return
-    if(selectWhere_ext(vt, activeWindow<QMainWindow *>())) {
+    if(selectWhere_ext(vt, activeWindow<const QMainWindow *>())) {
         log("Should not get here");
         return;
     }
-        
+
 
 
 }

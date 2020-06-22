@@ -162,8 +162,6 @@ void DocWindow::updateLibActions(bool en) {
     ui->actionPopOutSymbolView->setEnabled(en);
     ui->actionDuplicateSymbolView->setEnabled(en);
     ui->actionCloseSymbolView->setEnabled(en);
-    //ui->actionLibTreeView->setEnabled(en);
-    //ui->actionLibTableView->setEnabled(en);
     ui->actionTabs->setEnabled(en);
     ui->actionCascade->setEnabled(en);
     ui->actionTile->setEnabled(en);
@@ -185,8 +183,8 @@ void DocWindow::updateViewEnables() {
     bool ltbvex(uim->viewTypeExists(ViewType::LIBTABLEVIEW, this));
     ui->actionLibTreeView->setEnabled(true);
     ui->actionLibTableView->setEnabled(true);
-    //ui->actionLibTreeView->setEnabled(!ltrvex);
-    //ui->actionLibTableView->setEnabled(!ltbvex);
+    ui->actionLibTreeView->setEnabled(!ltrvex);
+    ui->actionLibTableView->setEnabled(!ltbvex);
 }
 
 void DocWindow::updateTitle() {

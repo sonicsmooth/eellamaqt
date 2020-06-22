@@ -84,7 +84,7 @@ private:
      {ViewType::LIBTREEVIEW, &UIManager::makeCDWLibWidget},
      {ViewType::LIBTABLEVIEW, &UIManager::makeCDWLibWidget}};
 
-    typedef void (UIManager::*attachFn)(DocWindow *, QWidget *);
+    typedef void (UIManager::*attachFn)(QMainWindow *, QWidget *);
     std::map<ViewType, attachFn> attachWidgetfm =
     {{ViewType::LIBSYMBOLVIEW, &UIManager::attachMDISubWindow},
      {ViewType::LIBTREEVIEW, &UIManager::attachDockWidget},
@@ -98,11 +98,6 @@ private:
     std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
     std::optional<ConnView> selectWhere(const QWidget *);
-    //std::optional<ConnView> selectWhere(const QMdiSubWindow *);
-    std::optional<ConnView> selectWhere(const QMainWindow *);
-    std::optional<ConnView> selectWhere(ViewType);
-    std::optional<ConnView> selectWhere(std::string, ViewType);
-    std::optional<ConnView> selectWhere(std::string, ViewType, const QMainWindow *);
     std::optional<ConnView> selectWhere(const std::function<bool (const ConnView &)> &);
     template <typename Arg>
     ConnViews selectWhere_ext(ConnViews&&, Arg);
@@ -113,13 +108,6 @@ private:
     template <typename... Args>
     ConnViews selectWheres_ext(Args... );
     
-    
-    ConnViews selectWheres(std::string);
-    ConnViews selectWheres(ViewType);
-    ConnViews selectWheres(const QWidget *);
-    ConnViews selectWheres(const QMainWindow *);
-    ConnViews selectWheres(const DocWindow *);
-    ConnViews selectWheres(std::string, ViewType);
     ConnViews selectWheres(const std::function<bool(const ConnView &)> &);
 
     QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
@@ -131,8 +119,8 @@ private:
     
     QWidget *makeMDILibWidget(QWidget *, QWidget *, std::string);
     QWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
-    void attachMDISubWindow(DocWindow *, QWidget *);
-    void attachDockWidget(DocWindow *, QWidget *);
+    void attachMDISubWindow(QMainWindow *, QWidget *);
+    void attachDockWidget(QMainWindow *, QWidget *);
 
     QWidget *openUI(IDbIf *, std::string, ViewType); // opens named UI type
     //void closeUI(std::string, ViewType);
