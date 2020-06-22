@@ -179,10 +179,11 @@ void DocWindow::updateViewEnables() {
     assert(m_pCore);
     UIManager *uim(static_cast<UIManager *>(m_pCore->UIManager()));
     if (!uim) return;
+    // TODO: check whether we need to verify that an mdi window is open;
+    // TODO: ie, we don't want to enable the menu item if absolutely nothing
+    // TODO: is showing.
     bool ltrvex(uim->viewTypeExists(ViewType::LIBTREEVIEW, this));
     bool ltbvex(uim->viewTypeExists(ViewType::LIBTABLEVIEW, this));
-    ui->actionLibTreeView->setEnabled(true);
-    ui->actionLibTableView->setEnabled(true);
     ui->actionLibTreeView->setEnabled(!ltrvex);
     ui->actionLibTableView->setEnabled(!ltbvex);
 }

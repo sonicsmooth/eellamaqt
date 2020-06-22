@@ -420,7 +420,9 @@ void UIManager::onDocWindowClose(QWidget *w) {
 void UIManager::onMdiSubWindowActivate(QWidget *w){
     // Remove existing subwidgets, and reattached subwidgets associated with this model
     // but only if that type of subwidget already exists.  On other words, replace
-    // the tree and model views with the current one
+    // the tree and model views with the current one.  To be clear, there can be
+    // multiple dockwidgets of the same type, but only one of any type can be attached
+    // at a time.
 
     // QMdiSubWindow can be activated with no QMainWindow active.
     QMainWindow *mw(activeWindow<QMainWindow *>());
@@ -608,7 +610,7 @@ void *UIManager::duplicateWindow(void *oldw) {
 }
 void UIManager::closeWindow() {
     // Closes current top level window. As this and children are closed, they may
-    // also be destroyed if their WA_DeletOnClose property is set. If this is
+    // also be destroyed if their WA_DeleteOnClose property is set. If this is
     // true, then it's possible that the textEdit object gets destroyed, leading
     // to the Logger pointing to a ghost.  Main() should connect the destroyed
     // signal from the textedit to the Logger telling Logger to reset its
@@ -647,7 +649,7 @@ void UIManager::popOutMainView() {
     // For subwidgets, create as needed in new doc window; delete as needed in
     // old doc window.
 
-    // Find existing mdisubwindo, record its state, and remove from list
+    // Find existing mdisubwindow, record its state, and remove from list
     QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
     assert(mdiSubWindow);
     bool ismax(mdiSubWindow->isMaximized());
@@ -656,37 +658,44 @@ void UIManager::popOutMainView() {
     ConnView cv(*selectopt);
     m_connViews.remove(cv);
 
-    // TODO: Remove subwindows if this fullpath is the only one using them
-    // Otherwise record which ones were open at this time
-    /*****HERE*****/
+    // Detach subwindows with this fullpath and record which ones were present
+    DocWindow *olddw(activeWindow<DocWindow *>());
+    ConnViews cvs;
+    std::list<ViewType> vts_to_check({ViewType::LIBLISTVIEW, ViewType::LIBTREEVIEW, ViewType::LIBTREEVIEW});
+    for (ViewType vt : vts_to_check) {
+        selectopt = selectWhere_ext(cv.fullpath, vt);
+        if (selectopt) {
+            cvs.push_back(*selectopt);
+            olddw->removeDockWidget(static_cast<QDockWidget *>(selectopt->subWidget));
+        }
+    }
 
     // Duplicate the main window
-    DocWindow *oldlw(activeWindow<DocWindow *>());
-    DocWindow *newlw(static_cast<DocWindow *>(duplicateWindow()));
-    newlw->show();
-    oldlw->mdiArea()->removeSubWindow(mdiSubWindow);
+    DocWindow *newdw(static_cast<DocWindow *>(duplicateWindow()));
+    newdw->show();
+    olddw->mdiArea()->removeSubWindow(mdiSubWindow);
 
     // It seems that when you remove a subwindow from mdiArea, the remaining mdi
     // subwindows become unmaximized, so here we fix that if they had been
     // previously maximized
     if (ismax) {
-        QList<QMdiSubWindow *> lst(oldlw->mdiArea()->subWindowList());
+        QList<QMdiSubWindow *> lst(olddw->mdiArea()->subWindowList());
         if (!lst.isEmpty())
             lst.first()->showMaximized();
     }
 
     // Add the new mdi subwindow in the same maximized state as it was before popping out
-    newlw->mdiArea()->addSubWindow(mdiSubWindow);
-    if (ismax)
-        mdiSubWindow->showMaximized();
-    else
-        mdiSubWindow->showNormal();
-    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiSubWindow, newlw});
+    newdw->mdiArea()->addSubWindow(mdiSubWindow);
+    ismax ? mdiSubWindow->showMaximized() : mdiSubWindow->showNormal();
+    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiSubWindow, newdw});
     cvlog(m_connViews, m_pLogger);
 
-    // TODO: Add subwindows as needed based on previous state
-
-
+    // Add subwindows using pre-existing connview, updated with new main window
+    for (ConnView cv2 : cvs) {
+        cv2.mainWindow = newdw;
+        (this->*attachWidgetfm[cv2.viewType])(newdw, cv2.subWidget);
+        m_connViews.push_back(cv2);
+    }
     updateLibActions();
 }
 void UIManager::closeMainView() {
@@ -700,19 +709,23 @@ void UIManager::closeMainView() {
     cvlog(m_connViews, m_pLogger);
 }
 bool UIManager::viewTypeExists(ViewType vt, const DocWindow *dw) {
-//    ConnViews cvs(selectWheres([vt,dw](ConnView cv) {
-//        return cv.viewType == vt && cv.mainWindow == dw;}));
+    // This is called when someone wants to know whether a viewtype is showing
+    // If >=1 exists, then exactly one is showing.  If none is showing, then
+    // none exist.
     ConnViews cvs(selectWheres_ext(vt, static_cast<const QMainWindow *>(dw)));
-    assert(cvs.size() <= 1);
-    return cvs.size() == 1;
+    return cvs.size() > 0;
 }
 void UIManager::enableSubView(ViewType vt) {
     log("UIManager::enableSubView");
-    // If this view is already selected, then log warning and return
-    if(selectWhere_ext(vt, activeWindow<const QMainWindow *>())) {
-        log("Should not get here");
-        return;
-    }
+    // Fail if any view of this type is already associated with the active window
+    const QMainWindow *mw(activeWindow<const QMainWindow *>());
+    assert(!(selectWhere_ext(vt, mw)));
+    // Find fullpath assocated with current mdi view
+    const QWidget *sw(activeMdiSubWindow());
+    auto selectopt(selectWhere_ext(sw));
+    assert(selectopt);
+    assert(m_pCore);
+    openUI(m_pCore->DbIf(), selectopt->fullpath, vt);
 
 
 
