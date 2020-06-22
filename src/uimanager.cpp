@@ -232,6 +232,8 @@ ConnViews UIManager::selectWhere_ext(ConnViews&& cvs, Arg firstarg, Args... rest
 // This case gets called from the client code for single searches
 template <typename... Args>
 std::optional<ConnView> UIManager::selectWhere_ext(Args... allargs) {
+    // Returns first item found
+    // Does NOT assert that exactly one item was found
     ConnViews cvs(selectWhere_ext(std::move(m_connViews), allargs...));
     if (cvs.size())
         return std::move(cvs.front());
@@ -358,11 +360,11 @@ void UIManager::attachDockWidget(QMainWindow *mw, QWidget *widget) {
 
     // Remove any previous dockwidget matching this type but not this fullpath
     for (ConnView oldselect : oldselects) {
-        log("Removing %s at 0x%08x", oldselect.fullpath.c_str(), oldselect.subWidget);
+        log("Detaching %s at 0x%08x", oldselect.fullpath.c_str(), oldselect.subWidget);
         mw->removeDockWidget(static_cast<QDockWidget *>(oldselect.subWidget));
         QObject::disconnect(oldselect.subWidget, nullptr, nullptr, nullptr);
     }
-    log("Adding %s 0x%08x == 0x%08x", newpath.c_str(), newselect->subWidget, cdw);
+    log("Attaching %s 0x%08x == 0x%08x", newpath.c_str(), newselect->subWidget, cdw);
     mw->addDockWidget(dockWidgetAreaMap[newvt], cdw);
     cdw->show();
     QObject::connect(cdw, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
@@ -374,21 +376,34 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
     // For LibSymbolView, allows any number of instances in any number of mainwindows
     // For auxilliary views, only one type of view is allowed per mainwindow
 
-    // Create or find appropriate model and view
-    QAbstractItemModel *model(nullptr);
-    QAbstractItemView *view(nullptr);
-    auto selectopt(selectWhere_ext(fullpath, vt)); // selects first entry with fullpath and viewtype
-    model = selectopt ? selectopt->model : (this->*makeModelfm[vt])(dbif, fullpath);
-    view = (this->*makeViewfm[vt])(model);
+    // Check whether this viewtype is a subwidget type with this path and
+    // already exists in this mainwindow.  If true, then skip creation.
+    QMainWindow *mw(activeWindow<QMainWindow *>());
+    const QMainWindow *cmw(static_cast<const QMainWindow *>(mw));
+    auto selectopt(selectWhere_ext(vt, cmw, fullpath));
+    bool condition((vt == ViewType::LIBLISTVIEW  || 
+                    vt == ViewType::LIBTABLEVIEW ||
+                    vt == ViewType::LIBTREEVIEW) && 
+                    selectopt);
+    QWidget *widget(nullptr);
+    if (condition) {
+        widget = selectopt->subWidget;
+    } else {
+        // Create or find appropriate model and view
+        QAbstractItemModel *model(nullptr);
+        QAbstractItemView *view(nullptr);
+        auto selectopt2(selectWhere_ext(fullpath, vt)); // selects first entry with fullpath and viewtype
+        model = selectopt2 ? selectopt2->model : (this->*makeModelfm[vt])(dbif, fullpath);
+        view = (this->*makeViewfm[vt])(model);
 
-    // Make new widget, store, and attach
-    QMainWindow *mw(activeWindow<QMainWindow *>()); // active main window
-    std::string title(std::filesystem::path(fullpath).filename().string());
-    QWidget *widget((this->*makeWidgetfm[vt])(nullptr, view, title));
-    m_connViews.push_back({fullpath, vt, model, view, widget, mw});
-    cvlog(m_connViews, m_pLogger);
+        // Make new widget, store, and attach
+        std::string title(std::filesystem::path(fullpath).filename().string());
+        widget = (this->*makeWidgetfm[vt])(nullptr, view, title);
+        m_connViews.push_back({fullpath, vt, model, view, widget, mw});
+        cvlog(m_connViews, m_pLogger);
+    }
+
     (this->*attachWidgetfm[vt])(mw, widget);
-
     updateLibActions();
     return widget;
  }
@@ -425,8 +440,8 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // at a time.
 
     // QMdiSubWindow can be activated with no QMainWindow active.
-    QMainWindow *mw(activeWindow<QMainWindow *>());
-    if (!w || !mw) // this can happen legitimately
+    const QMainWindow *cmw(activeWindow<const QMainWindow *>());
+    if (!w || !cmw) // this can happen legitimately
         return;
 
     // Find entry for this QMdiSubWindow, empty on init
@@ -434,22 +449,28 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     if (!selectopt)
         return;
 
-    // Find fullpath and viewtype of this mdisubwindow
+    // Find which subwidgets are already showing in this window, then determine their view type
+    QList<const QDockWidget *> dwch(cmw->findChildren<const QDockWidget *>());
+    std::list<ViewType> vts_to_check({ViewType::LIBLISTVIEW, ViewType::LIBTABLEVIEW, ViewType::LIBTREEVIEW});
+    std::list<ViewType> vtl;
+    for (ViewType vt : vts_to_check) {
+        for (auto ch : dwch) {
+            const QWidget *widget(static_cast<const QWidget *>(ch));
+            auto selectopt2(selectWhere_ext(vt, widget, cmw));
+            if (selectopt2 && ch->isVisible())
+                vtl.push_back(vt);
+        }
+    }
+    vtl.sort();
+    vtl.unique();
+
+    // For each type of subwidget already showing, open a UI using this fullpath
     std::string fullpath(selectopt->fullpath);
-    ViewType vt(selectopt->viewType);
-
-    // Select entries which point to this fullpath but not the viewtype
-    // Be careful when there is more than just LIBSYMBOLVIEW, as we
-    // don't want to attach other mainview types to the edges.
-    ConnViews cvs(selectWheres([vt, fullpath](ConnView cv)
-        {return (cv.fullpath == fullpath) && (cv.viewType != vt);}));
-
-    // TODO: only attach if there is one already attached
-    // (Re) attach relevant dock widgets
-    for (auto cv : cvs) {
-        (this->*attachWidgetfm[cv.viewType])(mw, cv.subWidget);
+    for (ViewType vt : vtl) {
+        openUI(m_pCore->DbIf(), fullpath, vt);
     }
 
+    // Activate library associated with this mdisubwindow
     assert(m_pCore);
     m_pCore->activateLib(fullpath);
 }
@@ -497,11 +518,14 @@ void UIManager::onDockWidgetClose(QWidget *w) {
     // Remove the view from list and allow library to be closed
     // This happens when user clicks the close button
     assert(w);
-    log("OnDockWidgetClose");
-    ConnViews cvs(selectWheres_ext(static_cast<const QWidget *>(w)));
-    assert(cvs.size() == 1); // Should only be one dockwidget of this type
-    m_connViews.remove(cvs.front());
-    cvlog(m_connViews, m_pLogger);
+    log("OnDockWidgetClose 0x%08x", w);
+    const QWidget *cw(static_cast<const QWidget *>(w));
+    const QMainWindow *cmw(activeWindow<const QMainWindow *>());
+    auto selectopt(selectWhere_ext(cw, cmw));
+    if (selectopt) { // sometimes this gets called twice, so the second time it's empty.
+        m_connViews.remove(*selectopt);
+        cvlog(m_connViews, m_pLogger);
+    }
     if (DocWindow *dw = activeWindow<DocWindow *>())
         dw->updateViewEnables();
 }
@@ -710,9 +734,10 @@ void UIManager::closeMainView() {
 }
 bool UIManager::viewTypeExists(ViewType vt, const DocWindow *dw) {
     // This is called when someone wants to know whether a viewtype is showing
-    // If >=1 exists, then exactly one is showing.  If none is showing, then
+    // If >0 exists, then exactly one is showing.  If none is showing, then
     // none exist.
-    ConnViews cvs(selectWheres_ext(vt, static_cast<const QMainWindow *>(dw)));
+    const QMainWindow *mw(static_cast<const QMainWindow *>(dw));
+    ConnViews cvs(selectWheres_ext(vt, mw));
     return cvs.size() > 0;
 }
 void UIManager::enableSubView(ViewType vt) {
