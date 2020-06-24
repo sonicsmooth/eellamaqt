@@ -95,7 +95,6 @@ private:
       {ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
       {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
 
-    std::list<ViewType> m_defaultViewTypes;
     ConnViews m_connViews;
     std::optional<ConnView> selectWhere(const QWidget *);
     std::optional<ConnView> selectWhere(const std::function<bool (const ConnView &)> &);
@@ -132,6 +131,8 @@ private:
     void onDockWidgetActivate(QWidget *);
     void onDockWidgetClose(QWidget *);
     void updateLibActions();
+    std::list<ViewType> subViewTypesShowing(const QMainWindow *);
+    //std::list<ViewType> mainViewTypesShowing(const DocWindow *);
     
 
 public:
@@ -150,7 +151,7 @@ public:
     void popOutMainView() override;
     void closeMainView() override;
     void enableSubView(ViewType) override;
-    bool viewTypeExists(ViewType, const DocWindow *);
+    bool viewTypeShowing(ViewType, const DocWindow *);
 
 public slots:
     //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);

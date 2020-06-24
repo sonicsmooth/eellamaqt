@@ -29,12 +29,13 @@
 #include <QTimer>
 
 #include <filesystem>
-#include <iterator>
 #include <list>
-#include <set>
 #include <exception>
 #include <optional>
 #include <functional>
+#include <algorithm>
+#include <vector>
+#include <set>
 
 // Standalone functions
 template <typename W>
@@ -402,7 +403,6 @@ QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
         m_connViews.push_back({fullpath, vt, model, view, widget, mw});
         cvlog(m_connViews, m_pLogger);
     }
-
     (this->*attachWidgetfm[vt])(mw, widget);
     updateLibActions();
     return widget;
@@ -444,31 +444,15 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     if (!w || !cmw) // this can happen legitimately
         return;
 
-    // Find entry for this QMdiSubWindow, empty on init
+    // Find entry for this QMdiSubWindow, which is empty on init
     auto selectopt(selectWhere_ext(static_cast<const QWidget *>(w)));
     if (!selectopt)
         return;
 
-    // Find which subwidgets are already showing in this window, then determine their view type
-    QList<const QDockWidget *> dwch(cmw->findChildren<const QDockWidget *>());
-    std::list<ViewType> vts_to_check({ViewType::LIBLISTVIEW, ViewType::LIBTABLEVIEW, ViewType::LIBTREEVIEW});
-    std::list<ViewType> vtl;
-    for (ViewType vt : vts_to_check) {
-        for (auto ch : dwch) {
-            const QWidget *widget(static_cast<const QWidget *>(ch));
-            auto selectopt2(selectWhere_ext(vt, widget, cmw));
-            if (selectopt2 && ch->isVisible())
-                vtl.push_back(vt);
-        }
-    }
-    vtl.sort();
-    vtl.unique();
-
     // For each type of subwidget already showing, open a UI using this fullpath
     std::string fullpath(selectopt->fullpath);
-    for (ViewType vt : vtl) {
+    for (ViewType vt : subViewTypesShowing(cmw))
         openUI(m_pCore->DbIf(), fullpath, vt);
-    }
 
     // Activate library associated with this mdisubwindow
     assert(m_pCore);
@@ -537,7 +521,21 @@ void UIManager::updateLibActions() {
         dw->updateLibActions(selectWheres_ext(mw).size() > 1);
     }
 }
-
+std::list<ViewType> UIManager::subViewTypesShowing(const QMainWindow *cmw) {
+    QList<const QDockWidget *> dwch(cmw->findChildren<const QDockWidget *>());
+    std::list<ViewType> vtl;
+    for (ViewType vt : SubViewTypes) {
+        for (auto ch : dwch) {
+            const QWidget *widget(static_cast<const QWidget *>(ch));
+            auto selectopt2(selectWhere_ext(vt, widget, cmw));
+            if (selectopt2 && ch->isVisible())
+                vtl.push_back(vt);
+        }
+    }
+    vtl.sort();
+    vtl.unique();
+    return vtl;
+}
 
 
 
@@ -546,12 +544,9 @@ void UIManager::updateLibActions() {
 UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
-    m_defaultViewTypes.push_back(ViewType::LIBSYMBOLVIEW);
-    m_defaultViewTypes.push_back(ViewType::LIBTREEVIEW);
-    m_defaultViewTypes.push_back(ViewType::LIBTABLEVIEW);
 }
 void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
-    for (auto uit : m_defaultViewTypes) {
+    for (auto uit : DefaultViewTypes) {
         openUI(dbif, fullpath, uit);
     }
 }
@@ -685,8 +680,7 @@ void UIManager::popOutMainView() {
     // Detach subwindows with this fullpath and record which ones were present
     DocWindow *olddw(activeWindow<DocWindow *>());
     ConnViews cvs;
-    std::list<ViewType> vts_to_check({ViewType::LIBLISTVIEW, ViewType::LIBTREEVIEW, ViewType::LIBTREEVIEW});
-    for (ViewType vt : vts_to_check) {
+    for (ViewType vt : SubViewTypes) {
         selectopt = selectWhere_ext(cv.fullpath, vt);
         if (selectopt) {
             cvs.push_back(*selectopt);
@@ -732,26 +726,26 @@ void UIManager::closeMainView() {
     m_connViews.remove(*selectopt);
     cvlog(m_connViews, m_pLogger);
 }
-bool UIManager::viewTypeExists(ViewType vt, const DocWindow *dw) {
-    // This is called when someone wants to know whether a viewtype is showing
-    // If >0 exists, then exactly one is showing.  If none is showing, then
-    // none exist.
-    const QMainWindow *mw(static_cast<const QMainWindow *>(dw));
-    ConnViews cvs(selectWheres_ext(vt, mw));
-    return cvs.size() > 0;
+bool UIManager::viewTypeShowing(ViewType vt, const DocWindow *dw) {
+    // This is called when someone wants to know whether a viewtype is showing,
+    // not necessarily whether one exists in the table, which can be different.
+    // If >0 exists, then exactly one is showing.  If none is showing, then none
+    // exist.
+    const QMainWindow *cmw(static_cast<const QMainWindow *>(dw));
+    std::list<ViewType> svtl(subViewTypesShowing(cmw));
+    //std::list<ViewType> mvtl(mainViewTypesShowing(dw));
+    return std::find(svtl.begin(), svtl.end(), vt) != svtl.end() ;//||
+           //std::find(mvtl.begin(), mvtl.end() != mvtl.end();
+
 }
 void UIManager::enableSubView(ViewType vt) {
     log("UIManager::enableSubView");
-    // Fail if any view of this type is already associated with the active window
     const QMainWindow *mw(activeWindow<const QMainWindow *>());
-    assert(!(selectWhere_ext(vt, mw)));
-    // Find fullpath assocated with current mdi view
+    // Find fullpath assocated with current mdi view, then open
+    // If the widget already exists, the openUI function will reuse it.
     const QWidget *sw(activeMdiSubWindow());
     auto selectopt(selectWhere_ext(sw));
     assert(selectopt);
     assert(m_pCore);
     openUI(m_pCore->DbIf(), selectopt->fullpath, vt);
-
-
-
 }
