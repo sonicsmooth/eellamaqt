@@ -21,7 +21,9 @@ const QString GLibDir("EELLama Libraries");
 
 namespace fs = std::filesystem;
 
-LibCore::LibCore() {}
+LibCore::LibCore() :
+    m_pDbIf(nullptr),
+    m_pUIManager(nullptr) {}
 LibCore::~LibCore() {}
 
 void LibCore::setDbIf(IDbIf* pDbIf) {

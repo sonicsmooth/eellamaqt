@@ -614,7 +614,6 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
         m_connViews.remove(*selectWhere_ext(static_cast<const QWidget *>(w)));
     }
 
-
     cvlog(m_connViews, m_pLogger);
     updateLibActions();
 
