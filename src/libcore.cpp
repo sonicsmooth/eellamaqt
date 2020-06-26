@@ -43,7 +43,7 @@ void LibCore::newLib(std::string fullpath) {
     // TODO: check for an existing lib with that name
     m_pDbIf->createDatabase(fullpath);
     if (m_pUIManager)
-        m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
+        m_pUIManager->notifyDbOpen(fullpath);
 }
 void LibCore::openLib(std::string fullpath) {
     assert(m_pDbIf);
@@ -54,7 +54,7 @@ void LibCore::openLib(std::string fullpath) {
         m_pDbIf->openDatabase(fullpath);
     }
     if (m_pUIManager)
-        m_pUIManager->notifyDbOpen(m_pDbIf, fullpath);
+        m_pUIManager->notifyDbOpen(fullpath);
 }
 
 
@@ -77,13 +77,13 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
             log("LibCore::saveLib: Saving library CLOSE_OLD" + newpath);
             if (m_pUIManager)
                 // notifyDbRename must know what to do if oldpath is not currently open
-                m_pUIManager->notifyDbRename(m_pDbIf, oldpath, newpath);
+                m_pUIManager->notifyDbRename(oldpath, newpath);
             break;
         case DupOptions::OPEN_NEW:
             // Keep old one open, open new one too
             log("LibCore::saveLib: Saving library OPEN_NEW " + newpath);
             if (m_pUIManager)
-                m_pUIManager->notifyDbOpen(m_pDbIf, newpath);
+                m_pUIManager->notifyDbOpen(newpath);
             break;
         case DupOptions::QUIETLY:
             // Neither open new one nor close old one
@@ -93,7 +93,7 @@ void LibCore::saveLib(std::string oldpath, std::string newpath, DupOptions opt) 
         case DupOptions::RENAME:
             log("LibCore::saveLib: Saving library RENAME " + newpath);
             if (m_pUIManager)
-                m_pUIManager->notifyDbRename(m_pDbIf, oldpath, newpath);
+                m_pUIManager->notifyDbRename(oldpath, newpath);
             break;
         }
     }
@@ -111,7 +111,7 @@ void LibCore::closeLib(std::string fullpath) {
     try {
         if (m_pUIManager)
             // delegates actual closing to closeLibNoGui
-            m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
+            m_pUIManager->notifyDbClose(fullpath);
         else if (m_pDbIf->isDatabaseOpen(fullpath))
             m_pDbIf->closeDatabase(fullpath);
         }
@@ -144,7 +144,7 @@ void LibCore::deleteLib(std::string fullpath) {
     assert(m_pDbIf);
     try {
         if (m_pUIManager)
-            m_pUIManager->notifyDbClose(m_pDbIf, fullpath);
+            m_pUIManager->notifyDbClose(fullpath);
         else if (m_pDbIf->isDatabaseOpen(fullpath)) {
             m_pDbIf->closeDatabase(fullpath);
         }

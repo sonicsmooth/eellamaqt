@@ -66,7 +66,7 @@ class UIManager : public QObject, public IUIManager, public Coreable, public Log
 private:
     QTimer m_hackTimer;
     
-    typedef QAbstractItemModel *(UIManager::*abstractModelFn)(IDbIf *, std::string);
+    typedef QAbstractItemModel *(UIManager::*abstractModelFn)(std::string);
     std::map<ViewType, abstractModelFn> makeModelfm = 
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolModel},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeModel},
@@ -109,19 +109,19 @@ private:
     
     ConnViews selectWheres(const std::function<bool(const ConnView &)> &);
 
-    QAbstractItemModel *makeLibSymbolModel(IDbIf *, std::string);
-    QAbstractItemModel *makeLibTreeModel(IDbIf *, std::string);
-    QAbstractItemModel *makeLibTableModel(IDbIf *, std::string);
+    QAbstractItemModel *makeLibSymbolModel(std::string);
+    QAbstractItemModel *makeLibTreeModel(std::string);
+    QAbstractItemModel *makeLibTableModel(std::string);
     QAbstractItemView  *makeLibSymbolView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTreeView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTableView(QAbstractItemModel *);
-    
     QWidget *makeMDILibWidget(QWidget *, QWidget *, std::string);
     QWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
+    QWidget *makeModelViewWidget(std::string, ViewType, QMainWindow *);
     void attachMDISubWindow(QMainWindow *, QWidget *);
     void attachDockWidget(QMainWindow *, QWidget *);
 
-    QWidget *openUI(IDbIf *, std::string, ViewType); // opens named UI type
+    QWidget *openUI(std::string, ViewType, QMainWindow * = nullptr); // opens named UI type
     //void closeUI(std::string, ViewType);
     //void removeView(QWidget *qw);
     void onDocWindowActivate(QWidget *);
@@ -133,14 +133,15 @@ private:
     void updateLibActions();
     std::list<ViewType> subViewTypesShowing(const QMainWindow *);
     //std::list<ViewType> mainViewTypesShowing(const DocWindow *);
+    bool isChildWidgetShowing(const QMainWindow *, const QWidget *);
     
 
 public:
     UIManager(QObject * = nullptr);
     std::list<QMainWindow *> mainWindows(); // Returns list of main windows
-    void notifyDbOpen(IDbIf *, std::string) override; // opens default UI types
-    void notifyDbClose(IDbIf *, std::string) override;
-    void notifyDbRename(IDbIf *, std::string, std::string) override;
+    void notifyDbOpen(std::string) override; // opens default UI types
+    void notifyDbClose(std::string) override;
+    void notifyDbRename(std::string, std::string) override;
     void *newWindow() override; // Creates new top level window
     void *newWindow(LibCore *, ILogger *) override;
     void *duplicateWindow() override; // duplicate active w/o children
@@ -151,7 +152,7 @@ public:
     void popOutMainView() override;
     void closeMainView() override;
     void enableSubView(ViewType) override;
-    bool viewTypeShowing(ViewType, const DocWindow *);
+    bool isViewTypeShowing(ViewType, const DocWindow *);
 
 public slots:
     //void treeSelectionChangeSlot(const QItemSelection &, const QItemSelection &);

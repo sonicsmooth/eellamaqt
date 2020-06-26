@@ -31,11 +31,106 @@
 #include <filesystem>
 #include <list>
 #include <exception>
+#include <stdexcept>
 #include <optional>
 #include <functional>
 #include <algorithm>
 #include <vector>
 #include <set>
+
+
+
+/*
+Manage open models, views, widgets, and windows m_connViews manages open and
+viewable windows, and all models and views Exactly one instance of each sub view
+type allowed per window. Many instances of main view types allowed per window.
+The problem is with the subviews aka dockwidgets and one per view type. When
+user has one document open and closes the document, then everything about that
+document should close and be deleted.  If other documents are currently using a
+subview then the associated widget should not be deleted.  If a subwidget is
+closed, then do the associated views and models of the current document get
+deleted?  Or the views and models of other documents that also use that subview?
+My inclination is to keep the models and subviews around, even if they are not
+visible, because they may be expensive to create.  However this leads to the
+case where the models and views may hang around forever even if they're not
+visible, if the user decides not to open that type of subview again.  It also
+makes things harder when dealing with the m_connViews table because the table
+then no longer maps directly to what's being shown on screen.  If we keep the
+table to exactly what's being shown on screen, then we can delete models and
+views when not showing.  But then that seems dumb if you have a subview and
+you're just switching back and forth between documents.  So clearly we should
+keep some things around.  Do we keep each ClosingDockWidget and the one view
+that is associated with it, attaching to main window as needed?  Or do we keep
+exactly one ClosingDockWidget per ViewType and attach the view to the
+ClosingDockWidget as needed?  Currently we are doing the latter.  Probably no
+more exensive, and certainly simpler, to maintain the 1-1 relationship between
+views and ClosingDockWidgets.  So then it should be as follows: When a
+ClosingDockWidget is closed in a window, all views, models, and other
+ClosingDockWidgets of that ViewType and window are also closed/deleted and
+removed from m_connViews.  When a document requests a new subview, then a new
+subview is opened only for that document.  If the user tabs to an existing
+document, then a new view and ClosingDockWidget are created.  If the user tabs
+back to the previous document then the view and dockwidget are shown. So the
+solution is a hybrid. Create views and ClosingDockWidgets as needed and keep
+them open until the ClosingDockWidget is closed, or the document is closed.
+Thus if something is showing then it is definitely in the table, but it's
+possible there are things in the table that aren't showing.
+*/ /*
+OpenUI:
+if main view requested
+    create and select given view
+else if subview requested
+    if this requested (fullpath, viewtype, window) exists and is currently attached
+        shouldn't happen -- throw exception
+    if any of this viewtype and window exists in table
+        hide it
+    if requested already exists in table
+        select existing
+    else
+        create and select given view
+attach selection
+
+OnMDISubWindowActivate:
+For each vt in unique list of all existing viewtypes for this window
+    OpenUI(fullpath, vt, window) -- will use existing if available, else new
+
+OnMDISubWindowClose:
+f this subwidget closes, then when next mdi is activated, it'll
+see theres's nothing left, so it won't attach its subwidgets.  So the trick is to
+select the next one first
+
+If last MDI with this fullpath and window
+    Close and delete all entries with this fullpath in this window
+    If this fullpath isn't assocated with another window
+        close library
+else (more MDIs available )
+    Close and delete only this MDISubWindow's entry -- leave other subviews alone
+
+OnClosingDockWidgetClose:
+Close/delete all entries associated with this viewtype and window
+
+NotifyCloseDb:
+Close/delete all MDISubWindows associated with this fullpath, in all windows
+
+EnableSubView:
+OpenUI(fullpath, vt, window)
+
+Popout:
+Duplicate window
+OpenUI in new window that already exists in old window
+
+
+
+
+*/
+
+
+
+
+
+
+
+
 
 // Standalone functions
 template <typename W>
@@ -247,7 +342,6 @@ template <typename... Args>
 ConnViews UIManager::selectWheres_ext(Args... allargs) {
     return selectWhere_ext(std::move(m_connViews), allargs...);
 }
-
 ConnViews UIManager::selectWheres(const std::function<bool (const ConnView &)> & fn) {
     ConnViews retval;
     for (auto cv: m_connViews)
@@ -255,16 +349,17 @@ ConnViews UIManager::selectWheres(const std::function<bool (const ConnView &)> &
             retval.push_back(cv);
     return retval;
 }
-QAbstractItemModel *UIManager::makeLibSymbolModel(IDbIf *dbif, std::string fullpath) {
-    QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+
+QAbstractItemModel *UIManager::makeLibSymbolModel(std::string fullpath) {
+    QSqlDatabase db(dynamic_cast<QSQDbIf *>(m_pCore->DbIf())->database(fullpath));
     return new QSqlTableModel(this, db);
 }
-QAbstractItemModel *UIManager::makeLibTreeModel(IDbIf *dbif, std::string fullpath) {
-   QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+QAbstractItemModel *UIManager::makeLibTreeModel(std::string fullpath) {
+   QSqlDatabase db(dynamic_cast<QSQDbIf *>(m_pCore->DbIf())->database(fullpath));
    return new QSqlTreeModel(this, db);
 }
-QAbstractItemModel *UIManager::makeLibTableModel(IDbIf *dbif, std::string fullpath) {
-   QSqlDatabase db(dynamic_cast<QSQDbIf *>(dbif)->database(fullpath));
+QAbstractItemModel *UIManager::makeLibTableModel(std::string fullpath) {
+   QSqlDatabase db(dynamic_cast<QSQDbIf *>(m_pCore->DbIf())->database(fullpath));
    return new QSqlTableModel(this, db);
 }
 QAbstractItemView *UIManager::makeLibSymbolView(QAbstractItemModel *model) {
@@ -320,7 +415,21 @@ QWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, std::st
    QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
    return widget;
 }
+QWidget *UIManager::makeModelViewWidget(std::string fullpath, ViewType vt, QMainWindow *parent) {
+    // Blindly creates or resuses model, creates view, creates and returns widget
+    // widget returned is either ClosingMDILibWidget or ClosingDockWidget
+    QAbstractItemModel *model(nullptr);
+    auto selectopt2(selectWhere_ext(fullpath, vt)); // selects first entry with fullpath and viewtype
+    model = selectopt2 ? selectopt2->model : (this->*makeModelfm[vt])(fullpath);
+    QAbstractItemView *view ((this->*makeViewfm[vt])(model));
 
+    // Make new widget...
+    std::string title(std::filesystem::path(fullpath).filename().string());
+    QWidget *widget((this->*makeWidgetfm[vt])(parent, view, title));
+    m_connViews.push_back({fullpath, vt, model, view, widget, parent});
+    cvlog(m_connViews, m_pLogger);
+    return widget;
+}
 void UIManager::attachMDISubWindow(QMainWindow *mw, QWidget *widget) {
     assert(mw);
     assert(widget);
@@ -373,36 +482,38 @@ void UIManager::attachDockWidget(QMainWindow *mw, QWidget *widget) {
 
 
 // TODO: Add ability to open some type of UI other than model/view, eg text window, browser, etc.
-QWidget *UIManager::openUI(IDbIf *dbif, std::string fullpath, ViewType vt) {
-    // For LibSymbolView, allows any number of instances in any number of mainwindows
-    // For auxilliary views, only one type of view is allowed per mainwindow
+QWidget *UIManager::openUI(std::string fullpath, ViewType vt, QMainWindow *mw) {
+    // For main view types, allows any number of instances in any number of mainwindows
+    // For sub view types, only one type of view is allowed per mainwindow
 
-    // Check whether this viewtype is a subwidget type with this path and
-    // already exists in this mainwindow.  If true, then skip creation.
-    QMainWindow *mw(activeWindow<QMainWindow *>());
+    mw = mw ? mw : activeWindow<QMainWindow *>();
     const QMainWindow *cmw(static_cast<const QMainWindow *>(mw));
-    auto selectopt(selectWhere_ext(vt, cmw, fullpath));
-    bool condition((vt == ViewType::LIBLISTVIEW  || 
-                    vt == ViewType::LIBTABLEVIEW ||
-                    vt == ViewType::LIBTREEVIEW) && 
-                    selectopt);
     QWidget *widget(nullptr);
-    if (condition) {
-        widget = selectopt->subWidget;
-    } else {
-        // Create or find appropriate model and view
-        QAbstractItemModel *model(nullptr);
-        QAbstractItemView *view(nullptr);
-        auto selectopt2(selectWhere_ext(fullpath, vt)); // selects first entry with fullpath and viewtype
-        model = selectopt2 ? selectopt2->model : (this->*makeModelfm[vt])(dbif, fullpath);
-        view = (this->*makeViewfm[vt])(model);
 
-        // Make new widget, store, and attach
-        std::string title(std::filesystem::path(fullpath).filename().string());
-        widget = (this->*makeWidgetfm[vt])(nullptr, view, title);
-        m_connViews.push_back({fullpath, vt, model, view, widget, mw});
-        cvlog(m_connViews, m_pLogger);
+    if (findViewType(MainViewTypes, vt)) {
+        widget = makeModelViewWidget(fullpath, vt, mw);
+    } else if (findViewType(SubViewTypes, vt)) {
+        // Check if this view exists
+        auto existingEntry(selectWhere_ext(fullpath, vt, cmw));
+
+        // Return if already showing (this happens all the time)
+        if (existingEntry && isChildWidgetShowing(cmw,  existingEntry->subWidget)) {
+            return nullptr;
+        }
+
+        // Detach existing same viewtypes for this window
+        for (ConnView cv : selectWheres_ext(vt, cmw)) {
+            if (cv.subWidget->isVisible()) {
+                mw->removeDockWidget(static_cast<QDockWidget *>(cv.subWidget));
+            }
+        }
+        // select already existing or create new
+        widget = existingEntry ? existingEntry->subWidget : makeModelViewWidget(fullpath, vt, mw);
     }
+    else {
+        throw std::logic_error("Shouldn't get here");
+    }
+    // ... attach selection
     (this->*attachWidgetfm[vt])(mw, widget);
     updateLibActions();
     return widget;
@@ -433,7 +544,7 @@ void UIManager::onDocWindowClose(QWidget *w) {
     cvlog(m_connViews, m_pLogger);
 }
 void UIManager::onMdiSubWindowActivate(QWidget *w){
-    // Remove existing subwidgets, and reattached subwidgets associated with this model
+    // Remove existing subwidgets, and reattach subwidgets associated with this model
     // but only if that type of subwidget already exists.  On other words, replace
     // the tree and model views with the current one.  To be clear, there can be
     // multiple dockwidgets of the same type, but only one of any type can be attached
@@ -452,39 +563,58 @@ void UIManager::onMdiSubWindowActivate(QWidget *w){
     // For each type of subwidget already showing, open a UI using this fullpath
     std::string fullpath(selectopt->fullpath);
     for (ViewType vt : subViewTypesShowing(cmw))
-        openUI(m_pCore->DbIf(), fullpath, vt);
+        openUI(fullpath, vt);
 
     // Activate library associated with this mdisubwindow
     assert(m_pCore);
     m_pCore->activateLib(fullpath);
 }
 void UIManager::onMdiSubWindowClose(QWidget *w) {
-    // Make sure we're actually getting an MDIWidget
-    // aka mainWidget informally, which is different from mainWindow informally
+    // Try to close this MDI cleanly.
+    // If this is the last MDI in this window, then close everything
+    // associated with it, leaving any subviews open for the next MDI
+    // If this is the last MDI of this fullpath in any window, close lib.
+    // If this is not the last MDI of this window, then just close and
+    // delete all things associated with this entry
+    QMainWindow *mw(activeWindow<QMainWindow *>());
+    DocWindow *dw(static_cast<DocWindow *>(mw));
+    const QMainWindow *cmw(static_cast<QMainWindow *>(mw));
+    auto thisopt(selectWhere_ext(static_cast<const QWidget *>(w), cmw));
+    std::string fullpath(thisopt->fullpath);
+    ViewType vt(thisopt->viewType);
+    assert(findViewType(MainViewTypes, vt));
 
-    QMdiSubWindow *mdisw(dynamic_cast<QMdiSubWindow *>(w));
-    assert(mdisw);
-    auto [model, _v, vt] = modelViewFromWidget(static_cast<QMdiSubWindow *>(w));
-    auto [fullpath, _x, _y] = fullpathFromModel(model);
-    assert(vt == ViewType::LIBSYMBOLVIEW);
+    // Try: open three, select middle, close first, close third. -- makes a difference
+    // Try: Check whether this mdi is same as activmdiwidget
+    // Try: set<widget> based on visible or not
 
-    // Count total entries with this conn and vt.
-    // case 0: error; 1: close all entries with fullpath,
-    // else: remove just the one with this conn, vt, and mainwindow
-    ConnViews mainViews(selectWheres_ext(fullpath, vt));
-    assert(mainViews.size());
-    if (mainViews.size() == 1) {  // nothing else found, so close all (aux) views and close library
-        for (auto cv : selectWheres_ext(fullpath)) {
-            cv.subWidget->blockSignals(true); // Not necessarily what we want
-            cv.subWidget->close();
+    // If we don't activate the next one first, then other subviews get closed
+    if (w == activeMdiSubWindow())
+        dw->mdiArea()->activateNextSubWindow();
+
+    // Check how many other clone MDIs there are in this window
+    ConnViews sameMdiViews(selectWheres_ext(fullpath, vt, cmw));
+    assert(sameMdiViews.size());
+    if (sameMdiViews.size() == 1) {  // nothing else found, so close all related subwidgets and close library
+        for (auto cv : selectWheres_ext(fullpath, cmw)) {
+            if (cv.subWidget != w) { // don't recur closing this qmdisubwindow...
+                cv.subWidget->blockSignals(true); // ... not that we would recur
+                cv.subWidget->close(); // deletes widget on close, which also deletes QAbstractItemView
+            }
+            delete cv.model;
             m_connViews.remove(cv);
         }
-        delete model; // hopefully no views still point here
-        log("UIManager::onMainWidgetClose Closing lib %s", fullpath.c_str());
-        m_pCore->closeLibNoGui(fullpath);
+        // Check again, but don't specify this particular window.
+        // This will pick up fullpath views in other windows
+        if (!selectWhere_ext(fullpath)) {
+            log("UIManager::onMainWidgetClose Closing lib %s", fullpath.c_str());
+            m_pCore->closeLibNoGui(fullpath);
+        }
     } else { // Other mainviews found, so just delete this entry
         m_connViews.remove(*selectWhere_ext(static_cast<const QWidget *>(w)));
     }
+
+
     cvlog(m_connViews, m_pLogger);
     updateLibActions();
 
@@ -499,19 +629,22 @@ void UIManager::onDockWidgetActivate(QWidget *w) {
     m_pCore->activateLib(fullpath);
 }
 void UIManager::onDockWidgetClose(QWidget *w) {
-    // Remove the view from list and allow library to be closed
-    // This happens when user clicks the close button
-    assert(w);
+    // Close/delete all entries associated with this viewtype and window
     log("OnDockWidgetClose 0x%08x", w);
     const QWidget *cw(static_cast<const QWidget *>(w));
     const QMainWindow *cmw(activeWindow<const QMainWindow *>());
     auto selectopt(selectWhere_ext(cw, cmw));
-    if (selectopt) { // sometimes this gets called twice, so the second time it's empty.
-        m_connViews.remove(*selectopt);
-        cvlog(m_connViews, m_pLogger);
+    ViewType vt(selectopt->viewType);
+    for (ConnView cv : selectWheres_ext(vt, cmw)) {
+        if (cv.subWidget != w) {
+            cv.subWidget->blockSignals(true);
+            cv.subWidget->close();
+        }
+        delete cv.model;
+        m_connViews.remove(cv);
     }
-    if (DocWindow *dw = activeWindow<DocWindow *>())
-        dw->updateViewEnables();
+    cvlog(m_connViews, m_pLogger);
+    activeWindow<DocWindow *>()->updateViewEnables();
 }
 void UIManager::updateLibActions() {
     // Find mainwindows without any other associated views
@@ -536,6 +669,13 @@ std::list<ViewType> UIManager::subViewTypesShowing(const QMainWindow *cmw) {
     vtl.unique();
     return vtl;
 }
+bool UIManager::isChildWidgetShowing(const QMainWindow *cmw, const QWidget *w) {
+    QList<const QWidget *> wch(cmw->findChildren<const QWidget *>());
+    for (auto ch : wch)
+        if (ch == w && ch->isVisible())
+            return true;
+    return false;
+}
 
 
 
@@ -545,28 +685,25 @@ UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
 }
-void UIManager::notifyDbOpen(IDbIf *dbif, std::string fullpath) {
+void UIManager::notifyDbOpen(std::string fullpath) {
     for (auto uit : DefaultViewTypes) {
-        openUI(dbif, fullpath, uit);
+        openUI(fullpath, uit);
     }
 }
-void UIManager::notifyDbClose(IDbIf *dbif, std::string fullpath) {
+void UIManager::notifyDbClose(std::string fullpath) {
     // Close QMdiSubWindows after being notified that library has closed
-    (void) dbif;
     ConnViews cvs(selectWheres_ext(fullpath, ViewType::LIBSYMBOLVIEW));
     for (auto cv : cvs) {
         cv.subWidget->close();
     }
 }
-void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string newpath) {
-    (void) dbif;
+void UIManager::notifyDbRename(std::string oldpath, std::string newpath) {
     //log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
     // Get the new database from dbif based on newpath
     // Get all entries associated with oldpath from m_connViews
     // Among entries, delete model and create new model to the new database
     // For each entry, change m_connViews to show newpath
     // For each entry, rename QMdiSubWidget title to newpath
-    QSqlDatabase newdb(static_cast<QSQDbIf *>(dbif)->database(newpath));
     ConnViews dbcvs(selectWheres_ext(oldpath));
     std::list<QAbstractItemModel *> models;
     for (auto cv : dbcvs)
@@ -578,7 +715,7 @@ void UIManager::notifyDbRename(IDbIf *dbif, std::string oldpath, std::string new
     for (auto cv: dbcvs) {
         m_connViews.remove(cv);
         cv.fullpath = newpath;
-        cv.model = (this->*makeModelfm[cv.viewType])(dbif, newpath);
+        cv.model = (this->*makeModelfm[cv.viewType])(newpath);
         cv.view->setModel(cv.model);
         std::string title(std::filesystem::path(newpath).filename().string());
         cv.subWidget->setWindowTitle(QString::fromStdString(title));
@@ -653,9 +790,10 @@ void UIManager::duplicateMainView() {
     DocWindow *lw(activeWindow<DocWindow *>());
     QMdiSubWindow *mdiWidget(lw->mdiArea()->activeSubWindow());
     assert(mdiWidget);
+    // Can we get rid of these?  They're cool and all, but....
     auto [model, view, vt] = modelViewFromWidget(mdiWidget);
     auto [fullpath, _x, _y] = fullpathFromModel(model);
-    QWidget * newWidget(openUI(m_pCore->DbIf(), fullpath, ViewType::LIBSYMBOLVIEW));
+    QWidget * newWidget(openUI(fullpath, ViewType::LIBSYMBOLVIEW));
     QMdiSubWindow *newMdiWidget(static_cast<QMdiSubWindow *>(newWidget));
     if (mdiWidget->isMaximized())
         newMdiWidget->showMaximized();
@@ -726,7 +864,19 @@ void UIManager::closeMainView() {
     m_connViews.remove(*selectopt);
     cvlog(m_connViews, m_pLogger);
 }
-bool UIManager::viewTypeShowing(ViewType vt, const DocWindow *dw) {
+void UIManager::enableSubView(ViewType vt) {
+    log("UIManager::enableSubView");
+    QMainWindow *mw(activeWindow<QMainWindow *>());
+    const QMainWindow *cmw(mw);
+    // Find fullpath assocated with current mdi view, then open
+    // If the widget already exists, the openUI function will reuse it.
+    const QWidget *sw(activeMdiSubWindow());
+    auto selectopt(selectWhere_ext(sw, cmw));
+    assert(selectopt);
+    assert(m_pCore);
+    openUI(selectopt->fullpath, vt, mw);
+}
+bool UIManager::isViewTypeShowing(ViewType vt, const DocWindow *dw) {
     // This is called when someone wants to know whether a viewtype is showing,
     // not necessarily whether one exists in the table, which can be different.
     // If >0 exists, then exactly one is showing.  If none is showing, then none
@@ -737,15 +887,4 @@ bool UIManager::viewTypeShowing(ViewType vt, const DocWindow *dw) {
     return std::find(svtl.begin(), svtl.end(), vt) != svtl.end() ;//||
            //std::find(mvtl.begin(), mvtl.end() != mvtl.end();
 
-}
-void UIManager::enableSubView(ViewType vt) {
-    log("UIManager::enableSubView");
-    const QMainWindow *mw(activeWindow<const QMainWindow *>());
-    // Find fullpath assocated with current mdi view, then open
-    // If the widget already exists, the openUI function will reuse it.
-    const QWidget *sw(activeMdiSubWindow());
-    auto selectopt(selectWhere_ext(sw));
-    assert(selectopt);
-    assert(m_pCore);
-    openUI(m_pCore->DbIf(), selectopt->fullpath, vt);
 }

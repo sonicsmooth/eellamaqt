@@ -182,8 +182,8 @@ void DocWindow::updateViewEnables() {
     // TODO: check whether we need to verify that an mdi window is open;
     // TODO: ie, we don't want to enable the menu item if absolutely nothing
     // TODO: is showing.
-    bool ltrvex(uim->viewTypeShowing(ViewType::LIBTREEVIEW, this));
-    bool ltbvex(uim->viewTypeShowing(ViewType::LIBTABLEVIEW, this));
+    bool ltrvex(uim->isViewTypeShowing(ViewType::LIBTREEVIEW, this));
+    bool ltbvex(uim->isViewTypeShowing(ViewType::LIBTABLEVIEW, this));
     ui->actionLibTreeView->setEnabled(!ltrvex);
     ui->actionLibTableView->setEnabled(!ltbvex);
 }
