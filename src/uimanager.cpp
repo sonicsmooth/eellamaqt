@@ -589,6 +589,9 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
     // Try: set<widget> based on visible or not
 
     // If we don't activate the next one first, then other subviews get closed
+    // Do this == because it's possible to close an mdi window without activating
+    // it first, ie when in tabbed mode you click on the close button without
+    // selecting it first.
     if (w == activeMdiSubWindow())
         dw->mdiArea()->activateNextSubWindow();
 
@@ -611,6 +614,7 @@ void UIManager::onMdiSubWindowClose(QWidget *w) {
             m_pCore->closeLibNoGui(fullpath);
         }
     } else { // Other mainviews found, so just delete this entry
+        // TODO: verify that we don't need to delete any models, etc.
         m_connViews.remove(*selectWhere_ext(static_cast<const QWidget *>(w)));
     }
 
@@ -783,40 +787,48 @@ std::list<QMainWindow *> UIManager::mainWindows() {
     return {set.begin(), set.end()};
 }
 void UIManager::duplicateMainView() {
-    // Take current MDIWidget, extract the model, then extract the fullpath.
-    // Create a new UI with fullpath.  This creates a new view and a new MDIWidget
+    // Find current QMdiSubWindow in table, then duplicate with same fullpath and ViewType
     assert(m_pCore);
-    DocWindow *lw(activeWindow<DocWindow *>());
-    QMdiSubWindow *mdiWidget(lw->mdiArea()->activeSubWindow());
-    assert(mdiWidget);
-    // Can we get rid of these?  They're cool and all, but....
-    auto [model, view, vt] = modelViewFromWidget(mdiWidget);
-    auto [fullpath, _x, _y] = fullpathFromModel(model);
-    QWidget * newWidget(openUI(fullpath, ViewType::LIBSYMBOLVIEW));
-    QMdiSubWindow *newMdiWidget(static_cast<QMdiSubWindow *>(newWidget));
-    if (mdiWidget->isMaximized())
-        newMdiWidget->showMaximized();
+    DocWindow *dw(activeWindow<DocWindow *>());
+    const QWidget *cmsw(static_cast<const QWidget *>(activeMdiSubWindow()));
+    assert(cmsw);
+    auto selectopt(selectWhere_ext(cmsw));
+    assert(selectopt);
+    QWidget *newWidget(openUI(selectopt->fullpath, selectopt->viewType));
+    if (cmsw->isMaximized())
+        static_cast<QMdiSubWindow *>(newWidget)->showMaximized();
 
 }
 void UIManager::popOutMainView() {
-    // Move current symbol or main QMdiSubWindow into new window
-    // This is a precursor to tear-away mdi subwindow
-    // Keep maximized or non-maximized state in src and dst windows
-    // For subwidgets, create as needed in new doc window; delete as needed in
-    // old doc window.
+    // Move current main QMdiSubWindow and associated subviews into new window
+    // If this is the only MDI of this fullpath in this window, then re-assign
+    // mainwindow and subwidgets in table, and detach/reattach same.  If there
+    // are other MDIs of this fullpath in this window, then copy the entries in
+    // the table for the subviews, associate the current mdi and copied entries
+    // with the new window, then detach/attach same.
 
+    QMainWindow *mw(activeWindow<QMainWindow *>());
+    const QMainWindow *cmw(static_cast<const QMainWindow *>(mw));
+    
     // Find existing mdisubwindow, record its state, and remove from list
-    QMdiSubWindow *mdiSubWindow(activeMdiSubWindow());
-    assert(mdiSubWindow);
-    bool ismax(mdiSubWindow->isMaximized());
-    auto selectopt(selectWhere_ext(static_cast<const QWidget *>(mdiSubWindow)));
+    QMdiSubWindow *currmdi(activeMdiSubWindow());
+    assert(currmdi);
+    bool ismax(currmdi->isMaximized());
+    auto selectopt(selectWhere_ext(static_cast<const QWidget *>(currmdi)));
     assert(selectopt);
     ConnView cv(*selectopt);
     m_connViews.remove(cv);
 
-    // Detach subwindows with this fullpath and record which ones were present
-    DocWindow *olddw(activeWindow<DocWindow *>());
-    ConnViews cvs;
+    // Which subviews are showing, and choose next mdi before removing
+    std::list<ViewType> vtshowing(SubViewTypesShowing(cmw));
+    mw->activateNextSubWindow()
+
+    // Record and remove subwindows with this fullpath. Not sure whether to
+    // attempt to detach, ie if this was the only mdi which is getting popped
+    // out, we'd want to detach, but not if there others, which is why we active
+    // the next mdi prior to doing anything.
+    ConnViews subviews(selectWheres_ext())
+
     for (ViewType vt : SubViewTypes) {
         selectopt = selectWhere_ext(cv.fullpath, vt);
         if (selectopt) {
@@ -828,7 +840,7 @@ void UIManager::popOutMainView() {
     // Duplicate the main window
     DocWindow *newdw(static_cast<DocWindow *>(duplicateWindow()));
     newdw->show();
-    olddw->mdiArea()->removeSubWindow(mdiSubWindow);
+    olddw->mdiArea()->removeSubWindow(currmdi);
 
     // It seems that when you remove a subwindow from mdiArea, the remaining mdi
     // subwindows become unmaximized, so here we fix that if they had been
@@ -840,9 +852,9 @@ void UIManager::popOutMainView() {
     }
 
     // Add the new mdi subwindow in the same maximized state as it was before popping out
-    newdw->mdiArea()->addSubWindow(mdiSubWindow);
-    ismax ? mdiSubWindow->showMaximized() : mdiSubWindow->showNormal();
-    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, mdiSubWindow, newdw});
+    newdw->mdiArea()->addSubWindow(currmdi);
+    ismax ? currmdi->showMaximized() : currmdi->showNormal();
+    m_connViews.push_back({cv.fullpath, cv.viewType, cv.model, cv.view, currmdi, newdw});
     cvlog(m_connViews, m_pLogger);
 
     // Add subwindows using pre-existing connview, updated with new main window
