@@ -188,6 +188,9 @@ void DocWindow::updateViewEnables() {
     ui->actionLibTableView->setEnabled(isdbopen && !ltbvex);
 }
 
+// TODO: Disable pop-out menu if there is only one doc open in window
+// This hopefully works around the pop-out bug on non-maximized MDI subwindows
+
 void DocWindow::updateTitle() {
     setWindowTitle("Library Editor");
 }

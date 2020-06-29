@@ -32,7 +32,7 @@ typedef struct connview {
     ViewType viewType;
     QAbstractItemModel *model;
     QAbstractItemView *view;
-    QWidget *subWidget; // colud be QMdiSubWindow or QDockWidget
+    QWidget *subWidget; // could be QMdiSubWindow or QDockWidget
     QMainWindow *mainWindow;
     // operator== is used for removing a struct from m_connViews
     bool operator==(const struct connview& a) const  {
@@ -99,14 +99,13 @@ private:
     std::optional<ConnView> selectWhere(const QWidget *);
     std::optional<ConnView> selectWhere(const std::function<bool (const ConnView &)> &);
     template <typename Arg>
-    ConnViews selectWhere_ext(ConnViews&&, Arg);
+    ConnViews selectWhere_ext(const ConnViews &, Arg);
     template <typename Arg, typename... Args>
-    ConnViews selectWhere_ext(ConnViews&&, Arg, Args... );
+    ConnViews selectWhere_ext(const ConnViews &, Arg, Args... );
     template <typename... Args>
     std::optional<ConnView> selectWhere_ext(Args... );
     template <typename... Args>
     ConnViews selectWheres_ext(Args... );
-    
     ConnViews selectWheres(const std::function<bool(const ConnView &)> &);
 
     QAbstractItemModel *makeLibSymbolModel(std::string);
