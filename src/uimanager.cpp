@@ -390,6 +390,7 @@ QWidget *UIManager::makeCDWLibWidget(QWidget *parent, QWidget *contents, std::st
     widget->setFocusPolicy(Qt::StrongFocus); // accepts focus by tabbing or clicking
     widget->setWidget(contents);
     widget->setWindowTitle(QString::fromStdString(title));
+    QObject::connect(widget, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
     widget->setAttribute(Qt::WA_DeleteOnClose);
     return widget;
 }
@@ -467,10 +468,6 @@ void UIManager::attachDockWidget(QMainWindow *mw, QWidget *widget) {
     log("Attaching %s 0x%08x == 0x%08x", fullpath.c_str(), newselect->subWidget, cdw);
     mw->addDockWidget(dockWidgetAreaMap[vt], cdw);
     cdw->show();
-
-    // Make sure we have exactly one connection
-    cdw->disconnect();
-    QObject::connect(cdw, &ClosingDockWidget::closing, this, &UIManager::onDockWidgetClose);
 }
 
 
@@ -518,9 +515,11 @@ void UIManager::onDocWindowActivate(QWidget *w) {
     DocWindow *lw(static_cast<DocWindow *>(w));
     QMdiSubWindow *sw(lw->mdiArea()->activeSubWindow());
     if(sw) {
-        auto [model, _v, vt] = modelViewFromWidget(sw);
-        auto [fullpath, _x, _y] = fullpathFromModel(model);
-        m_pCore->DbIf()->activateDatabase(fullpath);
+        auto selectopt(selectWhere_ext(static_cast<const QWidget *>(sw)));
+        //auto [model, _v, vt] = modelViewFromWidget(sw);
+        //auto [fullpath, _x, _y] = fullpathFromModel(model);
+        //m_pCore->DbIf()->activateDatabase(fullpath);
+        m_pCore->DbIf()->activateDatabase(selectopt->fullpath);
     }
 }
 void UIManager::onDocWindowClose(QWidget *w) {
@@ -626,18 +625,16 @@ void UIManager::onDockWidgetClose(QWidget *w) {
     const QWidget *cw(static_cast<const QWidget *>(w));
     const QMainWindow *cmw(activeWindow<const QMainWindow *>());
     std::optional<ConnView> selectopt(selectWhere_ext(cw, cmw));
-    ConnView cv({});
-    cv = selectopt.value();
-    if (!selectopt)
-        log("bad selectopt");
-    //assert(selectopt);
+    assert(selectopt);
     ViewType vt(selectopt->viewType);
     for (ConnView cv : selectWheres_ext(vt, cmw)) {
         if (cv.subWidget != w) {
             cv.subWidget->blockSignals(true);
             cv.subWidget->close();
         }
-        delete cv.model;
+        // Make sure this is the last model
+        if (selectWheres_ext(static_cast<const QAbstractItemModel *>(cv.model)).size() == 1)
+            delete cv.model;
         m_connViews.remove(cv);
     }
     cvlog(m_connViews, m_pLogger);
@@ -783,7 +780,6 @@ std::list<QMainWindow *> UIManager::mainWindows() {
 void UIManager::duplicateMainView() {
     // Find current QMdiSubWindow in table, then duplicate with same fullpath and ViewType
     assert(m_pCore);
-    DocWindow *dw(activeWindow<DocWindow *>());
     const QWidget *cmsw(static_cast<const QWidget *>(activeMdiSubWindow()));
     assert(cmsw);
     auto selectopt(selectWhere_ext(cmsw));
@@ -842,20 +838,17 @@ void UIManager::popOutMainView() {
             cvlog(m_connViews, m_pLogger);
         }
 
-    } else { // > 1 mdi of this fullpath, but only one of each subview
-        // Attach MDI widget to new window.  Not sure if I need to detach first
-        (this->*attachWidgetfm[vt])(newdw, currmdi); // TODO: check parenting, etc.
-return;
-        ConnViews subsibs(selectWheres_ext(SubViewTypes, fullpath, cmw)); // select subview entries
-        // //copy subview entries, and reassign copies to new window
-        // OpenUI on these
+    } else { // > 1 mdi of this fullpath
+        // Attach MDI widget to new window and reassign in table.
+        (this->*attachWidgetfm[vt])(newdw, currmdi);
+        m_connViews.remove(cmcv);
+        cmcv.mainWindow = newdw;
+        m_connViews.push_back(cmcv);
+
+        // Select subview entries and OpenUI with their data in new window
+        ConnViews subsibs(selectWheres_ext(SubViewTypes, fullpath, cmw));
         for (auto subsibcv : subsibs) {
             openUI(subsibcv.fullpath, subsibcv.viewType, newdw);
-        //    newdw->mdiArea()->setActiveSubWindow(currmdi);
-        //     subsibcv.mainWindow = newdw;
-        //     m_connViews.push_back(subsibcv);
-        //     (this->*attachWidgetfm[subsibcv.viewType])(newdw, subsibcv.subWidget);
-        //     cvlog(m_connViews, m_pLogger);
         }
     }
     ismax ? currmdi->showMaximized() : currmdi->showNormal();
