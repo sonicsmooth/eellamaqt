@@ -10,6 +10,7 @@
 #include "qsqltreemodel.h"
 #include "qdbif.h"
 #include "mvtypes.h"
+#include "connviews.h"
 
 #include <QApplication>
 #include <QObject>
