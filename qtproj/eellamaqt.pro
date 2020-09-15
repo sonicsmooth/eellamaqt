@@ -19,6 +19,7 @@ SOURCES += \
     ../src/allicons.cpp \
     ../src/closingdockwidget.cpp \
     ../src/closingmdiwidget.cpp \
+    ../src/connviews.cpp \
     ../src/docwindow.cpp \
     ../src/libcore.cpp \
     ../src/libtableview.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     ../src/closingdockwidget.h \
     ../src/closingmdiwidget.h \
     ../src/connable.h \
+    ../src/connviews.h \
     ../src/coreable.h \
     ../src/docwindow.h \
     ../src/idbif.h \
