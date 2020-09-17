@@ -12,7 +12,7 @@ static std::vector<ViewType> SubViewTypes({ViewType::LIBTREEVIEW, ViewType::LIBT
 static std::vector<ViewType> DefaultViewTypes({ViewType::LIBSYMBOLVIEW, ViewType::LIBTREEVIEW, ViewType::LIBTABLEVIEW});
 
 template <typename COLL, typename ELEM>
-static bool findViewType(COLL coll, ELEM thing) {
+static bool findViewType(const COLL & coll, const ELEM & thing) {
     return std::find(coll.begin(), coll.end(), thing) != coll.end();
 }
 

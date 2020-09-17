@@ -12,6 +12,7 @@
 #include "closingmdiwidget.h"
 #include "idbif.h"
 #include "mvtypes.h"
+#include "connviews.h"
 
 #include <QString>
 #include <QWidget>
@@ -24,39 +25,6 @@
 #include <string>
 #include <map>
 #include <list>
-#include <optional>
-#include <functional>
-
-typedef struct connview {
-    std::string fullpath;
-    ViewType viewType;
-    QAbstractItemModel *model;
-    QAbstractItemView *view;
-    QWidget *subWidget; // could be QMdiSubWindow or QDockWidget
-    QMainWindow *mainWindow;
-    // operator== is used for removing a struct from m_connViews
-    bool operator==(const struct connview& a) const  {
-         return ( a.fullpath == this->fullpath && 
-                  a.viewType == this->viewType &&
-                  a.model == this->model &&
-                  a.view  == this->view &&
-                  a.subWidget == this->subWidget &&
-                  a.mainWindow == this->mainWindow);
-    }
-    bool operator!=(const struct connview& a) const  {
-         return ( a.fullpath != this->fullpath ||
-                  a.viewType != this->viewType ||
-                  a.model != this->model ||
-                  a.view  != this->view ||
-                  a.subWidget != this->subWidget ||
-                  a.mainWindow != this->mainWindow);
-    }
-    void log(ILogger *);
-} ConnView;
-
-typedef std::list<ConnView> ConnViews;
-void cvlog(ConnViews cvs, ILogger *lgr);
-
 
 
 
@@ -66,47 +34,41 @@ class UIManager : public QObject, public IUIManager, public Coreable, public Log
 private:
     QTimer m_hackTimer;
     
+    // Map of viewtypes to model maker functions
     typedef QAbstractItemModel *(UIManager::*abstractModelFn)(std::string);
     std::map<ViewType, abstractModelFn> makeModelfm = 
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolModel},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeModel},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableModel}};
 
+    // Map of viewtypes to view maker functions
     typedef QAbstractItemView *(UIManager::*abstractViewFn)(QAbstractItemModel *);
     std::map<ViewType, abstractViewFn> makeViewfm = 
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolView},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeView},
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
 
+    // Map of viewtypes to widget maker functions
     typedef QWidget *(UIManager::*widgetFactoryFn)(QWidget *, QWidget *, std::string);
     std::map<ViewType, widgetFactoryFn> makeWidgetfm =
     {{ViewType::LIBSYMBOLVIEW, &UIManager::makeMDILibWidget},
      {ViewType::LIBTREEVIEW, &UIManager::makeCDWLibWidget},
      {ViewType::LIBTABLEVIEW, &UIManager::makeCDWLibWidget}};
 
+    // Map of viewtypes to widget attachment functions
     typedef void (UIManager::*attachFn)(QMainWindow *, QWidget *);
     std::map<ViewType, attachFn> attachWidgetfm =
     {{ViewType::LIBSYMBOLVIEW, &UIManager::attachMDISubWindow},
      {ViewType::LIBTREEVIEW, &UIManager::attachDockWidget},
      {ViewType::LIBTABLEVIEW, &UIManager::attachDockWidget}};
 
+    // Map of viewtypes to dock widget areas
     std::map<ViewType, Qt::DockWidgetArea> dockWidgetAreaMap = 
      {//{ViewType::LIBSYMBOLVIEW, Qt::DockWidgetArea::NoDockWidgetArea},
       {ViewType::LIBTREEVIEW, Qt::DockWidgetArea::RightDockWidgetArea},
       {ViewType::LIBTABLEVIEW, Qt::DockWidgetArea::LeftDockWidgetArea}};
 
     ConnViews m_connViews;
-    std::optional<ConnView> selectWhere(const QWidget *);
-    std::optional<ConnView> selectWhere(const std::function<bool (const ConnView &)> &);
-    template <typename Arg>
-    ConnViews selectWhere_ext(const ConnViews &, Arg);
-    template <typename Arg, typename... Args>
-    ConnViews selectWhere_ext(const ConnViews &, Arg, Args... );
-    template <typename... Args>
-    std::optional<ConnView> selectWhere_ext(Args... );
-    template <typename... Args>
-    ConnViews selectWheres_ext(Args... );
-    ConnViews selectWheres(const std::function<bool(const ConnView &)> &);
 
     QAbstractItemModel *makeLibSymbolModel(std::string);
     QAbstractItemModel *makeLibTreeModel(std::string);
