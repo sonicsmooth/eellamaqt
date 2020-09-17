@@ -35,7 +35,7 @@ private:
     QTimer m_hackTimer;
     
     // Map of viewtypes to model maker functions
-    typedef QAbstractItemModel *(UIManager::*abstractModelFn)(std::string);
+    typedef QAbstractItemModel *(UIManager::*abstractModelFn)(const std::string &);
     std::map<ViewType, abstractModelFn> makeModelfm = 
      {{ViewType::LIBSYMBOLVIEW, &UIManager::makeLibSymbolModel},
       {ViewType::LIBTREEVIEW, &UIManager::makeLibTreeModel},
@@ -49,7 +49,7 @@ private:
       {ViewType::LIBTABLEVIEW, &UIManager::makeLibTableView}};
 
     // Map of viewtypes to widget maker functions
-    typedef QWidget *(UIManager::*widgetFactoryFn)(QWidget *, QWidget *, std::string);
+    typedef QWidget *(UIManager::*widgetFactoryFn)(QWidget *, QWidget *, const std::string &);
     std::map<ViewType, widgetFactoryFn> makeWidgetfm =
     {{ViewType::LIBSYMBOLVIEW, &UIManager::makeMDILibWidget},
      {ViewType::LIBTREEVIEW, &UIManager::makeCDWLibWidget},
@@ -70,20 +70,20 @@ private:
 
     ConnViews m_connViews;
 
-    QAbstractItemModel *makeLibSymbolModel(std::string);
-    QAbstractItemModel *makeLibTreeModel(std::string);
-    QAbstractItemModel *makeLibTableModel(std::string);
+    QAbstractItemModel *makeLibSymbolModel(const std::string &);
+    QAbstractItemModel *makeLibTreeModel(const std::string &);
+    QAbstractItemModel *makeLibTableModel(const std::string &);
     QAbstractItemView  *makeLibSymbolView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTreeView(QAbstractItemModel *);
     QAbstractItemView  *makeLibTableView(QAbstractItemModel *);
-    QWidget *makeMDILibWidget(QWidget *, QWidget *, std::string);
-    QWidget *makeCDWLibWidget(QWidget *, QWidget *, std::string);
-    QWidget *makeModelViewWidget(std::string, ViewType, QMainWindow *);
+    QWidget *makeMDILibWidget(QWidget *, QWidget *, const std::string &);
+    QWidget *makeCDWLibWidget(QWidget *, QWidget *, const std::string &);
+    QWidget *makeModelViewWidget(const std::string &, ViewType, QMainWindow *);
     void attachMDISubWindow(QMainWindow *, QWidget *);
     void attachDockWidget(QMainWindow *, QWidget *);
 
-    QWidget *openUI(std::string, ViewType, QMainWindow * = nullptr); // opens named UI type
-    //void closeUI(std::string, ViewType);
+    QWidget *openUI(const std::string &, ViewType, QMainWindow * = nullptr); // opens named UI type
+    //void closeUI(const std::string &, ViewType);
     //void removeView(QWidget *qw);
     void onDocWindowActivate(QWidget *);
     void onDocWindowClose(QWidget *);
@@ -100,9 +100,9 @@ private:
 public:
     UIManager(QObject * = nullptr);
     std::list<QMainWindow *> mainWindows(); // Returns list of main windows
-    void notifyDbOpen(std::string) override; // opens default UI types
-    void notifyDbClose(std::string) override;
-    void notifyDbRename(std::string, std::string) override;
+    void notifyDbOpen(const std::string &) override; // opens default UI types
+    void notifyDbClose(const std::string &) override;
+    void notifyDbRename(const std::string &, const std::string &) override;
     void *newWindow() override; // Creates new top level window
     void *newWindow(LibCore *, ILogger *) override;
     void *duplicateWindow() override; // duplicate active w/o children

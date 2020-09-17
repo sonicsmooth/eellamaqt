@@ -201,15 +201,15 @@ std::string fullpathFromActiveMdiSubWindow() {
 // PRIVATE
 //////////
 
-QAbstractItemModel *UIManager::makeLibSymbolModel(std::string fullpath) {
+QAbstractItemModel *UIManager::makeLibSymbolModel(const std::string & fullpath) {
     QSqlDatabase db(dynamic_cast<QSQDbIf *>(m_pCore->DbIf())->database(fullpath));
     return new QSqlTableModel(this, db);
 }
-QAbstractItemModel *UIManager::makeLibTreeModel(std::string fullpath) {
+QAbstractItemModel *UIManager::makeLibTreeModel(const std::string & fullpath) {
    QSqlDatabase db(dynamic_cast<QSQDbIf *>(m_pCore->DbIf())->database(fullpath));
    return new QSqlTreeModel(this, db);
 }
-QAbstractItemModel *UIManager::makeLibTableModel(std::string fullpath) {
+QAbstractItemModel *UIManager::makeLibTableModel(const std::string & fullpath) {
    QSqlDatabase db(dynamic_cast<QSQDbIf *>(m_pCore->DbIf())->database(fullpath));
    return new QSqlTableModel(this, db);
 }
@@ -247,7 +247,7 @@ QAbstractItemView *UIManager::makeLibTableView(QAbstractItemModel *model) {
    sqlModel->select();
    return view;
 }
-QWidget *UIManager::makeCDWLibWidget(QWidget *parent, QWidget *contents, std::string title) {
+QWidget *UIManager::makeCDWLibWidget(QWidget *parent, QWidget *contents, const std::string & title) {
     contents->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
     ClosingDockWidget* widget(new ClosingDockWidget(parent));
     contents->setFocusProxy(widget); // doesn't seem to do anything
@@ -258,7 +258,7 @@ QWidget *UIManager::makeCDWLibWidget(QWidget *parent, QWidget *contents, std::st
     widget->setAttribute(Qt::WA_DeleteOnClose);
     return widget;
 }
-QWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, std::string title) {
+QWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, const std::string & title) {
    contents->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding));
    ClosingMDIWidget* widget(new ClosingMDIWidget(parent));
    widget->setWidget(contents);
@@ -267,7 +267,7 @@ QWidget *UIManager::makeMDILibWidget(QWidget *parent, QWidget *contents, std::st
    QObject::connect(widget, &ClosingMDIWidget::closing, this, &UIManager::onMdiSubWindowClose);
    return widget;
 }
-QWidget *UIManager::makeModelViewWidget(std::string fullpath, ViewType vt, QMainWindow *parent) {
+QWidget *UIManager::makeModelViewWidget(const std::string & fullpath, ViewType vt, QMainWindow *parent) {
     // Blindly creates or resuses model, creates view, creates and returns widget
     // widget returned is either ClosingMDILibWidget or ClosingDockWidget
     QAbstractItemModel *model(nullptr);
@@ -295,9 +295,11 @@ void UIManager::attachMDISubWindow(QMainWindow *mw, QWidget *widget) {
         widget->show();
 
     // Before adding this UI, find another top level window for below hack
-    auto selectopt (m_connViews.selectWhere<CVPredFn>([mw](ConnView cv) {
-        return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;
-    }));
+    // Don't know why I can't auto this predfn, or why I can't specify the template
+    // when calling selectWhere
+    CVPredFn cvpfn([mw](ConnView cv) {
+        return cv.viewType == ViewType::INVALID && cv.mainWindow != mw;});
+    auto selectopt (m_connViews.selectWhere(cvpfn));
 
     // Hack to activate current main window
     // Select another window first, then select this one
@@ -319,8 +321,9 @@ void UIManager::attachDockWidget(QMainWindow *mw, QWidget *widget) {
     ViewType vt(newselect->viewType);
 
     // Find entries matching this type but not this fullpath
-    ConnViews oldselects(m_connViews.selectWheres([&fullpath, vt](ConnView cv)
-        {return cv.fullpath != fullpath && cv.viewType == vt;}));
+    CVPredFn cvpfn([&fullpath, vt](ConnView cv)
+        {return cv.fullpath != fullpath && cv.viewType == vt;});
+    ConnViews oldselects(m_connViews.selectWheres(cvpfn));
 
     // Remove any previous dockwidget matching this type but not this fullpath
     for (ConnView oldselect : oldselects) {
@@ -336,7 +339,7 @@ void UIManager::attachDockWidget(QMainWindow *mw, QWidget *widget) {
 
 
 // TODO: Add ability to open some type of UI other than model/view, eg text window, browser, etc.
-QWidget *UIManager::openUI(std::string fullpath, ViewType vt, QMainWindow *mw) {
+QWidget *UIManager::openUI(const std::string & fullpath, ViewType vt, QMainWindow *mw) {
     // For main view types, allows any number of instances in any number of mainwindows
     // For sub view types, only one type of view is allowed per mainwindow
 
@@ -543,19 +546,19 @@ UIManager::UIManager(QObject *parent) :
     QObject(parent)
 {
 }
-void UIManager::notifyDbOpen(std::string fullpath) {
+void UIManager::notifyDbOpen(const std::string & fullpath) {
     for (auto uit : DefaultViewTypes) {
         openUI(fullpath, uit);
     }
 }
-void UIManager::notifyDbClose(std::string fullpath) {
+void UIManager::notifyDbClose(const std::string & fullpath) {
     // Close QMdiSubWindows after being notified that library has closed
     ConnViews cvs(m_connViews.selectWheres(fullpath, ViewType::LIBSYMBOLVIEW));
     for (auto cv : cvs) {
         cv.subWidget->close();
     }
 }
-void UIManager::notifyDbRename(std::string oldpath, std::string newpath) {
+void UIManager::notifyDbRename(const std::string & oldpath, const std::string & newpath) {
     //log("Notify rename %s to %s", oldpath.c_str(), newpath.c_str());
     // Get the new database from dbif based on newpath
     // Get all entries associated with oldpath from m_connViews

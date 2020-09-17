@@ -21,7 +21,6 @@ SOURCES += \
     ../src/closingmdiwidget.cpp \
     ../src/connviews.cpp \
     ../src/docwindow.cpp \
-    ../src/junk.cpp \
     ../src/libcore.cpp \
     ../src/libtableview.cpp \
     ../src/libtreeview.cpp \

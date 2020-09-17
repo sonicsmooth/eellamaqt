@@ -15,9 +15,9 @@ class IUIManager
 {
 public:
     virtual ~IUIManager() {}
-    virtual void notifyDbOpen(std::string) = 0;
-    virtual void notifyDbClose(std::string) = 0;
-    virtual void notifyDbRename(std::string, std::string) = 0;
+    virtual void notifyDbOpen(const std::string &) = 0;
+    virtual void notifyDbClose(const std::string &) = 0;
+    virtual void notifyDbRename(const std::string &, const std::string &) = 0;
     virtual void *newWindow() = 0;                      // Creates new top level window
     virtual void *newWindow(LibCore *, ILogger *) = 0;  // Creates new top level window
     virtual void *duplicateWindow() = 0;  // Dupes size/pos without children

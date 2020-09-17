@@ -48,63 +48,64 @@ class ConnViews {
 private:
     ConnViewList m_cvl;
 
-    // Base case for recursion
-    template<typename Arg>
-    ConnViews _selectWhere(const ConnViewList & cvl, Arg arg) {
-    (void) cvl;
-    (void) arg;
-    throw("Wrong function call");
-    }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, std::string arg) {
+   // Base case for recursion
+//    template<typename Arg>
+//    ConnViews _selectWhere(const ConnViewList & cvl, Arg arg) {
+//       Arg::unimplemented_function;
+//       //(void) cvl;
+//       //(void) arg;
+//       //throw("Wrong function call");
+//   }
+    ConnViews _selectWhere(const ConnViewList & cvl, const std::string & arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(cv.fullpath == arg)
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, const ViewType & arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, const ViewType & arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(cv.viewType == arg)
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, const std::vector<ViewType> & arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, const std::vector<ViewType> & arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(findViewType(arg, cv.viewType))
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, const QAbstractItemModel *arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, const QAbstractItemModel *arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(cv.model == arg)
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, const QAbstractItemView *arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, const QAbstractItemView *arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(cv.view == arg)
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, const QWidget *arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, const QWidget *arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(cv.subWidget == arg)
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, const QMainWindow *arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, const QMainWindow *arg) {
         ConnViews retval;
         for (auto cv: cvl)
             if(cv.mainWindow == arg)
                 retval.push_back(cv);
         return retval;
     }
-    template<> ConnViews _selectWhere(const ConnViewList & cvl, int arg) {
+    ConnViews _selectWhere(const ConnViewList & cvl, int arg) {
         (void) cvl;
         (void) arg;
         return ConnViews();
@@ -132,12 +133,12 @@ public:
     void push_back(const ConnView & cv) {m_cvl.push_back(cv);}
 
     // Called from client code for single searches
-    template <typename... Args> std::optional<ConnView> selectWhere(Args... allargs) {
+    template<typename Arg, typename... Args>
+    std::optional<ConnView> selectWhere(Arg firstarg, Args... restargs) {
         // Returns first item found
         // Does NOT assert that exactly one item was found
         //ConnViews cvs(_selectWhere(m_cvl, allargs...));
-        ConnViews cvs;
-        _selectWhere(m_cvl, allargs...);
+        ConnViews cvs = _selectWhere(m_cvl, firstarg, restargs...);
         if (cvs.size()) {
             ConnView cv;
             cv = cvs.front();
@@ -146,7 +147,8 @@ public:
         else
             return std::nullopt;
     }
-    template<>                  std::optional<ConnView> selectWhere(CVPredFn & fn) {
+    //template<>
+    std::optional<ConnView> selectWhere(CVPredFn fn) {
         // Return first entry where predicate is true, else nullopt
         for (auto cv : m_cvl)
             if (fn(cv))
@@ -155,21 +157,19 @@ public:
     }
 
     // Called from client code for list searches
-    template <typename... Args> ConnViews selectWheres(Args... allargs) {
-        return _selectWhere(m_cvl, allargs...);
+
+    template<typename Arg, typename... Args>
+    ConnViews selectWheres(Arg firstarg, Args... restargs) {
+        return _selectWhere(m_cvl, firstarg, restargs...);
     }
-    template<>                  ConnViews selectWheres(CVPredFn & fn) {
+    //template<>
+    ConnViews selectWheres(CVPredFn fn) {
         ConnViews retval;
         for (auto cv: m_cvl)
             if(fn(cv))
                 retval.push_back(cv);
         return retval;
     }
-
-    // Test declarations
-    template <typename Arg>                   int fake(Arg);
-    template <typename Arg, typename... Args> int fake(Arg, Args...);
-
 
 };
 
