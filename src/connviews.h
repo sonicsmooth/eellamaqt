@@ -48,14 +48,6 @@ class ConnViews {
 private:
     ConnViewList m_cvl;
 
-   // Base case for recursion
-//    template<typename Arg>
-//    ConnViews _selectWhere(const ConnViewList & cvl, Arg arg) {
-//       Arg::unimplemented_function;
-//       //(void) cvl;
-//       //(void) arg;
-//       //throw("Wrong function call");
-//   }
     ConnViews _selectWhere(const ConnViewList & cvl, const std::string & arg) {
         ConnViews retval;
         for (auto cv: cvl)
@@ -110,7 +102,6 @@ private:
         (void) arg;
         return ConnViews();
     }
-
     // Internal recursive case
     template <typename Arg, typename... Args>
     ConnViews _selectWhere(const ConnViewList & cvl, Arg firstarg, Args... restargs) {
@@ -147,7 +138,6 @@ public:
         else
             return std::nullopt;
     }
-    //template<>
     std::optional<ConnView> selectWhere(CVPredFn fn) {
         // Return first entry where predicate is true, else nullopt
         for (auto cv : m_cvl)
@@ -162,7 +152,6 @@ public:
     ConnViews selectWheres(Arg firstarg, Args... restargs) {
         return _selectWhere(m_cvl, firstarg, restargs...);
     }
-    //template<>
     ConnViews selectWheres(CVPredFn fn) {
         ConnViews retval;
         for (auto cv: m_cvl)
